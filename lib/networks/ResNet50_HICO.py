@@ -91,6 +91,7 @@ class ResNet50():
                 print("add block6 unique_weights2")
                 self.blocks.append(resnet_v1_block('block6', base_depth=512, num_units=3, stride=1))
 
+        """We copy from TIN. calculated by log(1/(n_c/sum(n_c)) c is the category and n_c is the number of samples"""
         self.HO_weight = np.array([
             9.192927, 9.778443, 10.338059, 9.164914, 9.075144, 10.045923, 8.714437, 8.59822, 12.977117, 6.2745423,
             11.227917, 6.765012, 9.436157, 9.56762, 11.0675745, 11.530198, 9.609821, 9.897503, 6.664475, 6.811699,

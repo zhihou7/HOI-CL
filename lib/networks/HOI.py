@@ -355,6 +355,11 @@ class HOI(parent_model):
                 label_sp = self.gt_class_HO
             if "cls_score_H" in self.predictions:
                 cls_score_H = self.predictions["cls_score_H"]
+                """
+                The re-weighting strategy has an important effect on the performance. 
+                This will also improve largely our baseline in both common and zero-shot setting.
+                We copy from TIN.
+                """
                 if self.model_name.__contains__('_rew'):
                     cls_score_H = tf.multiply(cls_score_H, self.HO_weight)
                 H_cross_entropy = tf.reduce_mean(

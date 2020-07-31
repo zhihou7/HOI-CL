@@ -55,7 +55,8 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10
     python tools/Train_VCL_ResNet_HICO.py --model VCL_union_multi_zs4_def1_l2_ml5_rew51_aug5_3_x5new --num_iteration 400000
     ```
 
-Here, we add the strategies in the model name for convience. 
+### Explanation
+Here, we design to add the strategies according to model name. 
 For example, in *VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101*, 
 *zs3* means the type of zero-shot, *ml5* is the hyper-parameter for composite branch, 
 *rew* means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
@@ -86,6 +87,10 @@ model *VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101* is our ba
 
 - [ ] Test
 
+## Q&A
+***The importance of re-weighting strategy. We follow previous work to use re-weighting. 
+It multiplies the weights to the logits before the sigmoid function. 
+We empirically find this is important for rare and unseen HOI detection***
 
 ## Acknowledgement
 Codes are built upon [iCAN: Instance-Centric Attention Network 
