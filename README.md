@@ -88,9 +88,13 @@ model *VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101* is our ba
 - [ ] Test
 
 ## Q&A
-***The importance of re-weighting strategy. We follow previous work to use re-weighting. 
+1. ***The importance of re-weighting strategy.*** 
+We follow previous work to use re-weighting. 
 It multiplies the weights to the logits before the sigmoid function. 
-We empirically find this is important for rare and unseen HOI detection***
+We empirically find this is important for rare and unseen HOI detection
+
+2. Res101 Detector. The Resnet-101 Detector is fully based on faster-rcnn ([detectron2](https://github.com/facebookresearch/detectron2)).
+We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. We'll release the object detection result and the model. 
 
 ## Acknowledgement
 Codes are built upon [iCAN: Instance-Centric Attention Network 
