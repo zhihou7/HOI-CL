@@ -100,6 +100,7 @@ mAP on HICO-DET (Default)
 * means using res101 backbone and fine-tune the object detector on HICO-DET
 
 **References:**
+
 [1] Qi, S., et al. Learning Human-Object Interactions by Graph Parsing Neural Networks. ECCV.
 
 [2] Gao, C., et al. iCAN: Instance-Centric Attention Network for Human-Object Interaction Detection. BMVC.
@@ -118,6 +119,26 @@ mAP on HICO-DET (Default)
 [9] Peyre, J., et al. Detecting unseen visual relations usinganalogies.  ICCV2019
 
 [10] Bansal,  A., et al. Detecting  human-object interactions via functional generalization. AAAI
+
+
+Zero-shot result
+
+
+|Model|Full|Rare|Non-Rare|
+|:-|:-:|:-:|:-:|
+|Shen et al.[1] | 5.62 | - | 6.26 |
+|Bansal et al.[2]|10.93|12.60|12.2|
+|w/o VCL (rare first)|3.30|18.63|15.56|
+|w/o VCL (non-rare first)|5.06|12.77|11.23|
+|VCL (rare first)|7.55 | 18.84 | 16.58 | 
+|VCL (non-rare first)|9.13 | 13.67 | 12.76 |
+
+
+**References:**
+
+[1] Shen, L. et al. Scaling human-object inter-action recognition through zero-shot learning
+[2] Bansal,  A., et al. Detecting  human-object interactions via functional generalization. AAAI
+
 
 ## TODO
 
