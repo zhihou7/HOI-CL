@@ -642,6 +642,9 @@ def coco_generator1(Pos_augment = 15, Neg_select=30, augment_type = 0, with_pose
             image_id = img_id_tmp
             im_file = cfg.DATA_DIR + '/' + 'v-coco/coco/images/train2014/COCO_train2014_' + (str(image_id)).zfill(
                 12) + '.jpg'
+            import os
+            if not os.path.exists(im_file):
+                print('not exist', im_file)
             import cv2
             im = cv2.imread(im_file)
             im_orig = im.astype(np.float32, copy=True)
@@ -1150,11 +1153,15 @@ def obtain_test_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=
 
 def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=False, zero_shot_type=0, isalign=False, epoch=0):
     if with_pose:
-        Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb"), encoding='latin1')
-        Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb"), encoding='latin1')
+        with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb") as f:
+            Trainval_GT = pickle.load(f, encoding='latin1')
+        with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb") as f:
+            Trainval_N = pickle.load(f, encoding='latin1')
     else:
-        Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb"), encoding='latin1')
-        Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb"), encoding='latin1')
+        with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
+            Trainval_GT = pickle.load(f, encoding='latin1')
+        with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb") as f:
+            Trainval_N = pickle.load(f, encoding='latin1')
 
 
     g_func = generator2
@@ -1185,7 +1192,7 @@ def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=Fals
                         buffer[i][0] = buffer[i][1]
                         buffer[i][1] = tmp
                 split_idx = len(buffer[5][0])
-                buffer = buffer[:3] + [np.concatenate(item, axis=0) for item in buffer[3:-1]] + buffer[-1:]
+                buffer = buffer[:3] + [np.concatenate(item, axis=0) for item in buffer[3:]] + buffer[-1:]
 
                 yield buffer[0][0], buffer[0][1], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], split_idx
 
@@ -1200,7 +1207,7 @@ def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=Fals
         pattern_channel = 2
     dataset = tf.data.Dataset.from_generator(partial(generator3, Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type),
                                              output_types=(
-        tf.float32, tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.int32),
+        tf.float32, tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.int32),
                                              output_shapes=(
                                              tf.TensorShape([1, None, None, 3]),
                                              tf.TensorShape([1, None, None, 3]),

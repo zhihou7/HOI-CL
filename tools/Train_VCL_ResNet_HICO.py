@@ -52,6 +52,7 @@ def parse_args():
             help='Select model',
             default='VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101', type=str)
     # VCL_union_multi_base_l2_rew2_aug5_3_x5new_res101
+    # VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new
     # posesp for pose
     parser.add_argument('--Pos_augment', dest='Pos_augment',
             help='Number of augmented detection for each one. (By jittering the object detections)',

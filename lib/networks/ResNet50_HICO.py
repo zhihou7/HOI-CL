@@ -225,10 +225,6 @@ class ResNet50():
         self.gt_verb_class = tf.cast(tf.matmul(self.gt_class_HO, self.verb_to_HO_matrix, transpose_b=True) > 0,
                                      tf.float32)
 
-        from ult.tools import get_word2vec
-        word2vec = get_word2vec()
-        self.word2vec_emb = tf.constant(word2vec)
-
     def build_base(self):
         with tf.variable_scope(self.scope, self.scope, reuse=tf.AUTO_REUSE,):
             net = resnet_utils.conv2d_same(self.image, 64, 7, stride=2, scope='conv1')

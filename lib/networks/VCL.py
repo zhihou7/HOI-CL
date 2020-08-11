@@ -223,7 +223,7 @@ class VCL(object):
 
         # with tf.device('/cpu:0'):
         #     new_gt_class_HO = tf.Print(new_gt_class_HO, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_verb_class), tf.shape(new_gt_class_HO)], 'message:', first_n=100)
-        print('degut===============', fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, compose_item_weights)
+        # print('degut===============', fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, compose_item_weights)
 
         new_loss = self.cal_loss_with_new_composing_features(fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, type, compose_item_weights=compose_item_weights, orig_len=tf.shape(O_features[0])[0] + tf.shape(O_features[1])[0])
         return new_loss

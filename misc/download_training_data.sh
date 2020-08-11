@@ -12,3 +12,8 @@ python lib/ult/Download_data.py 1PPPya4M2poWB_QCoAheStEYn3rPMKIgR Data/Trainval_
 python lib/ult/Download_data.py 1oGZfyhvArB2WHppgGVBXeYjPvgRk95N9 Data/Trainval_Neg_VCOCO.pkl
 python lib/ult/Download_data.py 1um07VNrfz03Oyytlp_4wbknuMOmNJ9mH Data/Trainval_GT_VCOCO_obj.pkl
 python lib/ult/Download_data.py 1SuOCeQXhTHT-Txk-XDP67uZveATC7ckC Data/Trainval_Neg_VCOCO_obj.pkl
+python lib/ult/Download_data.py 1BFJAniI4rZpq2KsZaxEoBB5sCgl0zBmZ Data/Trainval_GT_VCOCO_with_pose_obj.pkl
+python lib/ult/Download_data.py 1kKkUj1zyWh7-hEK3PumOi6TwUlsoMPkm Data/Trainval_Neg_VCOCO_with_pose_obj.pkl
+
+#https://drive.google.com/file/d/1BFJAniI4rZpq2KsZaxEoBB5sCgl0zBmZ/view?usp=sharing
+#https://drive.google.com/file/d/1kKkUj1zyWh7-hEK3PumOi6TwUlsoMPkm/view?usp=sharing

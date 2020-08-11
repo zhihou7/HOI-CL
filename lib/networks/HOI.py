@@ -396,7 +396,6 @@ class HOI(parent_model):
                 if self.model_name.__contains__('_rew'):
                     cls_score_verbs = tf.multiply(cls_score_verbs, self.HO_weight)
 
-                print('=======', tmp_label_HO, cls_score_verbs)
                 tmp_verb_loss = tf.nn.sigmoid_cross_entropy_with_logits(
                     labels=tmp_label_HO, logits=cls_score_verbs)
 

@@ -63,6 +63,12 @@ cp misc/oct_eval_one.m Data/ho-rcnn/evaluation
 cp misc/oct_eval_run.m Data/ho-rcnn/evaluation
 cp misc/save_mat.m Data/ho-rcnn/
 cp misc/load_mat.m Data/ho-rcnn/
+cp misc/num_inst.npy Data/
+cp misc/hoi_to_vb.pkl Data/
+cp misc/hoi_to_obj.pkl Data/
+cp misc/hico_list_vb.txt Data/
+cp misc/hico_list_hoi.txt Data/
+cp misc/hico_list_obj.txt Data/
 
 mkdir Data/ho-rcnn/data/hico_20160224_det/
 python lib/ult/Download_data.py 1cE10X9rRzzqeSPi-BKgIcDgcPXzlEoXX Data/ho-rcnn/data/hico_20160224_det/anno_bbox.mat

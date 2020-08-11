@@ -153,9 +153,6 @@ class ResNet50():
                                          tf.float32)
 
 
-        from ult.tools import get_word2vec
-        word2vec = get_word2vec()
-        self.word2vec_emb = tf.constant(word2vec)
 
     def build_base(self):
         with tf.variable_scope(self.scope, self.scope, reuse=tf.AUTO_REUSE,):

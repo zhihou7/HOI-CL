@@ -28,7 +28,7 @@ def parse_args():
             default=500000, type=int)
     parser.add_argument('--model', dest='model',
             help='Select model',
-            default='VCL_union_multi_base_l05_t2_rew_aug5_3_new_VCOCO_test', type=str)
+            default='VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test', type=str)
     # VCL_union_multi_base_l05_t2_rew_aug5_3_new_VCOCO_test
     # VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test
     parser.add_argument('--Restore_flag', dest='Restore_flag',
