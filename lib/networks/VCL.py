@@ -257,7 +257,7 @@ class VCL(object):
             fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'fc_HO')
             self.net.region_classification_ho(fc7_vo, True, tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                               'classification', nameprefix='merge_')
-        cls_score_verbs = self.net.predictions["merge_cls_score_verbs"]
+        cls_score_verbs = self.net.predictions["merge_cls_score_hoi"]
         if self.net.model_name.__contains__('VCOCO') and self.net.model_name.__contains__('t3'):
             reweights = tf.matmul(self.net.HO_weight, self.net.verb_to_HO_matrix)
         else:
@@ -274,16 +274,17 @@ class VCL(object):
             #  After this kind of re-weighting, the small value (e.g. 0.1) will further tend 0 where the gradient
             #  is larger. It is interesting! We do not mention this in paper since our method is orthogonal to this.
             #  But I do not understand the reason very good. Hope someone can explain.
-            cls_score_verbs = tf.multiply(self.net.predictions["merge_cls_score_verbs"], reweights / 10)
+            cls_score_verbs = tf.multiply(self.net.predictions["merge_cls_score_hoi"], reweights / 10)
         elif self.net.model_name.__contains__('_rew51'):
             # this is for zero-shot, we simply emphasize the weights of zero-shot categories.
             zero_shot_type = get_zero_shot_type(self.net.model_name)
             unseen_idx = get_unseen_index(zero_shot_type)
             import numpy as np
             new_HO_weight = np.asarray(self.net.HO_weight).reshape(-1)
+            # use the maximum value for the weight of unseen HOIs
             new_HO_weight[unseen_idx] = 20.
             new_HO_weight = new_HO_weight.reshape(1, 600)
-            cls_score_verbs = tf.multiply(self.net.predictions["merge_cls_score_verbs"],
+            cls_score_verbs = tf.multiply(self.net.predictions["merge_cls_score_hoi"],
                                           new_HO_weight / 10)
         if self.net.model_name.__contains__('VCOCO') and (self.net.model_name.__contains__('_t1_')
                                                           or self.net.model_name.__contains__('_t2_')):

@@ -22,6 +22,7 @@ import tensorflow as tf
 class SolverWrapperMultiGPU(SolverWrapper):
     """
     A wrapper class for the training process
+    I do not implement this in a multi-gpu way because I suffer a wired bug when I run the code in two gpu.
     """
 
     def __init__(self, sess, network, output_dir, tbdir, Restore_flag, pretrained_model):
@@ -72,6 +73,8 @@ class SolverWrapperMultiGPU(SolverWrapper):
                 gpu_idx = i
                 if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
                     gpu_idx = 0
+                # TODO if there are multiple GPUs, the code possibly raises an Exception.
+                #  But I think multiple GPUs should obtain better result.
                 with tf.device('/gpu:%d' % gpu_idx):
                     with tf.name_scope('%s_%d' % ('HICO', i), ) as scope:
                         split_image = self.image[i]
@@ -112,6 +115,11 @@ class SolverWrapperMultiGPU(SolverWrapper):
                             variables = tf.trainable_variables()
                             grads_and_vars = self.optimizer.compute_gradients(tf.reduce_sum(tower_losses), variables)
                             tower_grads.append(grads_and_vars)
+                        elif i == 1:
+                            # baseline
+                            new_loss = tf.reduce_sum(tower_losses)
+                            variables = tf.trainable_variables()
+                            grads_and_vars = self.optimizer.compute_gradients(tf.reduce_sum(tower_losses), variables)
 
             capped_gvs = [(tf.clip_by_norm(grad, 1.), var) for grad, var in grads_and_vars if grad is not None]
 
@@ -127,67 +135,9 @@ class SolverWrapperMultiGPU(SolverWrapper):
         return lr, train_op, tf.reduce_sum(tower_losses)
 
 
-    def construct_graph3(self, sess):
-        with sess.graph.as_default(), tf.device('/cpu:0'):
-            # Set the random seed for tensorflow
-            tf.set_random_seed(cfg.RNG_SEED)
-
-            init_step = self.get_init_step()
-
-            global_step = tf.Variable(init_step, trainable=False, name='global_step')
-
-            step_factor = self.get_step_factor()
-
-            lr, self.optimizer = self.get_optimzer_lr(global_step, step_factor)
-
-            tower_grads = []
-            tower_losses = []
-            loss0 = None
-            for i in range(2):
-                gpu_idx = i
-                if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
-                    gpu_idx = 0
-                with tf.device('/gpu:%d' % gpu_idx):
-                    with tf.name_scope('%s_%d' % ('HICO', i), ) as scope:
-                        split_image = self.image[i]
-                        split_image_id = self.image_id[i]
-                        split_spatial = self.spatial[i]
-                        split_H_boxes = self.H_boxes[i]
-                        split_O_boxes = self.O_boxes[i]
-                        split_gt_class_HO = self.gt_class_HO[i]
-                        split_H_num = self.H_num[i]
-
-                        self.net.set_ph(split_image, split_image_id, split_H_num,
-                                        split_H_boxes, split_O_boxes, split_gt_class_HO, split_spatial)
-
-                        # Build the main computation graph
-                        layers = self.net.create_architecture(True)  # is_training flag: True
-
-                        # Define the loss
-                        loss = layers['total_loss']
-                        tower_losses.append(loss)
-
-                        if i == 1:
-                            variables = tf.trainable_variables()
-                            grads_and_vars = self.optimizer.compute_gradients(tf.reduce_sum(tower_losses), variables)
-
-            capped_gvs = [(tf.clip_by_norm(grad, 1.), var) for grad, var in grads_and_vars if grad is not None]
-
-
-            train_op = self.optimizer.apply_gradients(capped_gvs, global_step=global_step)
-            tf.summary.scalar('lr', lr)
-            self.net.summary_op = tf.summary.merge_all()
-            self.saver = tf.train.Saver(max_to_keep=cfg.TRAIN.SNAPSHOT_KEPT)
-            # Write the train and validation information to tensorboard
-            self.writer = tf.summary.FileWriter(self.tbdir, sess.graph)
-        return lr, train_op, tf.reduce_sum(tower_losses)
-
     def train_model(self, sess, max_iters):
         if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
-            if self.net.model_name.__contains__('base'):
-                lr, train_op, t_loss = self.construct_graph3(sess)
-            else:
-                lr, train_op, t_loss = self.construct_graph2(sess)
+            lr, train_op, t_loss = self.construct_graph2(sess)
         else:
             lr, train_op, t_loss = self.construct_graph2(sess)
         self.from_snapshot(sess)

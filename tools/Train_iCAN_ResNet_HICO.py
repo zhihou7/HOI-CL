@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     np.random.seed(cfg.RNG_SEED)
     if args.model.__contains__('res101'):
-        weight    = cfg.ROOT_DIR + '/Weights/coco/res101_faster_rcnn_iter_1190000.ckpt'
+        weight    = cfg.ROOT_DIR + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'
     else:
         weight    = cfg.ROOT_DIR + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
 

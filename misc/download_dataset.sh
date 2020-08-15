@@ -48,11 +48,11 @@ echo "Downloading HICO-DET"
 
 URL_HICO_DET=http://napoli18.eecs.umich.edu/public_html/data/hico_20160224_det.tar.gz
 
-python lib/ult/Download_data.py 1QZcJmGVlF9f4h-XLWe9Gkmnmj2z1gSnk Data/hico_20160224_det.tar.gz
+python lib/ult/Download_data.py 1hIElxTyJ0HrTww_p1GpHD9KLZNw8OVJH Data/hico_20160224_det.tar.gz
 tar -xvzf Data/hico_20160224_det.tar.gz -C Data/
 rm Data/hico_20160224_det.tar.gz
 
-
+#https://drive.google.com/file/d/1hIElxTyJ0HrTww_p1GpHD9KLZNw8OVJH/view?usp=sharing
 # Download HICO-DET evaluation code
 cd Data/
 git clone https://github.com/ywchao/ho-rcnn.git

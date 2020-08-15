@@ -73,16 +73,16 @@ class HOI(parent_model):
         with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
             if self.model_name.startswith('VCL'):
                 print('others concat')
-                concat_verbs = tf.concat([fc7_verbs, fc7_O], 1)  # TODO fix
-                print(concat_verbs)
-                concat_verbs = slim.fully_connected(concat_verbs, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'Concat_verbs')
-                concat_verbs = slim.dropout(concat_verbs, keep_prob=0.5, is_training=is_training,
+                concat_hoi = tf.concat([fc7_verbs, fc7_O], 1)  # TODO fix
+                print(concat_hoi)
+                concat_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'Concat_verbs')
+                concat_hoi = slim.dropout(concat_hoi, keep_prob=0.5, is_training=is_training,
                                             scope=nameprefix+'dropout6_verbs')
-                fc9_verbs = slim.fully_connected(concat_verbs, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'fc7_verbs')
-                fc9_verbs = slim.dropout(fc9_verbs, keep_prob=0.5, is_training=is_training, scope=nameprefix+'dropout7_verbs')
+                fc9_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'fc7_verbs')
+                fc9_hoi = slim.dropout(fc9_hoi, keep_prob=0.5, is_training=is_training, scope=nameprefix+'dropout7_verbs')
             else:
-                fc9_verbs = None
-        return fc9_verbs
+                fc9_hoi = None
+        return fc9_hoi
 
     def head_to_tail_sp(self, fc7_H, fc7_O, sp, is_training, name):
         with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
@@ -116,24 +116,24 @@ class HOI(parent_model):
         #     return None
         with tf.variable_scope(name) as scope:
 
-            cls_score_verbs = slim.fully_connected(fc7_verbs, self.num_classes,
+            cls_score_hoi = slim.fully_connected(fc7_verbs, self.num_classes,
                                                    weights_initializer=initializer,
                                                    trainable=is_training,
                                                    reuse=tf.AUTO_REUSE,
                                                    activation_fn=None, scope='cls_score_verbs')
-            cls_prob_verbs = tf.nn.sigmoid(cls_score_verbs, name='cls_prob_verbs')
-            self.predictions[nameprefix+"cls_score_verbs"] = cls_score_verbs
-            self.predictions[nameprefix+"cls_prob_verbs"] = cls_prob_verbs
+            cls_prob_hoi = tf.nn.sigmoid(cls_score_hoi, name='cls_prob_verbs')
+            self.predictions[nameprefix+"cls_score_hoi"] = cls_score_hoi
+            self.predictions[nameprefix+"cls_prob_hoi"] = cls_prob_hoi
 
             if self.model_name.__contains__("VCOCO"):
                 # if self.model_name.__contains__('_CL_'):
                 #     assert self.num_classes == 222
-                #     print(cls_score_verbs, '=============================================')
+                #     print(cls_score_hoi, '=============================================')
                 if self.model_name.__contains__("VCL_V"):
-                    self.predictions[nameprefix + "cls_prob_HO"] = cls_prob_verbs if nameprefix == '' else 0
+                    self.predictions[nameprefix + "cls_prob_HO"] = cls_prob_hoi if nameprefix == '' else 0
                 else:
-                    self.predictions[nameprefix+"cls_prob_HO"] = self.predictions["cls_prob_sp"] * cls_prob_verbs if nameprefix =='' else 0
-        return cls_prob_verbs
+                    self.predictions[nameprefix+"cls_prob_HO"] = self.predictions["cls_prob_sp"] * cls_prob_hoi if nameprefix =='' else 0
+        return cls_prob_hoi
 
     def get_compose_boxes(self, h_boxes, o_boxes):
         with tf.control_dependencies([tf.assert_equal(h_boxes[:, 0], o_boxes[:, 0],
@@ -233,9 +233,9 @@ class HOI(parent_model):
             self.intermediate['fc7_verbs'] = fc7_verbs[:num_stop]
 
             fc7_vo = self.head_to_tail_ho(fc7_O[:num_stop], fc7_verbs[:num_stop], fc7_O_raw, fc7_verbs_raw, is_training, 'fc_HO')
-            cls_prob_verbs = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
+            cls_prob_hoi = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
         else:
-            cls_prob_verbs = None
+            cls_prob_hoi = None
 
         self.score_summaries.update(self.predictions)
 
@@ -382,25 +382,25 @@ class HOI(parent_model):
                 self.losses['sp_cross_entropy'] = sp_cross_entropy
 
             if self.model_name.startswith('VCL_V_'):
-                cls_score_verbs = self.predictions["cls_score_verbs"]
+                cls_score_hoi = self.predictions["cls_score_hoi"]
 
-                verbs_cross_entropy = tf.reduce_mean(
-                    tf.nn.sigmoid_cross_entropy_with_logits(labels=label_HO[:num_stop, :], logits=cls_score_verbs[:num_stop, :]))
-                self.losses['verbs_cross_entropy'] = verbs_cross_entropy
+                hoi_cross_entropy = tf.reduce_mean(
+                    tf.nn.sigmoid_cross_entropy_with_logits(labels=label_HO[:num_stop, :], logits=cls_score_hoi[:num_stop, :]))
+                self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
-                loss = verbs_cross_entropy
+                loss = hoi_cross_entropy
             elif self.model_name.startswith('VCL_'):
 
                 tmp_label_HO = self.gt_class_HO[:num_stop]
-                cls_score_verbs = self.predictions["cls_score_verbs"][:tf.shape(self.gt_class_HO[:num_stop])[0], :]
+                cls_score_hoi = self.predictions["cls_score_hoi"][:tf.shape(self.gt_class_HO[:num_stop])[0], :]
                 if self.model_name.__contains__('_rew'):
-                    cls_score_verbs = tf.multiply(cls_score_verbs, self.HO_weight)
+                    cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)
 
-                tmp_verb_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-                    labels=tmp_label_HO, logits=cls_score_verbs)
+                tmp_hoi_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+                    labels=tmp_label_HO, logits=cls_score_hoi)
 
-                verbs_cross_entropy = tf.reduce_mean(tmp_verb_loss)
-                self.losses['verbs_cross_entropy'] = verbs_cross_entropy
+                hoi_cross_entropy = tf.reduce_mean(tmp_hoi_loss)
+                self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
                 lamb = 1
                 if self.model_name.__contains__('_l05_'):
@@ -422,7 +422,7 @@ class HOI(parent_model):
                 if "cls_score_sp" not in self.predictions:
                     sp_cross_entropy = 0
                     self.losses['sp_cross_entropy'] = 0
-                loss = sp_cross_entropy + verbs_cross_entropy * lamb
+                loss = sp_cross_entropy + hoi_cross_entropy * lamb
                 if self.model_name.__contains__('_orig_'):
                     loss = loss + O_cross_entropy + H_cross_entropy
                     print('Add all loss')
@@ -453,21 +453,3 @@ class HOI(parent_model):
                                     feed_dict=feed_dict)
         return loss, summary
 
-
-    def obtain_all_preds(self, sess, image, blobs):
-        feed_dict = {self.image: image, self.H_boxes: blobs['H_boxes'], self.O_boxes: blobs['O_boxes'],
-                     self.spatial: blobs['sp'], self.H_num: blobs['H_num']}
-        from tensorflow.python.framework.errors_impl import InvalidArgumentError
-        try:
-            cls_prob_HO, pH, pO, pSp, pVerbs = sess.run([self.predictions["cls_prob_HO"], self.predictions["cls_prob_H"],
-                                    self.predictions["cls_prob_O"], self.predictions["cls_prob_sp"],
-                                    self.predictions["cls_prob_verbs"]], feed_dict=feed_dict)
-
-        except InvalidArgumentError as e:
-            cls_prob_HO, pH, pO, pSp, pVerbs = sess.run(
-                [self.predictions["cls_prob_HO_original"], self.predictions["cls_prob_H"],
-                 self.predictions["cls_prob_O"], self.predictions["cls_prob_sp"],
-                 self.predictions["cls_prob_H"]], feed_dict=feed_dict)
-            print("InvalidArgumentError")
-
-        return cls_prob_HO, pH, pO, pSp, pVerbs
