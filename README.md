@@ -7,6 +7,17 @@ Welcome to create issues if you have any questions.
 
 <img src='misc/imagine.png'>
 
+## Citation
+If you find our work useful in your research, please consider citing:
+```
+@article{hou2020visual,
+  title={Visual Compositional Learning for Human-Object Interaction Detection},
+  author={Hou, Zhi and Peng, Xiaojiang and Qiao, Yu and Tao, Dacheng},
+  journal={arXiv preprint arXiv:2007.12407},
+  year={2020}
+}
+```
+
 ## Prerequisites
 
 This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10.0 and Ubuntu 18.04.
@@ -97,7 +108,7 @@ mAP on HICO-DET (Default)
 |Bansal*et al.[10]  |  21.96 | 16.43 | 23.62 |
 |VCL* (ours) |23.63 | 17.21 | 25.55 |
 
-* means using res101 backbone and fine-tune the object detector on HICO-DET
+* means using res101 backbone and fine-tune the object detector on HICO-DET. 
 
 **References:**
 
@@ -132,6 +143,17 @@ Zero-shot result
 |w/o VCL (non-rare first)|5.06|12.77|11.23|
 |VCL (rare first)|7.55 | 18.84 | 16.58 | 
 |VCL (non-rare first)|9.13 | 13.67 | 12.76 |
+|VCL* (rare first)|10.06 | 24.28 | 21.43 | 12.12 | 26.71 | 23.79|
+|VCL* (non-rare first)|16.22 | 18.52 | 18.06 | 20.93 | 21.02 | 20.90 |
+
+### Object Detector.
+**Noticeably, Detector has an important effect on the performance of HOI detection.**
+Our experiment is based on the object detection results provided by iCAN. 
+We also fine-tune the detector on HICO-DET train. The detection result on HICO-DET test is 30.79 mAP. 
+We provide the object detection result [here](https://drive.google.com/file/d/1QI1kcZJqI-ym6AGQ2swwp4CKb39uLf-4/view?usp=sharing) same as the format of iCAN.
+
+**The performance largely varies based on different detector. It is better to provide the mAP of Detector.**  
+
 
 
 **References:**
@@ -155,9 +177,12 @@ It multiplies the weights to the logits before the sigmoid function.
 We empirically find this is important for rare and unseen HOI detection
 
 2. Res101 Detector. The Resnet-101 Detector is fully based on faster-rcnn ([detectron2](https://github.com/facebookresearch/detectron2)).
-We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. We'll release the object detection result and the model. 
+We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. 
+The detection result on HICO-DET test is 30.79 mAP. 
+We provide the object detection result [here](https://drive.google.com/file/d/1QI1kcZJqI-ym6AGQ2swwp4CKb39uLf-4/view?usp=sharing) same as the format of iCAN.
+The hico object annotations: [train](https://drive.google.com/file/d/1M4j5-rHcdfHYVfHQToccO0SsEGP4nGC1/view?usp=sharing) and [test](https://drive.google.com/file/d/1qyUURe978WuZRm1s-VWoC_TpTInYTUXd/view?usp=sharing) (coco format) 
 
-If you have any questions about this code and the paper, welcome to contact the Zhi Hou (zhou9878 [at] uni.sydney.edu.au).
+If you have any questions about this code and the paper, welcome to contact the Zhi Hou (zhou9878 [at] uni dot sydney dot edu dot au).
 
 ## Acknowledgement
 Codes are built upon [iCAN: Instance-Centric Attention Network 
