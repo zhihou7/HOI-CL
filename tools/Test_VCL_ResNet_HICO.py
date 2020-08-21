@@ -32,6 +32,8 @@ def parse_args():
     parser.add_argument('--human_thres', dest='human_thres',
                         help='Human threshold',
                         default=0.8, type=float)
+    # TODO For better object detector, the object_thres and human_thres should also be changed accordingly.
+    #  e.g. in our fine-tuned detector, object_thres and human_thres is 0.1 and 0.3 respectively.
     parser.add_argument('--debug', dest='debug',
                         help='Human threshold',
                         default=0, type=int)
@@ -39,6 +41,7 @@ def parse_args():
                         help='Human threshold',
                         default='res101', type=str)
     args = parser.parse_args()
+
     return args
 
 def switch_checkpoint_path(model_checkpoint_path):
