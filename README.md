@@ -172,16 +172,45 @@ We provide the object detection result [here](https://drive.google.com/file/d/1Q
 - [ ] Test
 
 ## Q&A
-1. ***The importance of re-weighting strategy.*** 
+### 1. The importance of re-weighting strategy.
+ 
 We follow previous work to use re-weighting. 
 It multiplies the weights to the logits before the sigmoid function. 
 We empirically find this is important for rare and unseen HOI detection
 
-2. Res101 Detector. The Resnet-101 Detector is fully based on faster-rcnn ([detectron2](https://github.com/facebookresearch/detectron2)).
+### 2. Res101 Detector. 
+
+The Resnet-101 Detector is fully based on faster-rcnn ([detectron2](https://github.com/facebookresearch/detectron2)).
 We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. 
-The detection result on HICO-DET test is 30.79 mAP. 
+The detection result on HICO-DET test is 30.79 mAP.
 We provide the object detection result [here](https://drive.google.com/file/d/1QI1kcZJqI-ym6AGQ2swwp4CKb39uLf-4/view?usp=sharing) same as the format of iCAN. When using the fine-tuned object detector, you should change the object_thres and humans_thres accordingly (see the test code).
-The hico object annotations: [train](https://drive.google.com/file/d/1M4j5-rHcdfHYVfHQToccO0SsEGP4nGC1/view?usp=sharing) and [test](https://drive.google.com/file/d/1qyUURe978WuZRm1s-VWoC_TpTInYTUXd/view?usp=sharing) (coco format) 
+The hico object annotations: [train](https://drive.google.com/file/d/1M4j5-rHcdfHYVfHQToccO0SsEGP4nGC1/view?usp=sharing) and [test](https://drive.google.com/file/d/1qyUURe978WuZRm1s-VWoC_TpTInYTUXd/view?usp=sharing) (coco format)
+
+**Hope the future works who used fine-tuned detector provide the object test mAP.**
+
+### 3. Verb polysemy problem. 
+
+Verb with same name possibly has multiple meaning. For example, fly kite is largely different from fly airplane. 
+Similar to previous works [Shen et al, Xu et al, ], We equally treat the verb. 
+We also try to solve this problem in VCL with massive attempts (e.g. language priors, RL (search the reasonable pair)). 
+However, we do not find any apparent improvement (See our supplementary materials). 
+
+We think there are several reasons: 
+1. Most verbs are not polysemy in HICO-DET.
+2. Most verbs do not involve multiple objects (only 39). This means there are a few composite HOIs with polysemy problem. 
+3. This paper Disambiguating Visual Verbs (TPAMI) also illustrates that HICO dataset do not contain much ambiguated verbs. 
+
+Of course, it is also possible the network could learn the commonness of the same verb. 
+
+We think this problem in HOI understanding require to be further exploited. 
+
+For other relation datasets such as VRD, possibly, 
+VCL should take this problem into consideration. 
+
+***Thanks for the reviewer who also points out the problem.***
+
+### 4. VRD
+We also evaluate VCL on VRD and we could improve a bit that the baseline based on VTransE.
 
 If you have any questions about this code and the paper, welcome to contact the Zhi Hou (zhou9878 [at] uni dot sydney dot edu dot au).
 
