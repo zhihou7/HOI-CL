@@ -23,6 +23,8 @@ class SolverWrapperMultiGPU(SolverWrapper):
     """
     A wrapper class for the training process
     I do not implement this in a multi-gpu way because I suffer a wired bug when I run the code in two gpu.
+    Thus, all the experiments are based on one GPU.
+    Hope someone can solve the bug https://github.com/tensorflow/tensorflow/issues/32836
     """
 
     def __init__(self, sess, network, output_dir, tbdir, Restore_flag, pretrained_model):

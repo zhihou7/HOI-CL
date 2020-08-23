@@ -315,6 +315,8 @@ class HOI(parent_model):
             # some negative samples in the positive samples can improve the performance a bit (abount 0.2%).
             # TODO I think it might have a better solution.
             #  No-Frills Human-Object Interaction Detection provides some support
+            #  I think VCL do not depend on this. If someone finds This has important impact on result,
+            #  feel happy to contact me.
             H_num_tmp = tf.cast(self.H_num, tf.int32)
             num_stop = tf.cast(num_stop, tf.int32)
             num_stop = H_num_tmp + tf.cast((num_stop - H_num_tmp) // 8, tf.int32)
