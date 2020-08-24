@@ -20,7 +20,7 @@ If you find our work useful in your research, please consider citing:
 
 ## Prerequisites
 
-This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10.0 and Ubuntu 18.04.
+This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Octave/Matlab (for evaluation), CUDA 10.0 and Ubuntu 18.04.
 
 
 ## Installation
@@ -45,10 +45,7 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10
     chmod +x ./misc/download_training_data.sh 
     ./misc/download_training_data.sh
     ```
-2. Train an VCL on V-COCO
-    ```Shell
-    python tools/Train_VCL_ResNet_VCOCO.py
-    ```
+
 3. Train an VCL on HICO-DET
     ```Shell
     python tools/Train_VCL_ResNet_HICO.py --num_iteration 800000
@@ -64,6 +61,10 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10
     python tools/Train_VCL_ResNet_HICO.py --model VCL_union_multi_zs4_def1_l2_ml5_rew51_aug5_3_x5new --num_iteration 400000
     ```
 
+2. Train an VCL on V-COCO
+    ```Shell
+    python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
+    ```
 
     Here, we design to add the strategies according to model name. 
     For example, in *VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101*, 
@@ -81,6 +82,7 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0 CUDA 10
 3. Test an VCL on HICO-DET
     ```Shell
     python tools/Test_VCL_ResNet_HICO.py --num_iteration 800000
+    cd Data/ho-rcnn/;python ../../scripts/postprocess_test.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 3 --fuse_type spv
     ```
  
     or 

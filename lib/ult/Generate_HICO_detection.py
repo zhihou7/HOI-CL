@@ -68,7 +68,7 @@ def obtain_fuse_preds(element, fuse_type):
         pH = element[6]
         pO = element[7]
         pSp = element[8]
-        pVerbs = element[9]
+        pHoi = element[9]
     if fuse_type == 'preds':
         preds = preds
     elif fuse_type == 'spho':
@@ -76,11 +76,11 @@ def obtain_fuse_preds(element, fuse_type):
     elif fuse_type == 'ho':
         preds = pO + pH
     elif fuse_type == 'spv':
-        preds = pSp * pVerbs
+        preds = pSp * pHoi
     elif fuse_type == 'sp':
         preds = pSp
     elif fuse_type == 'v':
-        preds = pVerbs
+        preds = pHoi
 
     else:
         raise Exception('fuse_type error, you must select those types{spho, spv, sp, sphov}')

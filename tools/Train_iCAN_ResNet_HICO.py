@@ -84,8 +84,8 @@ if __name__ == '__main__':
         net = HOI(model_name=args.model)
 
     with_pose = False
-    if args.model.__contains__('pose'):
-        with_pose = True
+    # if args.model.__contains__('pose'):
+    #     with_pose = True
 
     coco = False
     zero_shot_type = get_zero_shot_type(args.model)

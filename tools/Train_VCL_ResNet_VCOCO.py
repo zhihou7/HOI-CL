@@ -70,7 +70,7 @@ if __name__ == '__main__':
     tb_dir     = cfg.ROOT_DIR + '/logs/' + args.model + '/'
 
     # output directory where the models are saved
-    output_dir = cfg.LOCAL_DATA0 + '/Weights/' + args.model + '/'
+    output_dir = cfg.LOCAL_DATA + '/Weights/' + args.model + '/'
 
     import os
     os.environ['DATASET'] = 'VCOCO'

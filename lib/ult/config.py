@@ -84,8 +84,8 @@ __C.RNG_SEED = 3
 # Root directory of project
 __C.ROOT_DIR = osp.abspath(osp.join(osp.dirname(__file__), '..', '..'))
 
-__C.LOCAL_DATA = osp.abspath(osp.join(__C.ROOT_DIR, 'Data'))
-__C.LOCAL_DATA0 = osp.abspath(osp.join(__C.ROOT_DIR, 'Data'))
+__C.LOCAL_DATA0 = osp.abspath(osp.join(__C.ROOT_DIR, 'Data')) # for data
+__C.LOCAL_DATA = __C.ROOT_DIR # for writing weights, results, ..., and so on
 __C.IMAGE_TEMP = osp.abspath(osp.join(__C.ROOT_DIR, 'Data/visualize_images'))
 # Data directory
 __C.DATA_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'Data'))

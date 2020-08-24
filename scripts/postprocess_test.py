@@ -60,12 +60,15 @@ def kill_child_processes(parent_pid, sig=signal.SIGTERM):
         # process.send_signal(signal.SIGKILL)
 
 if __name__ == '__main__':
+    print("""I use Octave to evaluate the performace cause I did not install matlab in my machine""")
     # DATA_DIR = '/run/user/1000/gvfs/ftp:host=172.26.1.56/'
     DATA_DIR = cfg.LOCAL_DATA
     max_iteration = 3000001
     args = parse_args()
     from multiprocessing import Pool
     process_num = 2 if args.fuse_type == 'spv' else 2
+    if not os.path.exists(cfg.LOCAL_DATA + '/csv'):
+        os.makedirs(cfg.LOCAL_DATA + '/csv')
     # global pool
     # if pool is None:
     # pool = Pool(processes=process_num)

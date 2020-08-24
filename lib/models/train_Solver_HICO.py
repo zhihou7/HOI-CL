@@ -42,9 +42,6 @@ class SolverWrapper(object):
     def snapshot(self, sess, iter):
         if self.net.model_name.__contains__('multi'):
             snapshot_iters = cfg.TRAIN.SNAPSHOT_ITERS * 5 // 2
-        elif self.net.model_name.__contains__('batch'):
-            snapshot_iters = cfg.TRAIN.SNAPSHOT_ITERS * 5 // 2
-
         else:
             snapshot_iters = cfg.TRAIN.SNAPSHOT_ITERS * 5
 

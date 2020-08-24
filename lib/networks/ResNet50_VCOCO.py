@@ -62,7 +62,7 @@ class ResNet50():
         self.losses = {}
 
         self.image       = tf.placeholder(tf.float32, shape=[1, None, None, 3], name = 'image')
-        self.spatial     = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name = 'sp')
+        self.spatial     = tf.placeholder(tf.float32, shape=[None, 64, 64, 2], name = 'sp')
         # self.Hsp_boxes   = tf.placeholder(tf.float32, shape=[None, 5], name = 'Hsp_boxes')
         self.H_boxes = tf.placeholder(tf.float32, shape=[None, 5], name='H_boxes')
         self.O_boxes     = tf.placeholder(tf.float32, shape=[None, 5], name = 'O_boxes')

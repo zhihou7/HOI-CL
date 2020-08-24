@@ -18,9 +18,9 @@ import json
 import ipdb
 
 
-from ult.vsrl_eval1 import VCOCOeval
 from ult.config import cfg
 from models.test_VCOCO import test_net
+from ult.vsrl_eval import VCOCOeval
 
 
 def parse_args():

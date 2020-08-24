@@ -57,7 +57,7 @@ def test_net_data_api1(sess, net, output_dir, h_box, o_box, o_cls, h_score, o_sc
                 net.predictions["cls_prob_H"] if 'cls_prob_H' in net.predictions else h_box,
                 net.predictions["cls_prob_O"] if 'cls_prob_O' in net.predictions else h_box,
                 net.predictions["cls_prob_sp"] if 'cls_prob_sp' in net.predictions else h_box,
-                net.predictions["cls_prob_verbs"] if 'cls_prob_verbs' in net.predictions else h_box,
+                net.predictions["cls_prob_hoi"] if 'cls_prob_hoi' in net.predictions else h_box,
                 net.predictions["cls_prob_spverbs"] if 'cls_prob_spverbs' in net.predictions else h_box,
                 fuse_res if 'cls_prob_sp' in net.predictions else h_box, obj_scores, objid,
                                         h_box, o_box, o_cls, h_score, o_score, image_id])
