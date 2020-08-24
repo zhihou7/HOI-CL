@@ -74,7 +74,7 @@ if __name__ == '__main__':
                     continue
                 import os
 
-                if not os.path.exists(cfg.LOCAL_DATA0 + '/Weights/' + model + '/HOI_iter_' + str(index) + '.ckpt.index'):
+                if not os.path.exists(cfg.LOCAL_DATA + '/Weights/' + model + '/HOI_iter_' + str(index) + '.ckpt.index'):
                     # print('not exist', cfg.LOCAL_DATA0 + '/Weights/' + model + '/HOI_iter_' + str(index) + '.ckpt.index')
                     continue
                 output_file = cfg.LOCAL_DATA + '/Results/' + str(index) + '_' + model + '.pkl'

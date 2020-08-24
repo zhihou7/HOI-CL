@@ -64,7 +64,7 @@ if __name__ == '__main__':
     vcocoeval      = VCOCOeval(cfg.DATA_DIR + '/' + 'v-coco/data/vcoco/vcoco_test.json', cfg.DATA_DIR + '/' + 'v-coco/data/instances_vcoco_all_2014.json', cfg.DATA_DIR + '/' + 'v-coco/data/splits/vcoco_test.ids')
     import ipdb
     vcocoeval._get_vcocodb()
-    weight = cfg.LOCAL_DATA0 + '/Weights/' + args.model + '/HOI_iter_' + str(args.iteration) + '.ckpt'
+    weight = cfg.LOCAL_DATA + '/Weights/' + args.model + '/HOI_iter_' + str(args.iteration) + '.ckpt'
 
     print ('Human thres = ' + str(args.human_thres) + ', Object thres = ' + str(args.object_thres) + ', iter = ' + str(args.iteration) + ', path = ' + weight ) 
   
