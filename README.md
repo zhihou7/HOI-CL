@@ -81,11 +81,12 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
 - "ml5" is the hyper-parameter for composite branch. See other choice for the two hyper-parameters.
 - "rew" means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
    **It is better evaluate the method without re-weighting because the weights should be changed when generating large examples.** 
-   We just reduce value of weights and we think there might be weights for the composition branch ("rew2"). Baseline just uses "rew"
+   We just reduce value of weights and we think there might be weights for the composition branch ("rew2"). Baseline just uses "rew".
    "rew51" means we simply set the maximum value for unseen categories. See more analysis and experiments in our code.
    We also analyze the weights in our main paper based on the baseline model.
    **Current weights in the composition branch is simple, We think better weights can further improve the performance.** 
-- "aug5" means we set multiple interactions in each batch. See supplement materials for the effect on the performance. "aug5" means 5 HOIs in each batch.
+- "aug5" means we set multiple interactions in each batch. See supplement materials for the effect on the performance. 
+   "aug5" means 5 HOIs in each batch. Due to the limitation of GPU memory, we do not try larger size.
 - "x5new" means we also use a small number of negative samples for verb-object branch. 
    in iCAN, positive samples are for H-O branch while negative and positive samples for S-P branch. A small trick. This could improve about 0.2.
    This is a bit similar to some findings in No-Frills Human-Object Interaction Detection.
