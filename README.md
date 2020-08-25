@@ -66,13 +66,34 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Octave
     python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
     ```
 
-    Here, we design to add the strategies according to model name. 
-    For example, in *VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101*, 
-    *zs3* means the type of zero-shot, *ml5* is the hyper-parameter for composite branch, 
-    *rew* means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
-    *aug5_3_x5new* means we set multiple interactions in each batch 
-    and the negative and positive samples partition for spatial-human and verb-object branch. *res101* is the backbone while default is res50
-    model *VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101* is our baseline for the corresponding model 
+    
+
+### Rules in model name
+Here, we design to add the strategies according to model name for convenience. 
+
+We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as example, 
+    
+- "union" means union box for the verb features. "_humans_" is for human box for verb features.
+- "multi" has no meaning. It is to avoid running the model by Train_iCAN_ResNet_HICO.
+- "zs3" means the type of zero-shot, "zs3" is rare-first selection. "zs4" is nonrare-first selection.
+- "def1" is our composition strategy. "def1" is our strategy in the paper and is easily implemented.
+- "l2" is the hyper-parameter for verb-object branch. It is 2.
+- "ml5" is the hyper-parameter for composite branch. See other choice for the two hyper-parameters.
+- "rew" means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
+   **It is better evaluate the method without re-weighting because the weights should be changed when generating large examples.** 
+   We just reduce value of weights and we think there might be weights for the composition branch ("rew2"). Baseline just uses "rew"
+   "rew51" means we simply set the maximum value for unseen categories. See more analysis and experiments in our code.
+   We also analyze the weights in our main paper based on the baseline model.
+   **Current weights in the composition branch is simple, We think better weights can further improve the performance.** 
+- "aug5" means we set multiple interactions in each batch. See supplement materials for the effect on the performance. "aug5" means 5 HOIs in each batch.
+- "x5new" means we also use a small number of negative samples for verb-object branch. 
+   in iCAN, positive samples are for H-O branch while negative and positive samples for S-P branch. A small trick. This could improve about 0.2.
+   This is a bit similar to some findings in No-Frills Human-Object Interaction Detection.
+- "res101" is the backbone while default is res50.
+- "base" is the model without composition branch. **model "VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" is our baseline for the corresponding model** 
+- "VCL_V_". If the model name starts with "VCL_V", the code will only use verb-object branch. **We think this is helpful to further explore compose HOIs.** 
+
+The model name contains all ablation study in our main paper and supplementary materials.
 
 ## Testing
 1. Test an VCL on V-COCO
