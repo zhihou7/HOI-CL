@@ -187,14 +187,6 @@ We provide the object detection result [here](https://drive.google.com/file/d/1Q
 [2] Bansal,  A., et al. Detecting  human-object interactions via functional generalization. AAAI
 
 
-## TODO
-
-- [x] Code & Data
-
-- [ ] Model, Object Detection Results
-
-- [ ] Test
-
 ## Q&A
 ### 1. The importance of re-weighting strategy.
  
