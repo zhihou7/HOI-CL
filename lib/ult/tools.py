@@ -98,7 +98,7 @@ def visual_tsne(X, y, label_nums = 80, title=  'tsne', save_fig=False):
     # ax.axis('tight')
     plt.title(title)
     if save_fig:
-        plt.savefig('/home/zhihou/jpg_test/{}.jpg'.format(title))
+        plt.savefig(cfg.LOCAL_DATA + '/{}.jpg'.format(title))
     else:
         plt.show()
 

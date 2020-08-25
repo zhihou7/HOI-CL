@@ -4,8 +4,10 @@
 # Licensed under The MIT License [see LICENSE for details]
 # Written by Zhi Hou
 # ---------
+import _init_paths
 import numpy as np
 from ult.tools import visual_tsne, obtain_hoi_to_verb, obtain_hoi_to_obj
+from ult.config import cfg
 
 if __name__ == '__main__':
 
@@ -17,7 +19,7 @@ if __name__ == '__main__':
         model_name = sys.argv[1]
     print(model_name)
     # feats = pickle.load(open('/opt/data/private/{}_train_HICO_HO_feats.pkl'.format(model_name), 'rb'))
-    feats = pickle.load(open('/data1/zhihou/{}_train_HICO_HO_feats.pkl'.format(model_name), 'rb'))
+    feats = pickle.load(open(cfg.LOCAL_DATA + '/{}_train_HICO_HO_feats.pkl'.format(model_name), 'rb'))
 
     hoi_to_obj, obj_names = obtain_hoi_to_obj()
     hoi_to_verb, verb_names = obtain_hoi_to_verb()

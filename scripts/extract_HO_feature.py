@@ -32,15 +32,10 @@ def parse_args():
     parser.add_argument('--model', dest='model',
             help='Select model',
             default='VCL_union_multi_base_rew_aug5_3_x5new', type=str)
-    parser.add_argument('--object_thres', dest='object_thres',
-            help='Object threshold',
-            default=0.3, type=float)
     parser.add_argument('--type', dest='type',
                         help='Object threshold',
                         default='train', type=str)
-    parser.add_argument('--human_thres', dest='human_thres',
-            help='Human threshold',
-            default=0.8, type=float)
+
 
 
     args = parser.parse_args()
@@ -60,7 +55,7 @@ if __name__ == '__main__':
 
     weight = cfg.LOCAL_DATA + '/Weights/' + args.model + '/HOI_iter_' + str(args.iteration) + '.ckpt'
 
-    print ('Human thres = ' + str(args.human_thres) + ', Object thres = ' + str(args.object_thres) + ', iter = ' + str(args.iteration) + ', path = ' + weight ) 
+    print ('iter = ' + str(args.iteration) + ', path = ' + weight )
   
     output_file = cfg.LOCAL_DATA + '/Results/' + str(args.iteration) + '_' + args.model + '.pkl'
 
@@ -86,27 +81,18 @@ if __name__ == '__main__':
 
 
     if args.type == 'train':
-        large_neg_for_ho = False
-        if args.model.endswith('_aug5_new') or args.model.endswith('_aug6_new'):
-            large_neg_for_ho = True
         image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data(
             Pos_augment=0,
             Neg_select=0,
             augment_type=-1,
-            with_pose=False,
-            large_neg_for_ho=large_neg_for_ho)
+            with_pose=False)
         net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     else:
-
-        large_neg_for_ho = False
-        if args.model.endswith('_aug5_new') or args.model.endswith('_aug6_new'):
-            large_neg_for_ho = True
         image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_test_data(
             Pos_augment=0,
             Neg_select=0,
             augment_type=-1,
-            with_pose=False,
-            large_neg_for_ho=large_neg_for_ho)
+            with_pose=False)
         net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     net.create_architecture(False)
 
@@ -154,6 +140,6 @@ if __name__ == '__main__':
 
     print(len(result['A_list']))
     import pickle
-    pickle.dump(result, open('/opt/data/private/'+args.model +'_'+args.type+'_'+'HICO_HO_feats.pkl', 'wb'))
+    pickle.dump(result, open(cfg.LOCAL_DATA + '/' + args.model +'_'+args.type+'_'+'HICO_HO_feats.pkl', 'wb'))
     sess.close()
 #

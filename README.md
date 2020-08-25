@@ -113,6 +113,14 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
    python scripts/full_test.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 800000
     ```
 
+3. Illustration of verb and object features
+
+   ```shell
+   python scripts/extract_HO_feature.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 800000
+   
+   python scripts/tsne.py VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101
+   ```
+ 
 ## Experiment Results
 
 mAP on HICO-DET (Default)
