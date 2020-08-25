@@ -94,7 +94,7 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
 - "base" is the model without composition branch. **model "VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" is our baseline for the corresponding model** 
 - "VCL_V_". If the model name starts with "VCL_V", the code will only use verb-object branch. **We think this is helpful to further explore compose HOIs.** 
 
-The model name contains all ablation study in our main paper and supplementary materials.
+**The rules of model name contain all ablation study in our main paper and supplementary materials.**
 
 ## Testing
 1. Test an VCL on V-COCO
