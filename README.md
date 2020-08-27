@@ -139,11 +139,14 @@ mAP on HICO-DET (Default)
 |RPNN [7]| 17.35 | 12.78| 18.71|
 |PMFNet [8]|17.46|15.65|18.00|
 |Peyre et al. [9] | 19.40|14.63|20.87
+|Baseline (ours) | 18.03 | 13.62 | 19.35
 |VCL (ours) | **19.43** | **16.55** | 20.29 |
 |Bansal*et al.[10]  |  21.96 | 16.43 | 23.62 |
 |VCL* (ours) |23.63 | 17.21 | 25.55 |
 
-* means using res101 backbone and fine-tune the object detector on HICO-DET. 
+* means using res101 backbone and fine-tune the object detector on HICO-DET. We have a strong baseline (18.03). 
+Baseline directly copy two important strategies (re-weighting and box postprocessing) from previous work (See Supplementary materials).
+We also illustrates these in the code in detail.
 
 **References:**
 

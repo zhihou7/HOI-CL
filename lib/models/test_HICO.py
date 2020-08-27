@@ -1,7 +1,7 @@
 # --------------------------------------------------------
 # Tensorflow VCL
 # Licensed under The MIT License [see LICENSE for details]
-# Written by Zhi Hou, based on code from Chen Gao, Zheqi he and Xinlei Chen
+# Written by Zhi Hou, based on code from iCAN and TIN
 # --------------------------------------------------------
 
 from __future__ import absolute_import
@@ -20,6 +20,8 @@ import glob
 
 import tensorflow as tf
 
+
+# This strategy is based on TIN and is effective
 human_num_thres = 4
 object_num_thres = 4
 
@@ -173,7 +175,7 @@ def obtain_test_dataset(object_thres, human_thres, dataset_name='test2015'):
             im_orig = np.concatenate([im_orig, im_mask], axis=0)
             start = 0
             stride = 200
-            while start < blobs['H_num']:
+            while start < blobs['H_num']: # save GPU memory
                 b_temp = {}
                 for k ,v in blobs.items():
                     if not k == 'H_num':
@@ -279,6 +281,10 @@ def obtain_test_dataset1(object_thres, human_thres, dataset_name='test2015', tes
                             blobs['H_score'].append(Human_out[5])
                             blobs['O_score'].append(Object[5])
 
+            """
+            Notice: This strategy is based on TIN and is effective! This could improve the performance around 1.%
+            Re-weighting and This strategy improve our baseline to 18.04%.
+            """
             if blobs['H_num'] == 0 and has_human_threhold:
                 print('\rDealing with zero-sample test Image ' + str(image_id), end='', flush=True)
 
