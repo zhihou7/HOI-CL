@@ -66,6 +66,10 @@ if __name__ == '__main__':
     else:
         weight    = cfg.ROOT_DIR + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
 
+    assert args.model.__contains__('_t3_') or args.model.__contains__('_t2_'), 'you must choice t2 or t3 in VCL. we use the t3 strategy which seems like more effective in our experiment. ' \
+                                                                               't3 means we use a differect classifier with 238 targets. ' \
+                                                                               't2 means we use a similar classifier to the backbone. ' \
+                                                                               'Noticeably, VCOCO only contains 26 verbs. We do not evaluate t2 and t3 carefully'
     # output directory where the logs are saved
     tb_dir     = cfg.ROOT_DIR + '/logs/' + args.model + '/'
 

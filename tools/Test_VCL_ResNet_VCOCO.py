@@ -30,7 +30,7 @@ def parse_args():
             default=300000, type=int)
     parser.add_argument('--model', dest='model',
             help='Select model',
-            default='VCL_ResNet50_VCOCO', type=str)
+            default='VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test', type=str)
     parser.add_argument('--prior_flag', dest='prior_flag',
             help='whether use prior_flag',
             default=3, type=int)
