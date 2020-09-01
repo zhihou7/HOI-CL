@@ -4,8 +4,8 @@ Official TensorFlow implementation for VCL ([Visual Compositional Learning for H
 
 Welcome to create issues if you have any questions. 
 
+[![Visual Compositional Learning for Human-Object Interaction Detection](https://res.cloudinary.com/marcomontalbano/image/upload/v1598938384/video_to_markdown/images/youtube--_JU5RnxnGxE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/_JU5RnxnGxE "Visual Compositional Learning for Human-Object Interaction Detection")
 
-<img src='misc/imagine.png'>
 
 ## Citation
 If you find our work useful in your research, please consider citing:
@@ -141,12 +141,13 @@ mAP on HICO-DET (Default)
 |Peyre et al. [9] | 19.40|14.63|20.87
 |Baseline (ours) | 18.03 | 13.62 | 19.35
 |VCL (ours) | **19.43** | **16.55** | 20.29 |
+|VCL + pose (ours) | **19.70** | **16.68** | 20.60 |
 |Bansal*et al.[10]  |  21.96 | 16.43 | 23.62 |
 |VCL* (ours) |23.63 | 17.21 | 25.55 |
 
 * means using res101 backbone and fine-tune the object detector on HICO-DET. We have a strong baseline (18.03). 
 Baseline directly copy two important strategies (re-weighting and box postprocessing) from previous work (See Supplementary materials).
-We also illustrates these in the code in detail.
+We also illustrates these in the code in detail. If finetuning our model, we can obtain better result (about 19.7) than 19.70. VCL + pose is corresponding to posesp in our code.
 
 **References:**
 
