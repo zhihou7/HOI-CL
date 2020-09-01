@@ -66,7 +66,12 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Octave
     python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
     ```
 
-    
+### Model Parameters
+
+V-COCO: https://drive.google.com/file/d/1X8XZ7sycQ7GM1uvT6xVSRnNisw3QSnrt/view?usp=sharing. I test the result is 47.82. The baseline also decreases compared to the reported result. The model in my reported result is deleted by accident. Empirically, hyper-parameters $lambda_1$ affects V-COCO more apparently.
+
+HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp=sharing
+
 
 ### Rules in model name
 Here, we design to add the strategies according to model name for convenience. 
@@ -77,8 +82,8 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
 - "multi" has no meaning. It is to avoid running the model by Train_iCAN_ResNet_HICO.
 - "zs3" means the type of zero-shot, "zs3" is rare-first selection. "zs4" is nonrare-first selection.
 - "def1" is our composition strategy. "def1" is our strategy in the paper and is easily implemented.
-- "l2" is the hyper-parameter for verb-object branch. It is 2.
-- "ml5" is the hyper-parameter for composite branch. See other choice for the two hyper-parameters.
+- "l2" is the hyper-parameter $lambda_1$ for verb-object branch. It is 2. 
+- "ml5" is the hyper-parameter $lambda_2$ for composite branch. See other choice for the two hyper-parameters.
 - "rew" means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
    **It is better evaluate the method without re-weighting because the weights should be changed when generating large examples.** 
    We just reduce value of weights and we think there might be weights for the composition branch ("rew2"). Baseline just uses "rew".
