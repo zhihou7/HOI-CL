@@ -263,7 +263,10 @@ class VCL(object):
         else:
             reweights = self.net.HO_weight
 
-        if self.net.model_name.__contains__('rew2'):
+        if self.net.model_name.__contains__('rew1'):
+            # this means that we also apply the reweight strategy for the generated HO relation
+            cls_score_verbs = tf.multiply(self.net.predictions["merge_cls_score_verbs"], reweights)
+        elif self.net.model_name.__contains__('rew2'):
             # this means that we also apply the reweight strategy for the generated HO relation
             # TODO I simply and empirically set the weights for VCL. I think there should be a better solution.
             #  Noticeably, our method is orthogonal to re-weighting strategy.
