@@ -72,6 +72,7 @@ Our model will converge at around iteration 500000 in HICO-DET. V-COCO will conv
 V-COCO: https://drive.google.com/file/d/1X8XZ7sycQ7GM1uvT6xVSRnNisw3QSnrt/view?usp=sharing. I test the result is 47.82. The baseline also decreases compared to the reported result. The model in my reported result is deleted by accident. Empirically, hyper-parameters $lambda_1$ affects V-COCO more apparently.
 
 HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp=sharing
+
 HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
 
 ### Rules in model name
