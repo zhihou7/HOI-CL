@@ -59,7 +59,13 @@ if __name__ == '__main__':
     import os
 
     args = parse_args()
-
+    try:
+        import skimage
+        if skimage.__version__ != '0.14.2':
+            print("ALERT!!!: The version of skimage might affect the running speed largely. I'm not sure. I use 0.14.2")
+    except :
+        print('no skimage=================')
+        pass
     np.random.seed(cfg.RNG_SEED)
     if args.model.__contains__('res101'):
         weight    = cfg.ROOT_DIR + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'

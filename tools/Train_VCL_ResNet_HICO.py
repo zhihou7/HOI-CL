@@ -68,7 +68,13 @@ def parse_args():
 
 
 if __name__ == '__main__':
-
+    try:
+        import skimage
+        if skimage.__version__ != '0.14.2':
+            print("ALERT!!!: The version of skimage might affect the running speed largely. I'm not sure. I use 0.14.2")
+    except :
+        print('no skimage=================')
+        pass
     args = parse_args()
     args.model = args.model.strip()
     Trainval_GT = None
