@@ -948,8 +948,8 @@ def generator2(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type, w
     :param with_pose:
     :return:
     """
-    import skimage
-    # assert skimage.__version__ == '0.14.2'
+    # import skimage
+    # assert skimage.__version__ == '0.14.2', "The version of skimage might affect the speed largely. I use 0.14.2"
     Neg_select1, Pos_augment1, inters_per_img = get_aug_params(Neg_select, Pos_augment, augment_type)
     unseen_idx = get_unseen_index(zero_shot_type)
     Trainval_N = get_new_Trainval_N(Trainval_N, zero_shot_type, unseen_idx)

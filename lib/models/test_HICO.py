@@ -155,9 +155,9 @@ def obtain_test_dataset(object_thres, human_thres, dataset_name='test2015'):
                             # print(obj_box, blobs['O_boxes'])
                             mask[obj_box[0]:obj_box[2], obj_box[1]:obj_box[3]] = 1
                             mask_all[:, obj_box[0]:obj_box[2], obj_box[1]:obj_box[3]] = 1
-                            from skimage import transform
-                            mask = transform.resize(mask, [im_shape[0] // 16, im_shape[1] // 16, 1], order=0,
-                                                    preserve_range=True)
+                            # from skimage import transform
+                            # mask = transform.resize(mask, [im_shape[0] // 16, im_shape[1] // 16, 1], order=0,
+                            #                         preserve_range=True)
                             blobs['O_cls'].append(Object[4])
                             blobs['H_score'].append(Human_out[5])
                             blobs['O_score'].append(Object[5])
