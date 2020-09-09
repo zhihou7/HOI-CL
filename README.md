@@ -4,8 +4,8 @@ Official TensorFlow implementation for VCL ([Visual Compositional Learning for H
 
 Welcome to create issues if you have any questions. 
 
+[![Visual Compositional Learning for Human-Object Interaction Detection](https://res.cloudinary.com/marcomontalbano/image/upload/v1598938384/video_to_markdown/images/youtube--_JU5RnxnGxE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/_JU5RnxnGxE "Visual Compositional Learning for Human-Object Interaction Detection")
 
-<img src='misc/imagine.png'>
 
 ## Citation
 If you find our work useful in your research, please consider citing:
@@ -66,7 +66,14 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Octave
     python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
     ```
 
-    
+### Model Parameters
+Our model will converge at around iteration 500000 in HICO-DET. V-COCO will converge after 200000 iterations. We provide the model parameters that we trained as follows,
+
+V-COCO: https://drive.google.com/file/d/1X8XZ7sycQ7GM1uvT6xVSRnNisw3QSnrt/view?usp=sharing. I test the result is 47.82. The baseline also decreases compared to the reported result. The model in my reported result is deleted by accident. Empirically, hyper-parameters $lambda_1$ affects V-COCO more apparently.
+
+HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp=sharing
+
+HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
 
 ### Rules in model name
 Here, we design to add the strategies according to model name for convenience. 
@@ -77,8 +84,8 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
 - "multi" has no meaning. It is to avoid running the model by Train_iCAN_ResNet_HICO.
 - "zs3" means the type of zero-shot, "zs3" is rare-first selection. "zs4" is nonrare-first selection.
 - "def1" is our composition strategy. "def1" is our strategy in the paper and is easily implemented.
-- "l2" is the hyper-parameter for verb-object branch. It is 2.
-- "ml5" is the hyper-parameter for composite branch. See other choice for the two hyper-parameters.
+- "l2" is the hyper-parameter $lambda_1$ for verb-object branch. It is 2. 
+- "ml5" is the hyper-parameter $lambda_2$ for composite branch. See other choice for the two hyper-parameters.
 - "rew" means we use the re-weighting strategy. If you do not use re-weighting, you can remove this in the model name. 
    **It is better evaluate the method without re-weighting because the weights should be changed when generating large examples.** 
    We just reduce value of weights and we think there might be weights for the composition branch ("rew2"). Baseline just uses "rew".
@@ -141,12 +148,13 @@ mAP on HICO-DET (Default)
 |Peyre et al. [9] | 19.40|14.63|20.87
 |Baseline (ours) | 18.03 | 13.62 | 19.35
 |VCL (ours) | **19.43** | **16.55** | 20.29 |
+|VCL + pose (ours) | **19.70** | **16.68** | 20.60 |
 |Bansal*et al.[10]  |  21.96 | 16.43 | 23.62 |
 |VCL* (ours) |23.63 | 17.21 | 25.55 |
 
 * means using res101 backbone and fine-tune the object detector on HICO-DET. We have a strong baseline (18.03). 
 Baseline directly copy two important strategies (re-weighting and box postprocessing) from previous work (See Supplementary materials).
-We also illustrates these in the code in detail.
+We also illustrates these in the code in detail. If finetuning our model, we can obtain better result (about 19.7) than 19.70. VCL + pose is corresponding to posesp in our code.
 
 **References:**
 
