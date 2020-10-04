@@ -219,8 +219,8 @@ We empirically find this is important for rare and unseen HOI detection
 ### 2. Res101 Detector. 
 
 The Resnet-101 Detector is fully based on faster-rcnn ([detectron2](https://github.com/facebookresearch/detectron2)).
-We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. 
-The detection result on HICO-DET test is 30.79 mAP.
+We fine-tune the [R101-RPN](https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml) detector (pretrained on coco) on HICO-DET. [Here](https://drive.google.com/file/d/1RgWNoc-lk8HMlcttzLghPg8LAPCdmCCG/view?usp=sharing) is the fine-tuned model.
+The detection result of fine-tuned model on HICO-DET test is **30.79 mAP**.
 We provide the object detection result [here](https://drive.google.com/file/d/1QI1kcZJqI-ym6AGQ2swwp4CKb39uLf-4/view?usp=sharing) same as the format of iCAN. When using the fine-tuned object detector, you should change the object_thres and humans_thres accordingly (see the test code).
 The hico object annotations: [train](https://drive.google.com/file/d/1M4j5-rHcdfHYVfHQToccO0SsEGP4nGC1/view?usp=sharing) and [test](https://drive.google.com/file/d/1qyUURe978WuZRm1s-VWoC_TpTInYTUXd/view?usp=sharing) (coco format)
 
