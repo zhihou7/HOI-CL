@@ -235,7 +235,7 @@ However, we do not find any apparent improvement (See our supplementary material
 
 We think there are several reasons: 
 1. Most verbs are not polysemy in HICO-DET.
-2. Most verbs do not involve multiple objects (only 39). This means there are a few composite HOIs with polysemy problem. 
+2. Many verbs do not involve multiple objects (there are 39 verbs that interact only one object). This means there are a few composite HOIs with polysemy problem. 
 3. This paper Disambiguating Visual Verbs (TPAMI) also illustrates that HICO dataset do not contain much ambiguated verbs. 
 
 Of course, it is also possible the network could learn the commonness of the same verb. 
