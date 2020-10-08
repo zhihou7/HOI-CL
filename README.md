@@ -99,7 +99,7 @@ We take the name "VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" as 
    This is a bit similar to some findings in No-Frills Human-Object Interaction Detection.
 - "res101" is the backbone while default is res50.
 - "base" is the model without composition branch. **model "VCL_union_multi_base_zs3_def1_l2_ml5_rew51_aug5_3_x5new_res101" is our baseline for the corresponding model** 
-- "VCL_V_". If the model name starts with "VCL_V", the code will only use verb-object branch. **We think this is helpful to further explore compose HOIs.** 
+- "VCL_V_". If the model name starts with "VCL_V", the code will only use verb-object branch. **We think this is helpful to explore further composing HOIs.** 
 
 **The rules of model name contain all ablation study in our main paper and supplementary materials.** 
 Besides, we keep the code of pose information in the project, which can obtain a bit better performance (around 19.6%) than the reported results. 
@@ -245,10 +245,13 @@ We think this problem in HOI understanding require to be further exploited.
 For other relation datasets such as VRD, possibly, 
 VCL should take this problem into consideration. 
 
-***Thanks for the reviewer who also points out the problem.***
+***Thanks for the reviewer who also points out this problem.***
 
 ### 4. VRD
-We also evaluate VCL on VRD and we could improve a bit that the baseline based on VTransE.
+We also evaluate VCL on VRD and we could improve a bit than the baseline based on VTransE.
+
+### 5. Composition
+Recently, I find our implementation also contains the composition between the HOI pair due to that our base code augment the boxes. e.g. if we augment each box 7 times and obtain 7 pair for a annotated HOI, we can augment the pairs to 7*6. This is equal to increase the batch size. We do not find this part improves the performance in our simple experiment.
 
 If you have any questions about this code and the paper, welcome to contact the Zhi Hou (zhou9878 [at] uni dot sydney dot edu dot au).
 
