@@ -253,6 +253,11 @@ We also evaluate VCL on VRD and we could improve a bit than the baseline based o
 ### 5. Composition
 Recently, I find our implementation also contains the composition between the HOI pair due to that our base code augment the boxes. e.g. if we augment each box 7 times and obtain 7 pair for a annotated HOI, we can augment the pairs to 7*6. This is equal to increase the batch size. We do not find this part improves the performance in our simple experiment.
 
+### Others
+
+I recently notice that same as iCAN (our base code), we only freeze the first block of resnet during optimization. It is necessary to optimize some resnet blocks for VCL. Otherwise, it might be more difficult to learn sharable verb representation among different HOIs. Meanwhile, I guess the re-weighting strategy from TIN might also require trainable resnet blocks.
+
+
 If you have any questions about this code and the paper, welcome to contact the Zhi Hou (zhou9878 [at] uni dot sydney dot edu dot au).
 
 ## Acknowledgement
