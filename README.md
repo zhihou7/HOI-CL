@@ -155,8 +155,8 @@ mAP on HICO-DET (Default)
 |baseline (GT) | 42.18 | 31.80 | 45.28 |
 |VCL (GT) | 43.30  | 34.2  | 45.94 |
 
-\* means using res101 backbone and fine-tune the object detector on HICO-DET. VCL' is the result of our resnet50 model under the fine-tuned detector. We also evaluate our released res50 VCL model on Ground Truth. We have a strong baseline (18.03).
-Baseline directly copy two important strategies (re-weighting and box postprocessing) from previous work (See Supplementary materials).
+\* means using res101 backbone and fine-tune the object detector on HICO-DET. VCL' is the result of our resnet50 model under the fine-tuned detector. We also evaluate our released res50 VCL model on Ground Truth. Btw, we have a strong baseline (18.03).
+Baseline directly copys two important strategies (re-weighting and box postprocessing) from previous work (See Supplementary materials).
 We also illustrates these in the code in detail. If finetuning our model, we can obtain better result (about 19.7) than 19.70. VCL + pose is corresponding to posesp in our code.
 
 **References:**
