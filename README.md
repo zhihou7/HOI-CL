@@ -2,7 +2,7 @@
 
 Official TensorFlow implementation for VCL ([Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407)) in ECCV2020
 
-Welcome to create issues if you have any questions. 
+Welcome to create issues if you have any questions. The code built from iCAN. Thus this repository might contain some code from iCAN that we do not use it.
 
 [![Visual Compositional Learning for Human-Object Interaction Detection](https://res.cloudinary.com/marcomontalbano/image/upload/v1598938384/video_to_markdown/images/youtube--_JU5RnxnGxE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/_JU5RnxnGxE "Visual Compositional Learning for Human-Object Interaction Detection")
 
