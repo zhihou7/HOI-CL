@@ -378,6 +378,8 @@ class HOI(parent_model):
                 self.losses['O_cross_entropy'] = O_cross_entropy
             if "cls_score_sp" in self.predictions:
                 cls_score_sp = self.predictions["cls_score_sp"]
+                if self.model_name.__contains__('_rew'):
+                    cls_score_sp = tf.multiply(cls_score_sp, self.HO_weight)
                 sp_cross_entropy = tf.reduce_mean(
                     tf.nn.sigmoid_cross_entropy_with_logits(labels=label_sp, logits=cls_score_sp))
 
@@ -385,7 +387,8 @@ class HOI(parent_model):
 
             if self.model_name.startswith('VCL_V_'):
                 cls_score_hoi = self.predictions["cls_score_hoi"]
-
+                if self.model_name.__contains__('_rew'):
+                    cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)
                 hoi_cross_entropy = tf.reduce_mean(
                     tf.nn.sigmoid_cross_entropy_with_logits(labels=label_HO[:num_stop, :], logits=cls_score_hoi[:num_stop, :]))
                 self.losses['hoi_cross_entropy'] = hoi_cross_entropy
