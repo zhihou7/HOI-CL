@@ -1104,13 +1104,13 @@ def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose= Fals
         pattern_channel = 2
     dataset = tf.data.Dataset.from_generator(partial(g, Trainval_GT, Trainval_N, Pos_augment, Neg_select,
                                                      augment_type, with_pose, zero_shot_type, isalign, epoch), output_types=(
-        tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32),
+        tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32),
                                              output_shapes=(
                                              tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
                                              tf.TensorShape([None, 5]), tf.TensorShape([None, 5]),
                                              tf.TensorShape([None, 600]),
-                                             tf.TensorShape([None, 64, 64, pattern_channel]),
-                                             tf.TensorShape([None, None, None, 1])))
+                                             tf.TensorShape([None, 64, 64, pattern_channel])
+                                             ))
     dataset = dataset.prefetch(100)
     iterator = dataset.make_one_shot_iterator()
     image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp  = iterator.get_next()
