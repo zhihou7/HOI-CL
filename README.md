@@ -2,7 +2,6 @@
 
 Official TensorFlow implementation for VCL ([Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407)) in ECCV2020
 
-***Pytorch implementation for VCL is provided [here](https://github.com/zhihou7/VCL_Pytorch), which is clean and easier to read***
 
 Welcome to create issues if you have any questions. The code built from iCAN. 
 
