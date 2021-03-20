@@ -66,6 +66,14 @@ class SolverWrapper(object):
             step_factor = 5
         return step_factor
 
+    def get_classifier_variables(self):
+        variables = [v for v in tf.trainable_variables()
+                     if v.name.__contains__('Concat_verbs')
+                     or v.name.__contains__('fc7_verbs')
+                     or v.name.__contains__('classification/cls_score_verbs')]
+        return variables
+
+
     def construct_graph(self, sess):
         with sess.graph.as_default():
       

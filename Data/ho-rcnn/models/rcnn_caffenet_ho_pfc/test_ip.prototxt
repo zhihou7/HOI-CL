@@ -1,0 +1,475 @@
+name: "CaffeNet"
+input: "data_h"
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 227
+  dim: 227
+}
+input: "data_o"
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 227
+  dim: 227
+}
+input: "data_p"
+input_shape {
+  dim: 1
+  dim: 2
+  dim: 64
+  dim: 64
+}
+###########################################################################
+# human stream
+###########################################################################
+layer {
+  name: "conv1_h"
+  type: "Convolution"
+  bottom: "data_h"
+  top: "conv1_h"
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    # pad: 5
+    stride: 4
+  }
+}
+layer {
+  name: "relu1_h"
+  type: "ReLU"
+  bottom: "conv1_h"
+  top: "conv1_h"
+}
+layer {
+  name: "pool1_h"
+  type: "Pooling"
+  bottom: "conv1_h"
+  top: "pool1_h"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm1_h"
+  type: "LRN"
+  bottom: "pool1_h"
+  top: "norm1_h"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2_h"
+  type: "Convolution"
+  bottom: "norm1_h"
+  top: "conv2_h"
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    pad: 2
+    group: 2
+  }
+}
+layer {
+  name: "relu2_h"
+  type: "ReLU"
+  bottom: "conv2_h"
+  top: "conv2_h"
+}
+layer {
+  name: "pool2_h"
+  type: "Pooling"
+  bottom: "conv2_h"
+  top: "pool2_h"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm2_h"
+  type: "LRN"
+  bottom: "pool2_h"
+  top: "norm2_h"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3_h"
+  type: "Convolution"
+  bottom: "norm2_h"
+  top: "conv3_h"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+  }
+}
+layer {
+  name: "relu3_h"
+  type: "ReLU"
+  bottom: "conv3_h"
+  top: "conv3_h"
+}
+layer {
+  name: "conv4_h"
+  type: "Convolution"
+  bottom: "conv3_h"
+  top: "conv4_h"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu4_h"
+  type: "ReLU"
+  bottom: "conv4_h"
+  top: "conv4_h"
+}
+layer {
+  name: "conv5_h"
+  type: "Convolution"
+  bottom: "conv4_h"
+  top: "conv5_h"
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu5_h"
+  type: "ReLU"
+  bottom: "conv5_h"
+  top: "conv5_h"
+}
+layer {
+  name: "pool5_h"
+  type: "Pooling"
+  bottom: "conv5_h"
+  top: "pool5_h"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6_h"
+  type: "InnerProduct"
+  bottom: "pool5_h"
+  top: "fc6_h"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6_h"
+  type: "ReLU"
+  bottom: "fc6_h"
+  top: "fc6_h"
+}
+layer {
+  name: "fc7_h"
+  type: "InnerProduct"
+  bottom: "fc6_h"
+  top: "fc7_h"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7_h"
+  type: "ReLU"
+  bottom: "fc7_h"
+  top: "fc7_h"
+}
+layer {
+  name: "cls_score_h"
+  type: "InnerProduct"
+  bottom: "fc7_h"
+  top: "cls_score_h"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# object stream
+###########################################################################
+layer {
+  name: "conv1_o"
+  type: "Convolution"
+  bottom: "data_o"
+  top: "conv1_o"
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    # pad: 5
+    stride: 4
+  }
+}
+layer {
+  name: "relu1_o"
+  type: "ReLU"
+  bottom: "conv1_o"
+  top: "conv1_o"
+}
+layer {
+  name: "pool1_o"
+  type: "Pooling"
+  bottom: "conv1_o"
+  top: "pool1_o"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm1_o"
+  type: "LRN"
+  bottom: "pool1_o"
+  top: "norm1_o"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2_o"
+  type: "Convolution"
+  bottom: "norm1_o"
+  top: "conv2_o"
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    pad: 2
+    group: 2
+  }
+}
+layer {
+  name: "relu2_o"
+  type: "ReLU"
+  bottom: "conv2_o"
+  top: "conv2_o"
+}
+layer {
+  name: "pool2_o"
+  type: "Pooling"
+  bottom: "conv2_o"
+  top: "pool2_o"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm2_o"
+  type: "LRN"
+  bottom: "pool2_o"
+  top: "norm2_o"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3_o"
+  type: "Convolution"
+  bottom: "norm2_o"
+  top: "conv3_o"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+  }
+}
+layer {
+  name: "relu3_o"
+  type: "ReLU"
+  bottom: "conv3_o"
+  top: "conv3_o"
+}
+layer {
+  name: "conv4_o"
+  type: "Convolution"
+  bottom: "conv3_o"
+  top: "conv4_o"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu4_o"
+  type: "ReLU"
+  bottom: "conv4_o"
+  top: "conv4_o"
+}
+layer {
+  name: "conv5_o"
+  type: "Convolution"
+  bottom: "conv4_o"
+  top: "conv5_o"
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu5_o"
+  type: "ReLU"
+  bottom: "conv5_o"
+  top: "conv5_o"
+}
+layer {
+  name: "pool5_o"
+  type: "Pooling"
+  bottom: "conv5_o"
+  top: "pool5_o"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "fc6_o"
+  type: "InnerProduct"
+  bottom: "pool5_o"
+  top: "fc6_o"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6_o"
+  type: "ReLU"
+  bottom: "fc6_o"
+  top: "fc6_o"
+}
+layer {
+  name: "fc7_o"
+  type: "InnerProduct"
+  bottom: "fc6_o"
+  top: "fc7_o"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7_o"
+  type: "ReLU"
+  bottom: "fc7_o"
+  top: "fc7_o"
+}
+layer {
+  name: "cls_score_o"
+  type: "InnerProduct"
+  bottom: "fc7_o"
+  top: "cls_score_o"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# pairwise stream
+###########################################################################
+layer {
+  name: "fc1_p"
+  type: "InnerProduct"
+  bottom: "data_p"
+  top: "fc1_p"
+  inner_product_param {
+    num_output: 128
+  }
+}
+layer {
+  name: "relu1_p"
+  type: "ReLU"
+  bottom: "fc1_p"
+  top: "fc1_p"
+}
+layer {
+  name: "fc2_p"
+  type: "InnerProduct"
+  bottom: "fc1_p"
+  top: "fc2_p"
+  inner_product_param {
+    num_output: 512
+  }
+}
+layer {
+  name: "relu2_p"
+  type: "ReLU"
+  bottom: "fc2_p"
+  top: "fc2_p"
+}
+layer {
+  name: "fc3_p"
+  type: "InnerProduct"
+  bottom: "fc2_p"
+  top: "fc3_p"
+  inner_product_param {
+    num_output: 256
+  }
+}
+layer {
+  name: "relu3_p"
+  type: "ReLU"
+  bottom: "fc3_p"
+  top: "fc3_p"
+}
+layer {
+  name: "cls_score_p"
+  type: "InnerProduct"
+  bottom: "fc3_p"
+  top: "cls_score_p"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# classification
+###########################################################################
+layer {
+  name: "cls_score"
+  type: "Eltwise"
+  bottom: "cls_score_h"
+  bottom: "cls_score_o"
+  bottom: "cls_score_p"
+  top: "cls_score"
+  eltwise_param {
+    operation: 1;
+  }
+}
+layer {
+  name: "cls_prob"
+  type: "Sigmoid"
+  bottom: "cls_score"
+  top: "cls_prob"
+}

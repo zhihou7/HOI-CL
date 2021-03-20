@@ -1,0 +1,10 @@
+ROOT_DIR: "./"
+EXP_DIR: "ho_0_s"
+USE_SPATIAL: 1
+SHARE_O: True
+TRAIN:
+  BBOX_REG: False
+  IMS_PER_BATCH: 8
+  BATCH_SIZE: 64
+TEST:
+  BBOX_REG: False

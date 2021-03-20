@@ -1,0 +1,388 @@
+name: "CaffeNet"
+input: "data"
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 227
+  dim: 227
+}
+input: "rois_h"
+input_shape {
+  dim: 1 # to be changed on-the-fly to num ROIs
+  dim: 5 # [batch ind, x1, y1, x2, y2] zero-based indexing
+}
+input: "rois_o"
+input_shape {
+  dim: 1 # to be changed on-the-fly to num ROIs
+  dim: 5 # [batch ind, x1, y1, x2, y2] zero-based indexing
+}
+input: "data_p"
+input_shape {
+  dim: 1
+  dim: 2
+  dim: 64
+  dim: 64
+}
+input: "score_o"
+input_shape {
+  dim: 1
+  dim: 1
+}
+###########################################################################
+# convlolutional layers
+###########################################################################
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    # pad: 5
+    stride: 4
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "norm1"
+  top: "conv2"
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    pad: 2
+    group: 2
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    # pad: 1
+    stride: 2
+  }
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "pool2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2"
+  top: "conv3"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    pad: 1
+    group: 2
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+###########################################################################
+# human stream
+###########################################################################
+layer {
+  name: "roi_pool5_h"
+  type: "ROIPooling"
+  bottom: "conv5"
+  bottom: "rois_h"
+  top: "pool5_h"
+  roi_pooling_param {
+    pooled_w: 6
+    pooled_h: 6
+    spatial_scale: 0.0625 # 1/16
+  }
+}
+layer {
+  name: "fc6_h"
+  type: "InnerProduct"
+  bottom: "pool5_h"
+  top: "fc6_h"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6_h"
+  type: "ReLU"
+  bottom: "fc6_h"
+  top: "fc6_h"
+}
+layer {
+  name: "fc7_h"
+  type: "InnerProduct"
+  bottom: "fc6_h"
+  top: "fc7_h"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7_h"
+  type: "ReLU"
+  bottom: "fc7_h"
+  top: "fc7_h"
+}
+layer {
+  name: "cls_score_vo_h"
+  type: "InnerProduct"
+  bottom: "fc7_h"
+  top: "cls_score_vo_h"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# object stream
+###########################################################################
+layer {
+  name: "roi_pool5_o"
+  type: "ROIPooling"
+  bottom: "conv5"
+  bottom: "rois_o"
+  top: "pool5_o"
+  roi_pooling_param {
+    pooled_w: 6
+    pooled_h: 6
+    spatial_scale: 0.0625 # 1/16
+  }
+}
+layer {
+  name: "fc6_o"
+  type: "InnerProduct"
+  bottom: "pool5_o"
+  top: "fc6_o"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu6_o"
+  type: "ReLU"
+  bottom: "fc6_o"
+  top: "fc6_o"
+}
+layer {
+  name: "fc7_o"
+  type: "InnerProduct"
+  bottom: "fc6_o"
+  top: "fc7_o"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7_o"
+  type: "ReLU"
+  bottom: "fc7_o"
+  top: "fc7_o"
+}
+layer {
+  name: "cls_score_vo_o"
+  type: "InnerProduct"
+  bottom: "fc7_o"
+  top: "cls_score_vo_o"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# pairwise stream
+###########################################################################
+layer {
+  name: "fc1_p"
+  type: "InnerProduct"
+  bottom: "data_p"
+  top: "fc1_p"
+  inner_product_param {
+    num_output: 128
+  }
+}
+layer {
+  name: "relu1_p"
+  type: "ReLU"
+  bottom: "fc1_p"
+  top: "fc1_p"
+}
+layer {
+  name: "fc2_p"
+  type: "InnerProduct"
+  bottom: "fc1_p"
+  top: "fc2_p"
+  inner_product_param {
+    num_output: 512
+  }
+}
+layer {
+  name: "relu2_p"
+  type: "ReLU"
+  bottom: "fc2_p"
+  top: "fc2_p"
+}
+layer {
+  name: "fc3_p"
+  type: "InnerProduct"
+  bottom: "fc2_p"
+  top: "fc3_p"
+  inner_product_param {
+    num_output: 256
+  }
+}
+layer {
+  name: "relu3_p"
+  type: "ReLU"
+  bottom: "fc3_p"
+  top: "fc3_p"
+}
+layer {
+  name: "cls_score_vo_p"
+  type: "InnerProduct"
+  bottom: "fc3_p"
+  top: "cls_score_vo_p"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# vo classification
+###########################################################################
+layer {
+  name: "cls_score_vo"
+  type: "Eltwise"
+  bottom: "cls_score_vo_h"
+  bottom: "cls_score_vo_o"
+  bottom: "cls_score_vo_p"
+  top: "cls_score_vo"
+  eltwise_param {
+    operation: 1;
+  }
+}
+###########################################################################
+# o classification
+###########################################################################
+layer {
+  name: "cls_score_so_o"
+  type: "InnerProduct"
+  bottom: "score_o"
+  top: "cls_score_so_o"
+  inner_product_param {
+    num_output: 80
+  }
+}
+# weights manually set
+layer {
+  name: "cls_score_so"
+  type: "InnerProduct"
+  bottom: "cls_score_so_o"
+  top: "cls_score_so"
+  inner_product_param {
+    num_output: 600
+  }
+}
+###########################################################################
+# classification
+###########################################################################
+layer {
+  name: "cls_score"
+  type: "Eltwise"
+  bottom: "cls_score_vo"
+  bottom: "cls_score_so"
+  top: "cls_score"
+  eltwise_param {
+    operation: 1;
+  }
+}
+layer {
+  name: "cls_prob"
+  type: "Sigmoid"
+  bottom: "cls_score"
+  top: "cls_prob"
+}

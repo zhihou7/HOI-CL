@@ -1,0 +1,15 @@
+name: "CaffeNet"
+layer {
+  name: 'data'
+  type: 'Python'
+  top: 'data'
+  top: 'rois_h'
+  top: 'rois_o'
+  top: 'score_o'
+  top: 'labels'
+  python_param {
+    module: 'hoi_data_layer.layer'
+    layer: 'HOIDataLayer'
+    param_str: "'num_classes': 600"
+  }
+}

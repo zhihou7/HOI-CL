@@ -1,0 +1,8 @@
+ROOT_DIR: "./"
+EXP_DIR: "ho"
+TRAIN:
+  BBOX_REG: False
+  IMS_PER_BATCH: 8
+  BATCH_SIZE: 64
+TEST:
+  BBOX_REG: False

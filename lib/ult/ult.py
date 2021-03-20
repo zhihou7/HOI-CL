@@ -23,6 +23,18 @@ import tensorflow as tf
 import cv2
 from .config import cfg
 
+def get_epoch_iters(model_name):
+    epoch_iters = 43273
+    if model_name.__contains__('zsnrare'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zs_'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zsrare'):
+        epoch_iters = 40000
+    else:
+        epoch_iters = 43273
+    return epoch_iters
+
 def bbox_trans(human_box_ori, object_box_ori, ratio, size = 64):
 
     human_box  = human_box_ori.copy()
@@ -938,14 +950,14 @@ def get_unseen_index(zero_shot_type):
          383, 93, 516, 64]
     return unseen_idx
 
-def generator2(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type, with_pose, zero_shot_type, isalign, epoch=0):
+def generator2(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type, pattern_type, zero_shot_type, isalign, epoch=0):
     """
     :param Trainval_GT:
     :param Trainval_N:
     :param Pos_augment:
     :param Neg_select:
     :param augment_type:
-    :param with_pose:
+    :param pattern_type:
     :return:
     """
     # import skimage
@@ -1042,7 +1054,7 @@ def generator2(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type, w
                     im_shape,
                     Pos_augment=cur_pos_augment,
                     Neg_select=cur_neg_select,
-                    with_pose=with_pose,
+                    with_pose=pattern_type,
                     isalign=isalign)
 
                 # maintain same number of augmentation,
@@ -1087,8 +1099,8 @@ def get_aug_params(Neg_select, Pos_augment, augment_type):
     return Neg_select1, Pos_augment1, inters_per_img
 
 
-def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose= False, zero_shot_type=0, large_neg_for_ho=False, isalign=False, epoch=0):
-    if with_pose:
+def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, pattern_type= 0, zero_shot_type=0, large_neg_for_ho=False, isalign=False, epoch=0):
+    if pattern_type == 1:
         Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb"), encoding='latin1')
         Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb"), encoding='latin1')
     else:
@@ -1098,12 +1110,12 @@ def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose= Fals
 
     g = generator2
 
-    if with_pose:
+    if pattern_type:
         pattern_channel = 3
     else:
         pattern_channel = 2
     dataset = tf.data.Dataset.from_generator(partial(g, Trainval_GT, Trainval_N, Pos_augment, Neg_select,
-                                                     augment_type, with_pose, zero_shot_type, isalign, epoch), output_types=(
+                                                     augment_type, pattern_type, zero_shot_type, isalign, epoch), output_types=(
         tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32),
                                              output_shapes=(
                                              tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),

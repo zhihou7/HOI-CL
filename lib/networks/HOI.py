@@ -19,6 +19,7 @@ from tensorflow.python.ops import nn_ops
 from tensorflow.contrib.layers.python.layers import initializers
 from tensorflow.python.framework import ops
 
+from networks.Fabricator import Fabricator
 from ult.config import cfg
 
 import numpy as np
@@ -42,27 +43,34 @@ class HOI(parent_model):
         super(HOI, self).__init__(model_name)
         import pickle
         self.update_ops = []
+        self.feature_gen = Fabricator(self)
+        self.gt_class_HO_for_G_verbs = None
+        self.gt_class_HO_for_D_verbs = None
+
+    def set_gt_class_HO_for_G_verbs(self, gt_class_HO_for_G_verbs):
+        self.gt_class_HO_for_G_verbs = gt_class_HO_for_G_verbs
+
+    def set_gt_class_HO_for_D_verbs(self, gt_class_HO_for_D_verbs):
+        self.gt_class_HO_for_D_verbs = gt_class_HO_for_D_verbs
+
 
     def res5_ho(self, pool5_HO, is_training, name):
         with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-            if self.model_name.startswith('VCL'):
-                if self.model_name.__contains__('unique_weights'):
-                    print("unique_weights")
-                    st = -3
-                    reuse = tf.AUTO_REUSE
-                    if name != 'res5':
-                        reuse = True
-                else:
-                    st = -2
-                    reuse = tf.AUTO_REUSE
-                fc7_HO, _ = resnet_v1.resnet_v1(pool5_HO,
-                                                self.blocks[st:st+1],
-                                                global_pool=False,
-                                                include_root_block=False,
-                                                reuse=reuse,
-                                                scope=self.scope)
+            if self.model_name.__contains__('unique_weights'):
+                print("unique_weights")
+                st = -3
+                reuse = tf.AUTO_REUSE
+                if name != 'res5':
+                    reuse = True
             else:
-                fc7_HO = None
+                st = -2
+                reuse = tf.AUTO_REUSE
+            fc7_HO, _ = resnet_v1.resnet_v1(pool5_HO,
+                                            self.blocks[st:st+1],
+                                            global_pool=False,
+                                            include_root_block=False,
+                                            reuse=reuse,
+                                            scope=self.scope)
         return fc7_HO
 
     def head_to_tail_ho(self, fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, name):
@@ -71,17 +79,15 @@ class HOI(parent_model):
         else:
             nameprefix = name
         with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-            if self.model_name.startswith('VCL'):
-                print('others concat')
-                concat_hoi = tf.concat([fc7_verbs, fc7_O], 1)  # TODO fix
-                print(concat_hoi)
-                concat_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'Concat_verbs')
-                concat_hoi = slim.dropout(concat_hoi, keep_prob=0.5, is_training=is_training,
-                                            scope=nameprefix+'dropout6_verbs')
-                fc9_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'fc7_verbs')
-                fc9_hoi = slim.dropout(fc9_hoi, keep_prob=0.5, is_training=is_training, scope=nameprefix+'dropout7_verbs')
-            else:
-                fc9_hoi = None
+            print('others concat')
+            concat_hoi = tf.concat([fc7_verbs, fc7_O], 1)  # TODO fix
+            print(concat_hoi)
+            concat_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'Concat_verbs')
+            concat_hoi = slim.dropout(concat_hoi, keep_prob=0.5, is_training=is_training,
+                                        scope=nameprefix+'dropout6_verbs')
+            fc9_hoi = slim.fully_connected(concat_hoi, self.num_fc, reuse=tf.AUTO_REUSE, scope=nameprefix+'fc7_verbs')
+            fc9_hoi = slim.dropout(fc9_hoi, keep_prob=0.5, is_training=is_training, scope=nameprefix+'dropout7_verbs')
+
         return fc9_hoi
 
     def head_to_tail_sp(self, fc7_H, fc7_O, sp, is_training, name):
@@ -176,7 +182,7 @@ class HOI(parent_model):
 
         self.score_summaries.update({'orth_HO': fc7_HO,
                                      'orth_H': fc7_H, 'orth_O': fc7_O})
-        if not self.model_name.startswith('VCL_') or self.model_name.__contains__('_orig_'):
+        if self.model_name.__contains__('_orig_'):
             print('ICAN original code')
             # Phi
             head_phi = slim.conv2d(head, 512, [1, 1], scope='head_phi')
@@ -207,35 +213,63 @@ class HOI(parent_model):
             cls_prob_sp = self.region_classification_sp(fc7_SHsp, is_training, initializer, 'classification')
 
         print('verbs')
-        if self.model_name.__contains__('VCL_'):
-            if not is_training:
-                self.test_visualize['fc7_O_feats'] = fc7_O
-                self.test_visualize['fc7_verbs_feats'] = fc7_verbs
-                self.test_visualize['fc7_H_feats'] = fc7_H_pos
+        if not is_training:
+            self.test_visualize['fc7_O_feats'] = fc7_O
+            self.test_visualize['fc7_verbs_feats'] = fc7_verbs
+            self.test_visualize['fc7_H_feats'] = fc7_H_pos
 
-            # This is a simple try to add pose, and This can improve the performance slightly
-            if self.model_name.__contains__('_posesp'):
-                pose = self.add_pose_pattern('posesp')
-                fc7_verbs = tf.concat([fc7_verbs, pose], axis=-1)
-            elif self.model_name.__contains__('_pose1'):
-                pose = self.add_pose1('pose')
-                fc7_verbs = tf.concat([fc7_verbs, pose], axis=-1)
-            elif self.model_name.__contains__('_pose'):
-                pose = self.add_pose('pose')
-                fc7_verbs = tf.concat([fc7_verbs, pose], axis=-1)
-            if self.model_name.__contains__('_sp1'):
-                pattern = self.add_pattern()
-                fc7_verbs = tf.concat([fc7_verbs, pattern], axis=-1)
-            elif self.model_name.__contains__('_sp'):
-                fc7_verbs = tf.concat([fc7_verbs, sp[:num_stop]], axis=-1)
+        self.intermediate['fc7_O'] = fc7_O[:num_stop]
+        self.intermediate['fc7_verbs'] = fc7_verbs[:num_stop]
 
-            self.intermediate['fc7_O'] = fc7_O[:num_stop]
-            self.intermediate['fc7_verbs'] = fc7_verbs[:num_stop]
+        if is_training and self.model_name.__contains__('gan'):
+            # if model_name contains gan, we will use fabricator.
+            # here, gan do not mean that we use generative adversarial network.
+            # We just was planning to use to GAN. But, it is useless.
+            # Possibly, it is too difficult to tune the network with gan.
+            gt_class = self.gt_class_HO[:num_stop]
+            tmp_fc7_O = fc7_O[:num_stop]
+            tmp_fc7_verbs = fc7_verbs[:num_stop]
+            tmp_O_raw = fc7_O_raw[:num_stop]
+            fc7_O, fc7_verbs = self.feature_gen.fabricate_model(tmp_fc7_O, tmp_O_raw,
+                                                                tmp_fc7_verbs, fc7_verbs_raw[:num_stop], initializer, is_training,
+                                                                gt_class)
 
-            fc7_vo = self.head_to_tail_ho(fc7_O[:num_stop], fc7_verbs[:num_stop], fc7_O_raw, fc7_verbs_raw, is_training, 'fc_HO')
-            cls_prob_hoi = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
+            # if self.model_name.__contains__('laobj'):
+            #     # this aims to evaluate the effect of regularizing fabricated object features, we do not use.
+            #     all_fc7_O = fc7_O
+            #     tmp_class = self.gt_class_HO_for_D_verbs
+            #     self.gt_obj_class = tf.cast(
+            #         tf.matmul(tmp_class, self.obj_to_HO_matrix, transpose_b=True) > 0,
+            #         tf.float32)
+            #     self.objects_loss(all_fc7_O, is_training, initializer, 'objects_loss', label='_o')
+            #     pass
         else:
-            cls_prob_hoi = None
+            fc7_O = fc7_O[:num_stop]
+            fc7_verbs = fc7_verbs[:num_stop]
+
+        fc7_vo = self.head_to_tail_ho(fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, 'fc_HO')
+        cls_prob_verbs = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
+        if self.gt_class_HO_for_D_verbs is None:
+            self.gt_class_HO_for_D_verbs = self.gt_class_HO[:num_stop]
+
+        if self.model_name.__contains__('_l0_') or self.model_name.__contains__('_scale_'):
+            """
+            This is for factorized model.
+            """
+            verb_prob = self.predictions['verb_cls_prob']
+            obj_prob = self.predictions["obj_cls_prob_o"]
+            print(verb_prob, obj_prob)
+            tmp_fc7_O_vectors = tf.cast(
+                tf.matmul(obj_prob, self.obj_to_HO_matrix) > 0,
+                tf.float32)
+            tmp_fc7_verbs_vectors = tf.cast(
+                tf.matmul(verb_prob, self.verb_to_HO_matrix) > 0,
+                tf.float32)
+            if 'cls_prob_verbs' not in self.predictions:
+                self.predictions['cls_prob_verbs'] = 0
+            if self.model_name.__contains__('_l0_'):
+                self.predictions['cls_prob_verbs'] = 0
+            self.predictions['cls_prob_verbs'] += (tmp_fc7_O_vectors + tmp_fc7_verbs_vectors)
 
         self.score_summaries.update(self.predictions)
 
@@ -250,7 +284,7 @@ class HOI(parent_model):
             self.test_visualize['fc7_HO_acts_num'] = tf.reduce_sum(tf.cast(tf.greater(fc7_HO_raw, 0), tf.float32))
         res5_ho_h = self.res5_ho(self.extract_pool5_HO(head, self.H_boxes, is_training, pool5_O, None), is_training,
                                  'h')
-        if self.model_name.__contains__('VCL_humans'):
+        if self.model_name.__contains__('humans'):
             res5_ho_o = self.crop_pool_layer(head, self.O_boxes, 'Crop_HO_h')
         else:
             res5_ho_o = self.res5_ho(self.extract_pool5_HO(head, self.O_boxes, is_training, pool5_O, None), is_training,
@@ -306,8 +340,7 @@ class HOI(parent_model):
         :return:
         """
         num_stop = tf.shape(self.H_boxes)[0]  # for selecting the positive items
-        if self.model_name.__contains__('_new') \
-                or not self.model_name.startswith('VCL_'):
+        if self.model_name.__contains__('_new'):
             print('new Add H_num constrains')
             num_stop = self.H_num
         elif self.model_name.__contains__('_x5new'):  # contain some negative items
@@ -394,7 +427,7 @@ class HOI(parent_model):
                 self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
                 loss = hoi_cross_entropy
-            elif self.model_name.startswith('VCL_'):
+            elif self.model_name.startswith('VCL_') or self.model_name.startswith('FCL_'):
 
                 tmp_label_HO = self.gt_class_HO[:num_stop]
                 cls_score_hoi = self.predictions["cls_score_hoi"][:tf.shape(self.gt_class_HO[:num_stop])[0], :]
@@ -434,6 +467,17 @@ class HOI(parent_model):
 
             else:
                 loss = H_cross_entropy + O_cross_entropy + sp_cross_entropy
+
+
+            if 'fake_G_cls_score_verbs' in self.predictions:
+                fake_cls_score_verbs = self.predictions["fake_G_cls_score_verbs"]
+                if self.model_name.__contains__('_rew_'):
+                    fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight)
+                self.losses['fake_G_verbs_cross_entropy'] = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                    labels=self.gt_class_HO_for_G_verbs, logits=fake_cls_score_verbs))
+                if 'fake_G_total_loss' not in self.losses:
+                    self.losses['fake_G_total_loss'] = 0
+                self.losses['fake_G_total_loss'] += (self.losses['fake_G_verbs_cross_entropy'] * 1)
 
             self.losses['total_loss'] = loss
             self.event_summaries.update(self.losses)

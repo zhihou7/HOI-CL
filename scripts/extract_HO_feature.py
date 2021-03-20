@@ -88,7 +88,7 @@ if __name__ == '__main__':
             Pos_augment=0,
             Neg_select=0,
             augment_type=-1,
-            with_pose=False)
+            pattern_type=False)
         net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     else:
         image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_test_data(
