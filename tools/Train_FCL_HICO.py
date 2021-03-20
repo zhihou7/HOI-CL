@@ -28,13 +28,13 @@ def parse_args():
             default=600000, type=int)
     parser.add_argument('--model', dest='model',
              help='Select model: '
-                  'open long-tailed FCL: FCL_union_l2_zs_s0_vloss2_varl_gan_dax_rands_aug5_x5new_res101,'
-                  'open long-tailed baseline: FCL_base_union_l2_zs_s0_vloss2_aug5_x5new_res101'
-                        'rare-first zero-shot:FCL_union_l2_zsrare_s0_vloss2_varl_gan_dax_rands_aug5_x5new_res101'
-                        'non-rare-first zero-shot:FCL_union_l2_zsnrare_s0_vloss2_varl_gan_dax_rands_aug5_x5new_res101'
-                        'you can also use FCL_union_l2_zs_s0_vloss2_var_gan_dax_rands_aug5_x5new_res101',
-            default='FCL_union_l2_zs_s0_vloss2_varl_gan_dax_rands_aug5_x5new_res101', type=str)
-    # This is our baseline FCL_base_union_l2_zs_s0_vloss2_aug5_xnew_res101
+                  'open long-tailed FCL: FCL_union_l2_zs_s0_vloss2_varl_gan_dax_rands_rew_aug5_x5new_res101,'
+                  'open long-tailed baseline: FCL_base_union_l2_zs_s0_vloss2_rew_aug5_x5new_res101'
+                        'rare-first zero-shot:FCL_union_l2_zsrare_s0_vloss2_varl_gan_dax_rands_rew_aug5_x5new_res101'
+                        'non-rare-first zero-shot:FCL_union_l2_zsnrare_s0_vloss2_varl_gan_dax_rands_rew_aug5_x5new_res101'
+                        'you can also use FCL_union_l2_zs_s0_vloss2_var_gan_dax_rands_rew_aug5_x5new_res101',
+            default='FCL_union_l2_zs_s0_vloss2_varl_gan_dax_rands_rew_aug5_x5new_res101', type=str)
+    # This is our baseline FCL_base_union_l2_zs_s0_vloss2_rew_aug5_xnew_res101
 
     parser.add_argument('--Pos_augment', dest='Pos_augment',
             help='Number of augmented detection for each one. (By jittering the object detections)',
