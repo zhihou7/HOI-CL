@@ -23,18 +23,6 @@ import tensorflow as tf
 import cv2
 from .config import cfg
 
-def get_epoch_iters(model_name):
-    epoch_iters = 43273
-    if model_name.__contains__('zsnrare'):
-        epoch_iters = 20000
-    elif model_name.__contains__('zs_'):
-        epoch_iters = 20000
-    elif model_name.__contains__('zsrare'):
-        epoch_iters = 40000
-    else:
-        epoch_iters = 43273
-    return epoch_iters
-
 def bbox_trans(human_box_ori, object_box_ori, ratio, size = 64):
 
     human_box  = human_box_ori.copy()
@@ -910,11 +898,34 @@ def get_new_Trainval_N(Trainval_N, is_zero_shot, unseen_idx):
 
 def get_zero_shot_type(model_name):
     zero_shot_type = 0
-    if model_name.__contains__('_zs3_'):
+    if model_name.__contains__('_zs_'):
+        zero_shot_type = 7
+    elif model_name.__contains__('zsnrare'):
+        zero_shot_type = 4
+    elif model_name.__contains__('_zsrare_'):
+        zero_shot_type = 3
+    elif model_name.__contains__('_zsuo_'):
+        # for unseen object
+        zero_shot_type = 11
+    elif model_name.__contains__('_zs3_'):
+        # for VCL model
         zero_shot_type = 3
     elif model_name.__contains__('_zs4_'):
         zero_shot_type = 4
     return zero_shot_type
+
+
+def get_epoch_iters(model_name):
+    epoch_iters = 43273
+    if model_name.__contains__('zsnrare'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zs_'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zsrare'):
+        epoch_iters = 40000
+    else:
+        epoch_iters = 43273
+    return epoch_iters
 
 
 def get_augment_type(model_name):
@@ -1099,7 +1110,7 @@ def get_aug_params(Neg_select, Pos_augment, augment_type):
     return Neg_select1, Pos_augment1, inters_per_img
 
 
-def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, pattern_type= 0, zero_shot_type=0, large_neg_for_ho=False, isalign=False, epoch=0):
+def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, pattern_type= 0, zero_shot_type=0, isalign=False, epoch=0):
     if pattern_type == 1:
         Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb"), encoding='latin1')
         Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb"), encoding='latin1')

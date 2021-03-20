@@ -1,3 +1,9 @@
+# --------------------------------------------------------
+# Tensorflow FCL
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Zhi Hou
+# --------------------------------------------------------
+
 import tensorflow as tf
 import os
 from ult.config import cfg
