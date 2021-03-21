@@ -116,6 +116,8 @@ def obtain_test_dataset_fcl(object_thres, human_thres, dataset_name='test2015', 
         else:
             Test_RCNN = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb"))
 
+    assert pattern_type == 2, "we remove the pose pattern, if you want to add new pattern type, just remove this line"
+    pattern_dim = 2
     np.random.seed(cfg.RNG_SEED)
     def generator1():
         np.random.seed(cfg.RNG_SEED)
@@ -146,7 +148,7 @@ def obtain_test_dataset_fcl(object_thres, human_thres, dataset_name='test2015', 
                             obj_box = np.array(
                                 [0, Object[2][0], Object[2][1], Object[2][2], Object[2][3]])
                             blobs['O_boxes'].append(obj_box)
-                            blobs['sp'].append(Get_next_sp(Human_out[2], Object[2], pattern_type))
+                            blobs['sp'].append(Get_next_sp(Human_out[2], Object[2], pattern_dim))
                             assert Object[4] > 0, (Object[4])
                             blobs['O_cls'].append(Object[4])
                             blobs['H_score'].append(Human_out[5])
@@ -201,7 +203,7 @@ def obtain_test_dataset_fcl(object_thres, human_thres, dataset_name='test2015', 
                         obj_box = np.array(
                             [0, Object[2][0], Object[2][1], Object[2][2], Object[2][3]])
                         blobs['O_boxes'].append(obj_box)
-                        blobs['sp'].append(Get_next_sp(Human_out[2], Object[2], pattern_type))
+                        blobs['sp'].append(Get_next_sp(Human_out[2], Object[2], pattern_dim))
                         blobs['O_cls'].append(Object[4])
                         blobs['H_score'].append(Human_out[5])
                         blobs['O_score'].append(Object[5])
