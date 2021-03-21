@@ -116,7 +116,7 @@ def obtain_test_dataset_fcl(object_thres, human_thres, dataset_name='test2015', 
         else:
             Test_RCNN = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb"))
 
-    assert pattern_type == 2, "we remove the pose pattern, if you want to add new pattern type, just remove this line"
+    assert pattern_type == 0, "we remove the pose pattern, if you want to add new pattern type, just remove this line"
     np.random.seed(cfg.RNG_SEED)
     def generator1():
         np.random.seed(cfg.RNG_SEED)
