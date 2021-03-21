@@ -8,8 +8,6 @@ from __future__ import print_function
 import _init_paths
 import os
 
-from networks.FCL_ResNet101_HICO import ResNet101
-
 os.environ["KMP_BLOCKTIME"] = str(0)
 os.environ["KMP_SETTINGS"] = str(1)
 os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
@@ -29,7 +27,7 @@ def parse_args():
             default=600000, type=int)
     parser.add_argument('--model', dest='model',
             help='Select model',
-            default='FCL_resnet101_union_l2_zs_s0_vloss2_varl_gan_dax_rands_aug5_xnew', type=str)
+            default='FCL_union_l2_zs_s0_vloss2_varl_gan_dax_rands_rew_aug5_x5new_res101', type=str)
     parser.add_argument('--object_thres', dest='object_thres',
             help='Object threshold',
             default=0.1, type=float)
@@ -79,8 +77,14 @@ if __name__ == '__main__':
                               allow_soft_placement=True)
     tfconfig.gpu_options.allow_growth = True
     sess = tf.Session(config=tfconfig)
+    if args.model.__contains__('res101'):
+        os.environ['DATASET'] = 'HICO_res101'
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
+    else:
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
 
-    net = ResNet101(model_name=args.model)
     stride = 200
 
     pattern_type = 0
