@@ -600,15 +600,25 @@ def obtain_test_dataset1(object_thres, human_thres, dataset_name='test2015', tes
     return image, blobs, image_id
 
 def obtain_obj_boxes(test_type):
-
-    if test_type == 'debug':
+    if test_type == 'vcl':
+        # from VCL
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/Test_HICO_res101_3x_FPN_hico.pkl', "rb"))
+    elif test_type == 'drg':
+        # from DRG
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/test_HICO_finetuned_v3.pkl', 'rb'))
         pass
-    else:
-        # Test_RCNN = pickle.load(open('/opt/data/private/pkl/Test_HICO_res101_rex2_0059999_FPN_hico.pkl', "rb"))
-        #
-        print('Default ===========')
+    elif test_type == 'gt':
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/gt_annotations.pkl', 'rb'))
+    elif test_type == 'coco50':
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/Test_HICO_res50_coco_FPN_hico.pkl', 'rb'))
+    elif test_type == 'coco101':
+        print('coco101')
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/Test_HICO_res101_coco101_FPN_hico.pkl', 'rb'))
+    elif test_type == 'iCAN':
         Test_RCNN = pickle.load(open(cfg.DATA_DIR + '/' + 'Test_Faster_RCNN_R-50-PFN_2x_HICO_DET.pkl', "rb"),
                                 encoding='latin1')
+    else:
+        Test_RCNN = pickle.load(open(cfg.LOCAL_DATA + '/pkl/Test_HICO_res101_3x_FPN_hico.pkl', "rb"))
     return Test_RCNN
 
 
