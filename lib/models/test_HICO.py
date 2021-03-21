@@ -289,10 +289,10 @@ def test_net_data_fcl(sess, net, output_dir, h_box, o_box, o_cls, h_score, o_sco
         count += 1
 
         print('\rmodel: {} im_detect: {:d}/{:d}  {:d}, {:.3f}s'.format(net.model_name, count, 10566, _image_id, _t['im_detect'].average_time), end='', flush=True)
-        if net.model_name.__contains__('_debugrl_') or 'DEBUG_NET' in os.environ:
-            if count >= 1:
-                print(temp)
-                break
+        # if net.model_name.__contains__('_debugrl_') or 'DEBUG_NET' in os.environ:
+        #     if count >= 1:
+        #         print(temp)
+        #         break
 
     pickle.dump(detection, open(output_dir, "wb"))
     del detection
