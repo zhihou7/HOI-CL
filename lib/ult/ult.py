@@ -378,19 +378,16 @@ def Augmented_HO_spNeg(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
     Object_augmented = Object_augmented[:min(len(Human_augmented),len(Object_augmented))]
 
     num_pos = len(Human_augmented)
-    pose_list = [GT[5]] * num_pos
     if image_id in Trainval_Neg:
 
         if len(Trainval_Neg[image_id]) < Neg_select:
             for Neg in Trainval_Neg[image_id]:
-                pose_list.append(Neg[7])
                 Human_augmented  = np.concatenate((Human_augmented,  np.array([0, Neg[2][0], Neg[2][1], Neg[2][2], Neg[2][3]]).reshape(1,5)), axis=0)
                 Object_augmented = np.concatenate((Object_augmented, np.array([0, Neg[3][0], Neg[3][1], Neg[3][2], Neg[3][3]]).reshape(1,5)), axis=0)
         else:
             List = random.sample(range(len(Trainval_Neg[image_id])), len(Trainval_Neg[image_id]))
             for i in range(Neg_select):
                 Neg = Trainval_Neg[image_id][List[i]]
-                pose_list.append(Neg[7])
                 Human_augmented  = np.concatenate((Human_augmented,  np.array([0, Neg[2][0], Neg[2][1], Neg[2][2], Neg[2][3]]).reshape(1,5)), axis=0)
                 Object_augmented = np.concatenate((Object_augmented, np.array([0, Neg[3][0], Neg[3][1], Neg[3][2], Neg[3][3]]).reshape(1,5)), axis=0)
 
@@ -403,7 +400,7 @@ def Augmented_HO_spNeg(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
     mask_sp   = mask_sp_
     mask_HO   = mask_HO_
     mask_H    = mask_H_
-    Pattern   = np.empty((0, 64, 64, 3), dtype=np.float32)
+    Pattern   = np.empty((0, 64, 64, 2), dtype=np.float32)
 
     for i in range(num_pos - 1):
         action_sp = np.concatenate((action_sp, action_sp_), axis=0)
@@ -420,10 +417,10 @@ def Augmented_HO_spNeg(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
         action_sp = np.concatenate((action_sp, np.zeros(29).reshape(1,29)), axis=0)
 
     for i in range(num_pos_neg):
-        Pattern_ = Get_next_sp_with_pose(Human_augmented[i][1:], Object_augmented[i][1:], pose_list[i]).reshape(1, 64, 64, 3)
+        Pattern_ = Get_next_sp(Human_augmented[i][1:], Object_augmented[i][1:]).reshape(1, 64, 64, 2)
         Pattern  = np.concatenate((Pattern, Pattern_), axis=0)
 
-    Pattern           = Pattern.reshape( num_pos_neg, 64, 64, 3)
+    Pattern           = Pattern.reshape( num_pos_neg, 64, 64, 2)
     Human_augmented_sp= Human_augmented.reshape( num_pos_neg, 5) 
     Object_augmented  = Object_augmented[:num_pos].reshape(num_pos, 5)
     action_sp         = action_sp.reshape(num_pos_neg, 29)
@@ -610,8 +607,8 @@ def Augmented_HO_Neg_HICO2(GT, Trainval_Neg, shape, Pos_augment, Neg_select, pos
     return Pattern, Human_augmented, Object_augmented, action_HO, num_pos
 
 def coco_generator1(Pos_augment = 15, Neg_select=30, augment_type = 0, with_pose=False, is_zero_shot=0):
-    Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_VCOCO_with_pose.pkl', "rb"), encoding='latin1')
-    Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_VCOCO_with_pose.pkl', "rb"), encoding='latin1')
+    Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_VCOCO.pkl', "rb"), encoding='latin1')
+    Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_VCOCO.pkl', "rb"), encoding='latin1')
     Neg_select1, Pos_augment1, inters_per_img = get_aug_params(Neg_select, Pos_augment, augment_type)
     index_list = list(range(0, len(Trainval_GT)))
     print("generator1", inters_per_img, Pos_augment1, 'Neg_select:', Neg_select1, augment_type)
@@ -662,7 +659,7 @@ def coco_generator1(Pos_augment = 15, Neg_select=30, augment_type = 0, with_pose
             blobs['Mask_sp'] = np.empty([0, 29], dtype=np.float32)
             blobs['Mask_HO'] = np.empty([0, 29], dtype=np.float32)
             blobs['Mask_H'] = np.empty([0, 29], dtype=np.float32)
-            blobs['sp'] = np.empty([0, 64, 64, 3], dtype=np.float32)
+            blobs['sp'] = np.empty([0, 64, 64, 2], dtype=np.float32)
 
             for i in gt_ids:
                 GT = Trainval_GT[i]
@@ -1111,12 +1108,8 @@ def get_aug_params(Neg_select, Pos_augment, augment_type):
 
 
 def obtain_data(Pos_augment=15, Neg_select=60, augment_type = 0, pattern_type= 0, zero_shot_type=0, isalign=False, epoch=0):
-    if pattern_type == 1:
-        Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb"), encoding='latin1')
-        Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb"), encoding='latin1')
-    else:
-        Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb"), encoding='latin1')
-        Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb"), encoding='latin1')
+    Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb"), encoding='latin1')
+    Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb"), encoding='latin1')
 
 
     g = generator2
@@ -1175,16 +1168,11 @@ def obtain_test_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=
 
 
 def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=False, zero_shot_type=0, isalign=False, epoch=0):
-    if with_pose:
-        with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb") as f:
-            Trainval_GT = pickle.load(f, encoding='latin1')
-        with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb") as f:
-            Trainval_N = pickle.load(f, encoding='latin1')
-    else:
-        with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
-            Trainval_GT = pickle.load(f, encoding='latin1')
-        with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb") as f:
-            Trainval_N = pickle.load(f, encoding='latin1')
+    # we do not use pose, thus we remove it.
+    with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
+        Trainval_GT = pickle.load(f, encoding='latin1')
+    with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb") as f:
+        Trainval_N = pickle.load(f, encoding='latin1')
 
 
     g_func = generator2
