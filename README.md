@@ -1,12 +1,14 @@
-### Detecting Human-Object Interaction via Fabricated Compositional Learning (CVPR2021)
+### Compositional Learning for Human-Object Interaction Detection
 
+This repository includes the code of Visual Compositional Learning for Human-Object Interaction Detection (ECCV2020), 
+Detecting Human-Object Interaction via Fabricated Compositional Learning (CVPR2021)
 
 This repository is built from the code of previous approaches. Thanks for their excellent work.
 
 
-In this repository, we have removed massive comments. Current code only contains zero-shot HOI detection. Full code is being constructed.
+Code is being constructed.
 
-Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code for V-COCO 
+Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V-COCO
 
 Thanks for all reviewer's comments. Our new work, an extension of VCL, will be coming soon.
 
@@ -36,14 +38,14 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Matlab
     ./misc/download_training_data.sh
     ```
 
-3. Train Zero-Shot HOI model on HICO-DET
+3. Train Zero-Shot HOI model with FCL on HICO-DET
     ```Shell
     python tools/Train_FCL_HICO.py
     ```
     
 ### Test
 
-we provide this scripts to test code and eval the results.
+we provide this scripts to test code and eval the FCL results.
 
     ```Shell
     python scripts/eval.py
@@ -56,8 +58,12 @@ Here, we provide the GT boxes.
 
 GT boxes annotation: https://drive.google.com/file/d/15UXbsoverISJ9wNO-84uI4kQEbRjyRa8/view?usp=sharing
 
-This work was finished about 10 months ago. In the first submission, we compare the difference among COCO detector, Fine-tuned Detector and GT boxes. We further find DRG object detector largely increases the baseline. 
+FCL was finished about 10 months ago. In the first submission, we compare the difference among COCO detector, Fine-tuned Detector and GT boxes. We further find DRG object detector largely increases the baseline. 
 All these comparisons illustrate the significant effect of object detector on HOI. That's really necessary to provide the performance of object detector.
+
+#### Pre-trained model
+
+FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
 
 
 ### Citations

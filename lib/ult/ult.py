@@ -1167,6 +1167,210 @@ def obtain_test_data(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=
     return image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp
 
 
+def obtain_coco_data_hoicoco(Pos_augment = 15, Neg_select=30, augment_type = 0, pattern_type=False, is_zero_shot=0, type=0):
+    if type == 0:
+        verb_num = 24
+        g_func = coco_generator2
+    elif type == 1:
+        verb_num = 21
+        g_func = coco_generator3
+
+    def generator3(Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot):
+        buffer = [[] for i in range(4)]
+        import time
+        st = time.time()
+        count_time = 0
+        avg_time = 0
+        for im_orig, image_id, num_pos, blobs in g_func(Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot):
+            buffer[0].append(im_orig)
+            buffer[1].append(image_id)
+            buffer[2].append(num_pos)
+            buffer[3].append(blobs)
+
+
+            # print(im_orig.shape, image_id, num_pos,
+            if len(buffer[0]) > 1:
+
+                if buffer[2][0] < buffer[2][1]:
+                    # make sure the first batch is less.
+                    for i in range(len(buffer)):
+                        tmp = buffer[i][0]
+                        buffer[i][0] = buffer[i][1]
+                        buffer[i][1] = tmp
+
+                yield buffer[0][0], buffer[1][0], buffer[2][0], buffer[3][0],buffer[0][1], buffer[1][1], buffer[2][1],buffer[3][1],
+
+                buffer = [[] for i in range(4)]
+                # avg_time = ((time.time() - st) + avg_time * count_time) / (count_time + 1)
+                # count_time += 1
+                # print('generate batch:', time.time() - st, "average;",  avg_time)
+                # st = time.time()
+    # generator()
+    dataset = tf.data.Dataset.from_generator(partial(generator3, Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot),
+                                             output_types=(tf.float32, tf.int32, tf.int32, {
+        'H_boxes': tf.float32,
+        'Hsp_boxes': tf.float32,
+        'O_boxes': tf.float32,
+        'gt_class_sp': tf.float32,
+        'gt_class_HO': tf.float32,
+        'gt_class_H': tf.float32,
+        'gt_class_C': tf.float32,
+        'Mask_sp': tf.float32,
+        'Mask_HO': tf.float32,
+        'Mask_H': tf.float32,
+        'sp': tf.float32,
+    },tf.float32, tf.int32, tf.int32, {
+        'H_boxes': tf.float32,
+        'Hsp_boxes': tf.float32,
+        'O_boxes': tf.float32,
+        'gt_class_sp': tf.float32,
+        'gt_class_HO': tf.float32,
+        'gt_class_H': tf.float32,
+        'gt_class_C': tf.float32,
+        'Mask_sp': tf.float32,
+        'Mask_HO': tf.float32,
+        'Mask_H': tf.float32,
+        'sp': tf.float32,
+    }), output_shapes=(tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
+                       {
+                           'H_boxes': tf.TensorShape([None, 5]),
+                           'Hsp_boxes': tf.TensorShape([None, 5]),
+                           'O_boxes': tf.TensorShape([None, 5]),
+                           'gt_class_sp': tf.TensorShape([None, verb_num]),
+                           'gt_class_HO': tf.TensorShape([None, verb_num]),
+                           'gt_class_H': tf.TensorShape([None, verb_num]),
+                           'gt_class_C': tf.TensorShape([None, 222]),
+                           'Mask_sp': tf.TensorShape([None, verb_num]),
+                           'Mask_HO': tf.TensorShape([None, verb_num]),
+                           'Mask_H': tf.TensorShape([None, verb_num]),
+                           'sp': tf.TensorShape([None, 64, 64, 2]),
+                       },tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
+                       {
+                           'H_boxes': tf.TensorShape([None, 5]),
+                           'Hsp_boxes': tf.TensorShape([None, 5]),
+                           'O_boxes': tf.TensorShape([None, 5]),
+                           'gt_class_sp': tf.TensorShape([None, verb_num]),
+                           'gt_class_HO': tf.TensorShape([None, verb_num]),
+                           'gt_class_H': tf.TensorShape([None, verb_num]),
+                           'gt_class_C': tf.TensorShape([None, 222]),
+                           'Mask_sp': tf.TensorShape([None, verb_num]),
+                           'Mask_HO': tf.TensorShape([None, verb_num]),
+                           'Mask_H': tf.TensorShape([None, verb_num]),
+                           'sp': tf.TensorShape([None, 64, 64, 2]),
+                       }))
+
+    dataset = dataset.prefetch(100)
+    # dataset = dataset.shuffle(1000)
+    # dataset = dataset.repeat(100)
+    # dataset = dataset.repeat(1000).shuffle(1000)
+    # dataset._dataset.batch(3)
+    iterator = dataset.make_one_shot_iterator()
+    image, image_id, num_pos, blobs, image1, image_id1, num_pos1, blobs1 = iterator.get_next()
+    return [image, image1], [image_id, image_id1], [num_pos, num_pos1], [blobs, blobs1]
+
+
+
+def obtain_coco_data_atl(Pos_augment = 15, Neg_select=30, augment_type = 0, pattern_type=False, is_zero_shot=0, type=0):
+    if type == 1 or type == 2:
+        verb_num = 21
+        g_func = coco_generator3
+    else:
+        # default
+        verb_num = 21
+        g_func = coco_generator3
+
+    def generator3(Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot):
+        buffer = [[] for i in range(4)]
+        import time
+        st = time.time()
+        count_time = 0
+        avg_time = 0
+        semi_func = coco_generator_atl(Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot, type)
+        # semi is atl. a weak-supervised manner.
+        for im_orig, image_id, num_pos, blobs in g_func(Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot):
+            buffer[0].append(im_orig)
+            buffer[1].append(image_id)
+            buffer[2].append(num_pos)
+            buffer[3].append(blobs)
+
+            im_orig, image_id, num_pos, blobs = next(semi_func)
+            buffer[0].append(im_orig)
+            buffer[1].append(image_id)
+            buffer[2].append(num_pos)
+            buffer[3].append(blobs)
+
+            # print(im_orig.shape, image_id, num_pos,
+            yield buffer[0][0], buffer[1][0], buffer[2][0], buffer[3][0],buffer[0][1], buffer[1][1], buffer[2][1],buffer[3][1],
+            buffer = [[] for i in range(4)]
+                # avg_time = ((time.time() - st) + avg_time * count_time) / (count_time + 1)
+                # count_time += 1
+                # print('generate batch:', time.time() - st, "average;",  avg_time)
+                # st = time.time()
+    # generator()
+    dataset = tf.data.Dataset.from_generator(partial(generator3, Pos_augment, Neg_select, augment_type, pattern_type, is_zero_shot),
+                                             output_types=(tf.float32, tf.int32, tf.int32, {
+        'H_boxes': tf.float32,
+        'Hsp_boxes': tf.float32,
+        'O_boxes': tf.float32,
+        'gt_class_sp': tf.float32,
+        'gt_class_HO': tf.float32,
+        'gt_class_H': tf.float32,
+        'gt_class_C': tf.float32,
+        'Mask_sp': tf.float32,
+        'Mask_HO': tf.float32,
+        'Mask_H': tf.float32,
+        'sp': tf.float32,
+    },tf.float32, tf.int32, tf.int32, {
+        'H_boxes': tf.float32,
+        'Hsp_boxes': tf.float32,
+        'O_boxes': tf.float32,
+        'gt_class_sp': tf.float32,
+        'gt_class_HO': tf.float32,
+        'gt_class_H': tf.float32,
+        'gt_class_C': tf.float32,
+        'Mask_sp': tf.float32,
+        'Mask_HO': tf.float32,
+        'Mask_H': tf.float32,
+        'sp': tf.float32,
+    }), output_shapes=(tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
+                       {
+                           'H_boxes': tf.TensorShape([None, 5]),
+                           'Hsp_boxes': tf.TensorShape([None, 5]),
+                           'O_boxes': tf.TensorShape([None, 5]),
+                           'gt_class_sp': tf.TensorShape([None, verb_num]),
+                           'gt_class_HO': tf.TensorShape([None, verb_num]),
+                           'gt_class_H': tf.TensorShape([None, verb_num]),
+                           'gt_class_C': tf.TensorShape([None, 222]),
+                           'Mask_sp': tf.TensorShape([None, verb_num]),
+                           'Mask_HO': tf.TensorShape([None, verb_num]),
+                           'Mask_H': tf.TensorShape([None, verb_num]),
+                           'sp': tf.TensorShape([None, 64, 64, 2]),
+                       },tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
+                       {
+                           'H_boxes': tf.TensorShape([None, 5]),
+                           'Hsp_boxes': tf.TensorShape([None, 5]),
+                           'O_boxes': tf.TensorShape([None, 5]),
+                           'gt_class_sp': tf.TensorShape([None, verb_num]),
+                           'gt_class_HO': tf.TensorShape([None, verb_num]),
+                           'gt_class_H': tf.TensorShape([None, verb_num]),
+                           'gt_class_C': tf.TensorShape([None, 222]),
+                           'Mask_sp': tf.TensorShape([None, verb_num]),
+                           'Mask_HO': tf.TensorShape([None, verb_num]),
+                           'Mask_H': tf.TensorShape([None, verb_num]),
+                           'sp': tf.TensorShape([None, 64, 64, 2]),
+                       }))
+
+    dataset = dataset.prefetch(100)
+    # dataset = dataset.shuffle(1000)
+    # dataset = dataset.repeat(100)
+    # dataset = dataset.repeat(1000).shuffle(1000)
+    # dataset._dataset.batch(3)
+    iterator = dataset.make_one_shot_iterator()
+    image, image_id, num_pos, blobs, image1, image_id1, num_pos1, blobs1 = iterator.get_next()
+    return [image, image1], [image_id, image_id1], [num_pos, num_pos1], [blobs, blobs1]
+
+
+
 def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=False, zero_shot_type=0, isalign=False, epoch=0):
     # we do not use pose, thus we remove it.
     with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:

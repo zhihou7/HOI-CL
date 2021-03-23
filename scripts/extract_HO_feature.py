@@ -41,17 +41,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def save_img(img, target_size, name):
-    # import skimage
-    # assert skimage.__version__ == '0.14.2', "The version of skimage might affect the speed largely. I use 0.14.2. " \
-    #                                         "You can just remove this code"
-    import skimage.io as sio
-    import skimage.transform as transform
-    img = np.squeeze(img, axis=-1)
-    img = transform.resize(img, target_size, order=0)
-    print(img.shape)
-    sio.imsave(cfg.IMAGE_TEMP+'/'+name+'.jpg', img)
-
 if __name__ == '__main__':
 
     args = parse_args()
