@@ -18,6 +18,7 @@ import os
 import tensorflow as tf
 from tensorflow.python import pywrap_tensorflow
 
+from ult.ult import get_epoch_iters
 
 
 class SolverWrapper(object):
@@ -111,12 +112,29 @@ class SolverWrapper(object):
         return lr, train_op
 
     def get_optimzer_lr(self, global_step, step_factor):
-        stepsize = int(cfg.TRAIN.STEPSIZE * step_factor)
         gamma = cfg.TRAIN.GAMMA
+        epoch_iters = get_epoch_iters(self.net.model_name)
+        stepsize = epoch_iters * 2
+
         lr = tf.train.exponential_decay(cfg.TRAIN.LEARNING_RATE * 10, global_step, stepsize,
                                         gamma, staircase=True)
         optimizer = tf.train.MomentumOptimizer(lr, cfg.TRAIN.MOMENTUM)
-
+        if self.net.model_name.__contains__('cosine'):
+            print('cosine =========')
+            first_decay_steps = epoch_iters*10 # 2 epoches
+            from tensorflow.python.training.learning_rate_decay import cosine_decay_restarts
+            lr = cosine_decay_restarts(cfg.TRAIN.LEARNING_RATE * 10, global_step, first_decay_steps, t_mul=2.0,
+                                       m_mul=0.9, alpha=cfg.TRAIN.LEARNING_RATE*0.1)
+            optimizer = tf.train.MomentumOptimizer(lr, cfg.TRAIN.MOMENTUM)
+        elif self.net.model_name.__contains__('zsrare'): #rare first
+            lr = tf.train.exponential_decay(cfg.TRAIN.LEARNING_RATE * 10, global_step,
+                                            int(cfg.TRAIN.STEPSIZE * 2),
+                                            gamma, staircase=True)
+            optimizer = tf.train.MomentumOptimizer(lr, cfg.TRAIN.MOMENTUM)
+        elif self.net.model_name.__contains__('zsnrare'): # non rare first
+            lr = tf.train.exponential_decay(cfg.TRAIN.LEARNING_RATE * 10, global_step, int(cfg.TRAIN.STEPSIZE * step_factor),
+                                            gamma, staircase=True)
+            optimizer = tf.train.MomentumOptimizer(lr, cfg.TRAIN.MOMENTUM)
         return lr, optimizer
 
     def get_init_step(self):
@@ -137,6 +155,25 @@ class SolverWrapper(object):
     def from_snapshot(self, sess):
         # for v in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES) + tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES):
         #     print(v.name)
+        if self.Restore_flag == -7:
+            restore_dirs = '/'  # TODO set your pretrained model
+            print('restore_from', restore_dirs)
+            ckpt = tf.train.get_checkpoint_state(restore_dirs)
+            sess.run(tf.global_variables_initializer())
+            variables = [v for v in tf.global_variables() if not v.name.__contains__('Momentum')]
+
+            for v in variables:
+                print('snapshot:', v)
+            saver = tf.train.Saver(variables)
+            ckpt.model_checkpoint_path = self.switch_checkpoint_path(ckpt.model_checkpoint_path)
+            saver.restore(sess, ckpt.model_checkpoint_path)
+            print('Restoring model snapshots from {:s}'.format(ckpt.model_checkpoint_path))
+        elif self.Restore_flag == -1:
+            ckpt = tf.train.get_checkpoint_state(self.output_dir)
+            saver = tf.train.Saver()
+            saver.restore(sess, self.switch_checkpoint_path(ckpt.model_checkpoint_path))
+            print('Restoring model snapshots from {:s}'.format(ckpt.model_checkpoint_path))
+
 
         if self.Restore_flag == 0:
 

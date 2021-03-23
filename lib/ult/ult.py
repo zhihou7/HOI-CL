@@ -1370,6 +1370,17 @@ def obtain_coco_data_atl(Pos_augment = 15, Neg_select=30, augment_type = 0, patt
     return [image, image1], [image_id, image_id1], [num_pos, num_pos1], [blobs, blobs1]
 
 
+def get_epoch_iters(model_name):
+    epoch_iters = 43273
+    if model_name.__contains__('zsnrare'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zs_'):
+        epoch_iters = 20000
+    elif model_name.__contains__('zsrare'):
+        epoch_iters = 40000
+    else:
+        epoch_iters = 43273
+    return epoch_iters
 
 def obtain_data1(Pos_augment=15, Neg_select=60, augment_type = 0, with_pose=False, zero_shot_type=0, isalign=False, epoch=0):
     # we do not use pose, thus we remove it.
