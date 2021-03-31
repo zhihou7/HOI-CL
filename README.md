@@ -172,7 +172,7 @@ FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2S
 ATL model: 
 
 ### Citations
-If you find this submission is useful for you, please consider citing:
+If you find this series of work are useful for you, please consider citing:
 
 ```
 @inproceedings{hou2021fcl,
