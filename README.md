@@ -9,7 +9,8 @@ This repository is built from the code of previous approaches. Thanks for their 
 Code is being constructed.
 
 Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V-COCO
-Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
+
+Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method (Pytorch).
 
 Thanks for all reviewer's comments. Our new work, an extension of VCL, will be coming soon.
 
