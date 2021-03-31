@@ -117,6 +117,39 @@ we provide this scripts to test code and eval the FCL results.
 
 ## ATL
 
+### 1. Train ATL on HICO-DET
+
+### 2. Train ATL on HOI-COCO
+
+### 3. Affordance Recognition
+
+1. extract affordance feature
+
+```Shell
+python scripts/affordance/extract_affordance_feature.py
+
+```
+
+2. convert affordance feature to feature bank (select 100 instances for each verb)
+```Shell
+python scripts/affordance/convert_feats_to_affor_bank_hico.py
+```
+
+3. extract object feature
+```Shell
+python scripts/affordance/extract_obj_feature.py
+```
+
+4. obtain hoi prediction
+```Shell
+python scripts/affordance/extract_hoi_preds.py
+```
+
+5. statistic of affordance prediction results.
+
+```Sheel
+python scripts/affordance/stat_hico_affordance.py
+```
 
 ## Data & Model
 #### Data
