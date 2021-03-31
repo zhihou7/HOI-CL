@@ -121,6 +121,10 @@ we provide this scripts to test code and eval the FCL results.
 
 ### 2. Train ATL on HOI-COCO
 
+```Shell
+python tools/Train_ATL_HOI_COCO_21.py
+```
+
 ### 3. Affordance Recognition
 
 1. extract affordance feature
