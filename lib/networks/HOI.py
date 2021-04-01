@@ -23,7 +23,6 @@ from networks.Fabricator import Fabricator
 from ult.config import cfg
 
 import numpy as np
-import ipdb
 import math
 
 import os
@@ -41,17 +40,29 @@ else:
 class HOI(parent_model):
     def __init__(self, model_name='VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101'):
         super(HOI, self).__init__(model_name)
+        self.pos1_idx = None
         import pickle
         self.update_ops = []
         self.feature_gen = Fabricator(self)
         self.gt_class_HO_for_G_verbs = None
         self.gt_class_HO_for_D_verbs = None
+        self.losses['fake_D_total_loss'] = 0
+        self.losses['fake_G_total_loss'] = 0
+        self.losses['fake_total_loss'] = 0
 
     def set_gt_class_HO_for_G_verbs(self, gt_class_HO_for_G_verbs):
         self.gt_class_HO_for_G_verbs = gt_class_HO_for_G_verbs
 
     def set_gt_class_HO_for_D_verbs(self, gt_class_HO_for_D_verbs):
         self.gt_class_HO_for_D_verbs = gt_class_HO_for_D_verbs
+
+    def set_add_ph(self, obj_mask, pos1_idx=None, pose_box=None, human_ele_adj=None, obj_ele_adj=None, pose_list=None):
+        self.O_mask = obj_mask
+        self.pos1_idx = pos1_idx
+        self.pose_box = pose_box
+        self.human_ele_adj = human_ele_adj
+        self.obj_ele_adj = obj_ele_adj
+        self.pose_list = pose_list
 
 
     def res5_ho(self, pool5_HO, is_training, name):
@@ -151,6 +162,47 @@ class HOI(parent_model):
             cboxes = tf.concat(values=[cboxes1, cboxes2], axis=1)
             return cboxes
 
+    def verbs_loss(self, fc7_verbs, is_training, initializer, label='', ):
+        with tf.variable_scope('verbs_loss', reuse=tf.AUTO_REUSE):
+            cls_verbs = fc7_verbs
+            # cls_verbs = slim.fully_connected(cls_verbs, self.num_fc, scope='fc8_cls_verbs')
+            # cls_verbs = slim.dropout(cls_verbs, keep_prob=0.5, is_training=is_training, scope='dropout8_cls_verbs')
+            # fc9_verbs = slim.fully_connected(cls_verbs, self.num_fc, scope='fc9_cls_verbs')
+            # verbs_cls = slim.dropout(fc9_verbs, keep_prob=0.5, is_training=is_training, scope='dropout9_cls_verbs')
+            verbs_cls_score = slim.fully_connected(cls_verbs, self.verb_num_classes,
+                                                   weights_initializer=initializer,
+                                                   trainable=is_training,
+                                                   reuse=tf.AUTO_REUSE,
+                                                   activation_fn=None, scope='verbs_cls_score')
+            verb_cls_prob = tf.nn.sigmoid(verbs_cls_score, name='verb_cls_prob')
+            tf.reshape(verb_cls_prob, [-1, self.verb_num_classes])
+
+            self.predictions["verb_cls_score" + label] = verbs_cls_score
+            self.predictions["verb_cls_prob" + label] = verb_cls_prob
+
+
+    def objects_loss(self, input_feature, is_training, initializer, name='objects_loss', label='', is_stop_grads=False):
+        with tf.variable_scope(name):
+            print('objects_loss:', self.model_name)
+            if is_stop_grads:
+                input_feature = tf.stop_gradient(input_feature)
+            # cls_verbs = slim.fully_connected(cls_verbs, self.num_fc, scope='fc8_cls_verbs')
+            # cls_verbs = slim.dropout(cls_verbs, keep_prob=0.5, is_training=is_training, scope='dropout8_cls_verbs')
+            # fc9_verbs = slim.fully_connected(cls_verbs, self.num_fc, scope='fc9_cls_verbs')
+            # verbs_cls = slim.dropout(fc9_verbs, keep_prob=0.5, is_training=is_training, scope='dropout9_cls_verbs')
+
+            obj_cls_score = slim.fully_connected(input_feature, self.obj_num_classes,
+                                                 weights_initializer=initializer,
+                                                 trainable=is_training,
+                                                 reuse=tf.AUTO_REUSE,
+                                                 activation_fn=None, scope='obj_cls_score')
+            obj_cls_prob = tf.nn.sigmoid(obj_cls_score, name='obj_cls_prob')
+            tf.reshape(obj_cls_prob, [-1, self.obj_num_classes])
+
+            self.predictions["obj_cls_score" + label] = obj_cls_score
+            self.predictions["obj_cls_prob" + label] = obj_cls_prob
+
+
     def build_network(self, is_training):
         initializer = tf.random_normal_initializer(mean=0.0, stddev=0.01)
         num_stop = tf.cast(self.get_num_stop(), tf.int32)
@@ -211,7 +263,17 @@ class HOI(parent_model):
         else:
             fc7_SHsp = self.head_to_tail_sp(fc7_H, fc7_O, sp, is_training, 'fc_HO')
             cls_prob_sp = self.region_classification_sp(fc7_SHsp, is_training, initializer, 'classification')
-
+        self.additional_loss(fc7_O, fc7_H_pos, fc7_verbs, fc7_verbs_raw, initializer, is_training)
+        if self.model_name.__contains__('_L_') or self.model_name.__contains__('_L2_'):
+            tmp = tf.argmax(self.gt_obj_class, axis=-1)
+            tmp = tmp[:tf.shape(fc7_O)[0]]
+            obj_feats = tf.gather(self.word2vec_emb, tmp)
+            fc7_O = tf.concat([fc7_O, obj_feats], axis=-1)
+            if self.model_name.__contains__('_L2_'):
+                person_feats = tf.tile(self.word2vec_emb[49:50], [tf.shape(fc7_verbs)[0], 1])
+                fc7_verbs = tf.concat([fc7_verbs, person_feats], axis=-1)
+            # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(tmp), tmp], message='fc7_O', )
+            pass
         print('verbs')
         if not is_training:
             self.test_visualize['fc7_O_feats'] = fc7_O
@@ -230,6 +292,22 @@ class HOI(parent_model):
             tmp_fc7_O = fc7_O[:num_stop]
             tmp_fc7_verbs = fc7_verbs[:num_stop]
             tmp_O_raw = fc7_O_raw[:num_stop]
+            if self.model_name.__contains__('batch') and self.model_name.__contains__('atl'):
+                tmp_O_raw = fc7_O[:num_stop]
+                tmp_gt_class = gt_class
+                # remove object list
+                semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(tmp_fc7_O)[0], 1:], axis=-1)
+                semi_filter = tf.cast(semi_filter, tf.bool)
+
+                gt_class = tf.boolean_mask(gt_class, semi_filter, axis=0)
+                tmp_fc7_O = tf.boolean_mask(tmp_fc7_O, semi_filter, axis=0)
+                tmp_fc7_verbs = tf.boolean_mask(tmp_fc7_verbs, semi_filter, axis=0)
+            if self.model_name.__contains__('batch') and self.model_name.__contains__('_h1_'):
+                # half gan, TODO remove
+                gt_class = gt_class[:self.pos1_idx]
+                tmp_fc7_O = fc7_O[:self.pos1_idx]
+                tmp_fc7_verbs = fc7_verbs[:self.pos1_idx]
+                pass
             fc7_O, fc7_verbs = self.feature_gen.fabricate_model(tmp_fc7_O, tmp_O_raw,
                                                                 tmp_fc7_verbs, fc7_verbs_raw[:num_stop], initializer, is_training,
                                                                 gt_class)
@@ -244,6 +322,23 @@ class HOI(parent_model):
             #     self.objects_loss(all_fc7_O, is_training, initializer, 'objects_loss', label='_o')
             #     pass
         else:
+            if 'FEATS' in os.environ and self.model_name.__contains__(
+                    'gan'):
+                gt_class = self.gt_class_HO if not self.model_name.__contains__(
+                    'VCOCO') else self.gt_compose[:num_stop]
+                old_fc7_O = fc7_O
+                fc7_O, fc7_verbs = self.feature_gen.fabricate_model(fc7_O, None,
+                                                              fc7_verbs, fc7_verbs, initializer,
+                                                              True,
+                                                              gt_class)
+                with tf.device("/cpu:0"): fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), num_stop, tf.shape(self.H_boxes), tf.shape(old_fc7_O), ],
+                                 'after gan:', first_n=100, summarize=10000)
+
+                if self.model_name.__contains__('varv'):
+                    self.test_visualize['fc7_fake_O_feats'] = fc7_verbs[tf.shape(old_fc7_O)[0]:]
+                else:
+                    self.test_visualize['fc7_fake_O_feats'] = fc7_O[tf.shape(old_fc7_O)[0]:]
+            pass
             fc7_O = fc7_O[:num_stop]
             fc7_verbs = fc7_verbs[:num_stop]
 
@@ -251,6 +346,8 @@ class HOI(parent_model):
         cls_prob_verbs = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
         if self.gt_class_HO_for_D_verbs is None:
             self.gt_class_HO_for_D_verbs = self.gt_class_HO[:num_stop]
+            if self.model_name.__contains__('VCOCO') and self.model_name.__contains__('CL'):
+                self.gt_class_HO_for_D_verbs = self.gt_compose[:num_stop]
 
         if self.model_name.__contains__('_l0_') or self.model_name.__contains__('_scale_'):
             """
@@ -296,32 +393,32 @@ class HOI(parent_model):
             self.test_visualize['res5_ho_H_acts_num'] = tf.reduce_sum(tf.cast(tf.greater(res5_ho_h, 0), tf.float32))
             self.test_visualize['res5_ho_O_acts_num'] = tf.reduce_sum(tf.cast(tf.greater(res5_ho_o, 0), tf.float32))
 
-    def add_pose(self, name):
-        with tf.variable_scope(name) as scope:
-            conv1_pose_map = slim.conv2d(self.spatial[:, :, :, 2:][:self.get_num_stop()], 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_pose_map')
-            pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_pose_map')
-            conv2_pose_map = slim.conv2d(pool1_pose_map, 16, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_pose_map')
-            pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_pose_map')
-            pool2_flat_pose_map = slim.flatten(pool2_pose_map)
-        return pool2_flat_pose_map
-
-    def add_pose1(self, name):
-        with tf.variable_scope(name) as scope:
-            conv1_pose_map = slim.conv2d(self.spatial[:, :, :, 2:][:self.get_num_stop()], 64, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_pose_map')
-            pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_pose_map')
-            conv2_pose_map = slim.conv2d(pool1_pose_map, 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_pose_map')
-            pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_pose_map')
-            pool2_flat_pose_map = slim.flatten(pool2_pose_map)
-        return pool2_flat_pose_map
-
-    def add_pose_pattern(self, name = "pose_sp"):
-        with tf.variable_scope(name) as scope:
-            conv1_pose_map = slim.conv2d(self.spatial[:self.get_num_stop()], 64, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_sp_pose_map')
-            pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_sp_pose_map')
-            conv2_pose_map = slim.conv2d(pool1_pose_map, 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_sp_pose_map')
-            pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_sp_pose_map')
-            pool2_flat_pose_map = slim.flatten(pool2_pose_map)
-        return pool2_flat_pose_map
+    # def add_pose(self, name):
+    #     with tf.variable_scope(name) as scope:
+    #         conv1_pose_map = slim.conv2d(self.spatial[:, :, :, 2:][:self.get_num_stop()], 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_pose_map')
+    #         pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_pose_map')
+    #         conv2_pose_map = slim.conv2d(pool1_pose_map, 16, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_pose_map')
+    #         pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_pose_map')
+    #         pool2_flat_pose_map = slim.flatten(pool2_pose_map)
+    #     return pool2_flat_pose_map
+    #
+    # def add_pose1(self, name):
+    #     with tf.variable_scope(name) as scope:
+    #         conv1_pose_map = slim.conv2d(self.spatial[:, :, :, 2:][:self.get_num_stop()], 64, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_pose_map')
+    #         pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_pose_map')
+    #         conv2_pose_map = slim.conv2d(pool1_pose_map, 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_pose_map')
+    #         pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_pose_map')
+    #         pool2_flat_pose_map = slim.flatten(pool2_pose_map)
+    #     return pool2_flat_pose_map
+    #
+    # def add_pose_pattern(self, name = "pose_sp"):
+    #     with tf.variable_scope(name) as scope:
+    #         conv1_pose_map = slim.conv2d(self.spatial[:self.get_num_stop()], 64, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv1_sp_pose_map')
+    #         pool1_pose_map = slim.max_pool2d(conv1_pose_map, [2, 2], scope='pool1_sp_pose_map')
+    #         conv2_pose_map = slim.conv2d(pool1_pose_map, 32, [5, 5], reuse=tf.AUTO_REUSE, padding='VALID', scope='conv2_sp_pose_map')
+    #         pool2_pose_map = slim.max_pool2d(conv2_pose_map, [2, 2], scope='pool2_sp_pose_map')
+    #         pool2_flat_pose_map = slim.flatten(pool2_pose_map)
+    #     return pool2_flat_pose_map
 
     def add_pattern(self, name = 'pattern'):
         with tf.variable_scope(name) as scope:
@@ -333,12 +430,21 @@ class HOI(parent_model):
                 pool2_flat_sp = slim.flatten(pool2_sp)
         return pool2_flat_sp
 
+    def additional_loss(self, fc7_O, fc7_H, fc7_verbs, fc7_verbs_raw, initializer, is_training):
+        if self.model_name.__contains__('_vloss'):
+            self.verbs_loss(fc7_verbs, is_training, initializer)
+        if self.model_name.__contains__('_objloss'):
+            self.objects_loss(fc7_O, is_training, initializer, 'objects_loss', label='_o')
+
     def get_num_stop(self):
         """
         following iCAN, spatial pattern include all negative samples. verb-object branch is for positive samples
         self.H_num is the partition for positive sample and negative samples.
         :return:
         """
+        if self.model_name.__contains__('batch'):
+            # This is for batch style. i.e. there are multiple images in each batch.
+            return self.H_num
         num_stop = tf.shape(self.H_boxes)[0]  # for selecting the positive items
         if self.model_name.__contains__('_new'):
             print('new Add H_num constrains')
@@ -413,6 +519,10 @@ class HOI(parent_model):
                 cls_score_sp = self.predictions["cls_score_sp"]
                 if self.model_name.__contains__('_rew'):
                     cls_score_sp = tf.multiply(cls_score_sp, self.HO_weight)
+                elif self.model_name.__contains__('_xrew'):
+                    reweights = np.log(1 / (self.num_inst_all / np.sum(self.num_inst_all)))
+                    cls_score_sp = tf.multiply(cls_score_sp, reweights)
+
                 sp_cross_entropy = tf.reduce_mean(
                     tf.nn.sigmoid_cross_entropy_with_logits(labels=label_sp, logits=cls_score_sp))
 
@@ -427,36 +537,62 @@ class HOI(parent_model):
                 self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
                 loss = hoi_cross_entropy
-            elif self.model_name.startswith('VCL_') or self.model_name.startswith('FCL_'):
+            elif self.model_name.__contains__('_fac_'):
+                # factorized
+                # tmp_label_HO = self.gt_class_HO_for_D_verbs
+                gt_verb_label = self.gt_verb_class[:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                gt_obj_label = self.gt_obj_class[:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                # label_verb = tf.matmul()
+                cls_score_verbs = self.predictions["cls_score_verbs_f"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                cls_score_objs = self.predictions["cls_score_objs"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                hoi_cross_entropy = self.add_factorized_hoi_loss(cls_score_objs, cls_score_verbs, gt_obj_label,
+                                                                 gt_verb_label)
 
-                tmp_label_HO = self.gt_class_HO[:num_stop]
+                # tmp_verb_prob = self.predictions["cls_prob_verbs_f"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                # tmp_verb_obj = self.predictions["cls_prob_objs"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                # result = tf.equal(tf.cast(tmp_verb_prob * gt_verb_label > 0.5, tf.float32),
+                #                   tf.cast(gt_verb_label, tf.float32))
+                # print('res', result)
+                # tmp_hoi_loss = tf.Print(tmp_hoi_loss, [tf.shape(result)], 'HOI acc:')
+
+                self.losses['verbs_cross_entropy'] = hoi_cross_entropy
+                # self.losses["pos_hoi_cross_entropy"] = tf.reduce_mean(
+                #     tf.reduce_sum(tmp_verb_loss * gt_verb_label, axis=-1) / tf.reduce_sum(gt_verb_label, axis=-1))
+                # self.losses["pos_sp_cross_entropy"] = tf.reduce_mean(
+                #     tf.reduce_sum(tmp_sp_cross_entropy * label_sp, axis=-1) / tf.reduce_sum(label_sp, axis=-1))
+
+                lamb = self.get_lamb_1()
+                if "cls_score_sp" not in self.predictions:
+                    sp_cross_entropy = 0
+                    self.losses['sp_cross_entropy'] = 0
+                loss = sp_cross_entropy + hoi_cross_entropy * lamb
+            elif self.model_name.startswith('VCL_') or self.model_name.startswith('FCL_') \
+                    or self.model_name.startswith('ATL_'):
+
+                tmp_label_HO = self.gt_class_HO_for_D_verbs
                 cls_score_hoi = self.predictions["cls_score_hoi"][:tf.shape(self.gt_class_HO[:num_stop])[0], :]
                 if self.model_name.__contains__('_rew'):
-                    cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)
+                    cls_score_verbs = tf.multiply(cls_score_hoi, reweights)
+                elif self.model_name.__contains__('_xrew'):
+                    reweights = np.log(1 / (self.num_inst / np.sum(self.num_inst)))
+                    # print(reweights, self.HO_weight, self.num_inst_all, self.num_inst)
+                    # import ipdb;ipdb.set_trace()
+                    cls_score_verbs = tf.multiply(cls_score_hoi, reweights)
+                if self.model_name.__contains__('batch') and self.model_name.__contains__('semi'):
+                    semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(cls_score_verbs)[0], 1:], axis=-1)
+
+                    semi_filter = tf.cast(semi_filter, tf.bool)
+
+                    tmp_label_HO = tf.boolean_mask(tmp_label_HO, semi_filter, axis=0)
+                    cls_score_verbs = tf.boolean_mask(cls_score_verbs, semi_filter, axis=0)
 
                 tmp_hoi_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-                    labels=tmp_label_HO, logits=cls_score_hoi)
+                         labels=tmp_label_HO, logits=cls_score_hoi)
 
                 hoi_cross_entropy = tf.reduce_mean(tmp_hoi_loss)
                 self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
-                lamb = 1
-                if self.model_name.__contains__('_l05_'):
-                    lamb = 0.5
-                elif self.model_name.__contains__('_l2_'):
-                    lamb = 2
-                elif self.model_name.__contains__('_l0_'):
-                    lamb = 0
-                elif self.model_name.__contains__('_l1_'):
-                    lamb = 1
-                elif self.model_name.__contains__('_l15_'):
-                    lamb = 1.5
-                elif self.model_name.__contains__('_l25_'):
-                    lamb = 2.5
-                elif self.model_name.__contains__('_l3_'):
-                    lamb = 3
-                elif self.model_name.__contains__('_l4_'):
-                    lamb = 4
+                lamb = self.get_lamb_1()
                 if "cls_score_sp" not in self.predictions:
                     sp_cross_entropy = 0
                     self.losses['sp_cross_entropy'] = 0
@@ -464,26 +600,217 @@ class HOI(parent_model):
                 if self.model_name.__contains__('_orig_'):
                     loss = loss + O_cross_entropy + H_cross_entropy
                     print('Add all loss')
+                if 'fake_G_cls_score_verbs' in self.predictions:
+                    fake_cls_score_verbs = self.predictions["fake_G_cls_score_verbs"]
+                    if self.model_name.__contains__('_rew_'):
+                        fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight)
 
+                    elif self.model_name.__contains__('_rew2'):
+                        fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight / 10)
+                    elif self.model_name.__contains__('_rew1'):
+                        fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight)
+                    elif self.model_name.__contains__('rewn'):
+                        pass
+                    print(self.gt_class_HO_for_G_verbs, fake_cls_score_verbs, '======================================')
+                    self.losses['fake_G_verbs_cross_entropy'] = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                        labels=self.gt_class_HO_for_G_verbs, logits=fake_cls_score_verbs))
+                    if 'fake_G_total_loss' not in self.losses:
+                        self.losses['fake_G_total_loss'] = 0
+                    gll = 1.
+                    self.losses['fake_G_total_loss'] += (self.losses['fake_G_verbs_cross_entropy'] * gll)
             else:
                 loss = H_cross_entropy + O_cross_entropy + sp_cross_entropy
+            # verb loss
+            temp = self.add_verb_loss(num_stop)
+            loss += temp
 
+            if self.model_name.__contains__('_objloss'):
+                obj_cls_cross_entropy = self.add_objloss(num_stop)
 
-            if 'fake_G_cls_score_verbs' in self.predictions:
-                fake_cls_score_verbs = self.predictions["fake_G_cls_score_verbs"]
-                if self.model_name.__contains__('_rew_'):
-                    fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight)
-                self.losses['fake_G_verbs_cross_entropy'] = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                    labels=self.gt_class_HO_for_G_verbs, logits=fake_cls_score_verbs))
-                if 'fake_G_total_loss' not in self.losses:
-                    self.losses['fake_G_total_loss'] = 0
-                self.losses['fake_G_total_loss'] += (self.losses['fake_G_verbs_cross_entropy'] * 1)
+                print('add objloss')
+                loss += obj_cls_cross_entropy
 
             self.losses['total_loss'] = loss
             self.event_summaries.update(self.losses)
         print(self.losses)
         print(self.predictions)
         return loss
+
+    def add_factorized_hoi_loss(self, cls_score_objs, cls_score_verbs, gt_obj_label, gt_verb_label):
+        print('debug gt_class_HO_for_D_verbs:', self.gt_class_HO_for_D_verbs, cls_score_verbs)
+        # cls_score_verbs = tf.multiply(cls_score_verbs, self.HO_weight)
+        # cls_score_objs = tf.multiply(cls_score_objs, self.HO_weight)
+        # tmp_label_HO = tf.Print(tmp_label_HO, [tf.shape(tmp_label_HO), tf.shape(cls_score_verbs)],'sdfsdfsdf')
+        # print('=======', tmp_label_HO, cls_score_verbs)
+        if self.model_name.__contains__('batch') and self.model_name.__contains__('semi'):
+            semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(cls_score_verbs)[0], 1:], axis=-1)
+
+            semi_filter = tf.cast(semi_filter, tf.bool)
+
+            gt_verb_label = tf.boolean_mask(gt_verb_label, semi_filter, axis=0)
+            gt_obj_label = tf.boolean_mask(gt_obj_label, semi_filter, axis=0)
+            cls_score_verbs = tf.boolean_mask(cls_score_verbs, semi_filter, axis=0)
+            cls_score_objs = tf.boolean_mask(cls_score_objs, semi_filter, axis=0)
+        tmp_verb_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+            labels=gt_verb_label, logits=cls_score_verbs)
+
+        tmp_obj_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+            labels=gt_obj_label, logits=cls_score_objs)
+
+        hoi_cross_entropy = tf.reduce_mean(tmp_verb_loss) + tf.reduce_mean(tmp_obj_loss)
+        return hoi_cross_entropy
+
+    def get_lamb_1(self):
+        lamb = 1
+        if self.model_name.__contains__('_l05_'):
+            lamb = 0.5
+        elif self.model_name.__contains__('_l2_'):
+            lamb = 2
+        elif self.model_name.__contains__('_l0_'):
+            lamb = 0
+        elif self.model_name.__contains__('_l1_'):
+            lamb = 1
+        elif self.model_name.__contains__('_l15_'):
+            lamb = 1.5
+        elif self.model_name.__contains__('_l25_'):
+            lamb = 2.5
+        elif self.model_name.__contains__('_l3_'):
+            lamb = 3
+        elif self.model_name.__contains__('_l4_'):
+            lamb = 4
+        return lamb
+
+    def filter_loss(self, cls_score_sp, label_sp):
+        if self.model_name.__contains__('batch') and self.model_name.__contains__('semi'):
+            semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(cls_score_sp)[0], 1:], axis=-1)
+            # label_sp = tf.Print(label_sp, [tf.shape(semi_filter), semi_filter, self.H_boxes, tf.shape(label_sp)], 'batch debug0:', first_n=000, summarize=1000)
+
+            semi_filter = tf.cast(semi_filter, tf.bool)
+
+            # label_sp = tf.Print(label_sp, [tf.shape(semi_filter), semi_filter, tf.shape(label_sp)], 'batch debug:', first_n=000, summarize=1000)
+            label = tf.boolean_mask(label_sp, semi_filter, axis=0)
+            logits = tf.boolean_mask(cls_score_sp, semi_filter, axis=0)
+            # label = tf.Print(label, [tf.shape(semi_filter), tf.shape(label)], 'batch debug1:', first_n=000)
+
+            sp_cross_entropy = tf.reduce_mean(
+                tf.nn.sigmoid_cross_entropy_with_logits(labels=label, logits=logits))
+
+        else:
+            sp_cross_entropy = tf.reduce_mean(
+                tf.nn.sigmoid_cross_entropy_with_logits(labels=label_sp, logits=cls_score_sp))
+        return sp_cross_entropy
+
+    def cal_loss_by_weights(self, cls_score, label, orig_weights):
+        sp_cross_entropy = tf.multiply(
+            tf.nn.sigmoid_cross_entropy_with_logits(labels=label, logits=cls_score), orig_weights)
+        sp_cross_entropy = tf.reduce_mean(sp_cross_entropy)
+        return sp_cross_entropy
+
+    def obtain_cbl_weights(self, tmp_label_HO, weights):
+        # weights = tf.expand_dims(weights, 0)
+        weights = tf.tile(weights, [tf.shape(tmp_label_HO)[0], 1]) * tmp_label_HO
+        weights = tf.reduce_sum(weights, axis=1)
+        weights = tf.expand_dims(weights, 1)
+        weights = tf.tile(weights, [1, self.num_classes])
+        return weights
+
+    def add_objloss(self, num_stop):
+        obj_cls_score = self.predictions["obj_cls_score_o"]
+        if self.model_name.__contains__('_ce'):
+            obj_cls_cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                labels=self.gt_obj_class[:num_stop], logits=obj_cls_score[:num_stop, :]))
+        else:
+            label_obj = tf.cast(
+                tf.matmul(self.gt_class_HO_for_D_verbs, self.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.float32)
+            obj_cls_cross_entropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                labels=label_obj[:tf.shape(obj_cls_score)[0], :], logits=obj_cls_score))
+        self.losses["obj_cls_cross_entropy_o"] = obj_cls_cross_entropy
+
+        model_name = self.model_name
+        if model_name.__contains__('_pobjloss'):
+            model_name = model_name.replace("_pobjloss", '_objloss')
+        lambda1 = 0.1
+        if model_name.__contains__('_objloss10'):
+            lambda1 = 1.0
+        elif self.model_name.__contains__('_objloss20'):
+            lambda1 = 2.0
+        elif model_name.__contains__('_objloss1'):
+            lambda1 = 0.5
+        elif model_name.__contains__('_objloss2'):
+            lambda1 = 0.3
+        elif model_name.__contains__('_objloss3'):
+            lambda1 = 0.08
+        elif model_name.__contains__('_objloss4'):
+            lambda1 = 0.05
+        temp = (obj_cls_cross_entropy * lambda1)
+
+        return temp
+
+    def add_verb_loss(self, num_stop):
+        temp = 0
+        if 'verb_cls_score' in self.predictions:
+            vloss_num_stop = num_stop
+            verb_cls_score = self.predictions["verb_cls_score"]
+            verb_cls_cross_entropy = self.filter_loss(verb_cls_score[:vloss_num_stop, :],
+                                                          self.gt_verb_class[:vloss_num_stop])
+            self.losses["verb_cls_cross_entropy"] = verb_cls_cross_entropy
+            if 'verb_cls_score_gcn' in self.predictions:
+                verb_cls_score = self.predictions["verb_cls_score_gcn"]
+                verb_cls_cross_entropy1 = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                    labels=self.gt_verb_class[:vloss_num_stop], logits=verb_cls_score[:vloss_num_stop, :]))
+                self.losses["verb_cls_cross_entropy_gcn"] = verb_cls_cross_entropy1
+                verb_cls_cross_entropy += verb_cls_cross_entropy1
+            print('add vloss-------')
+            # neg 0.1, negv1 0.5 negv12 0.1 1
+            lambda1 = 0.1
+            if self.model_name.__contains__('vloss10'):
+                lambda1 = 1.0
+            elif self.model_name.__contains__('vloss20'):
+                lambda1 = 2.0
+            elif self.model_name.__contains__('vloss1'):
+                lambda1 = 0.5
+            elif self.model_name.__contains__('vloss2'):
+                lambda1 = 0.3
+            elif self.model_name.__contains__('vloss3'):
+                lambda1 = 0.08
+            elif self.model_name.__contains__('vloss4'):
+                lambda1 = 0.05
+            temp = (verb_cls_cross_entropy * lambda1)
+        if 'verb_cls_score_nvgcn_a' in self.predictions:
+            vloss_num_stop = num_stop
+            verb_cls_score = self.predictions["verb_cls_score_nvgcn_a"]
+            verb_cls_cross_entropy = self.filter_loss(verb_cls_score[:vloss_num_stop, :],
+                                                      self.gt_verb_class[:vloss_num_stop])
+
+            self.losses["verb_cls_cross_entropy_nvgcn_a"] = verb_cls_cross_entropy
+            print('add vloss===========')
+            # neg 0.1, negv1 0.5 negv12 0.1 1
+            lambda1 = 0.1
+            if self.model_name.__contains__('_nvgcn_a10'):
+                lambda1 = 1.0
+            elif self.model_name.__contains__('_nvgcn_a1'):
+                lambda1 = 0.5
+            elif self.model_name.__contains__('_nvgcn_a2'):
+                lambda1 = 0.3
+            elif self.model_name.__contains__('_nvgcn_a3'):
+                lambda1 = 0.08
+            elif self.model_name.__contains__('_nvgcn_a4'):
+                lambda1 = 0.05
+            temp += (verb_cls_cross_entropy * lambda1)
+        return temp
+
+    def add_verb_ho_loss(self, num_stop):
+        vloss_num_stop = num_stop
+        verb_cls_score = self.predictions["verb_cls_score"]
+        verb_cls_cross_entropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+            labels=self.gt_class_HO[:vloss_num_stop], logits=verb_cls_score[:vloss_num_stop, :]))
+        self.losses["verb_cls_cross_entropy"] = verb_cls_cross_entropy
+        print('add vloss')
+        # neg 0.1, negv1 0.5 negv12 0.1 1
+        lambda1 = 1
+        temp = (verb_cls_cross_entropy * lambda1)
+        return temp
 
     def train_step(self, sess, blobs, lr, train_op):
         feed_dict = self.get_feed_dict(blobs)
