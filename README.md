@@ -9,7 +9,9 @@ This repository is built from the code of previous approaches. Thanks for their 
 Code is being constructed.
 
 Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V-COCO
+
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
+
 [Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code on VRD.
 
 Thanks for all reviewer's comments.
@@ -82,7 +84,7 @@ FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2S
 ATL model: 
 
 ### Citations
-If you find this submission is useful for you, please consider citing:
+If you find this series of work are useful for you, please consider citing:
 
 ```
 @inproceedings{hou2021fcl,
