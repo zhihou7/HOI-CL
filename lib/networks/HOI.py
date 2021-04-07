@@ -255,7 +255,7 @@ class HOI(parent_model):
             fc7_SH, fc7_SO, fc7_SHsp = self.head_to_tail(fc7_H, fc7_O_pos, pool5_SH, pool5_SO, sp, is_training, 'fc_HO')
             cls_prob_H, cls_prob_O, cls_prob_sp = self.region_classification(fc7_SH, fc7_SO, fc7_SHsp, is_training,
                                                                              initializer, 'classification')
-        elif not self.model_name.startswith('VCL_V_'):
+        elif not self.model_name.startswith('_V_'):
             print('sp', sp)
             fc7_SHsp = self.head_to_tail_sp(fc7_H, fc7_O, sp, is_training, 'fc_HO')
             cls_prob_sp = self.region_classification_sp(fc7_SHsp, is_training, initializer, 'classification')
@@ -528,7 +528,7 @@ class HOI(parent_model):
 
                 self.losses['sp_cross_entropy'] = sp_cross_entropy
 
-            if self.model_name.startswith('VCL_V_'):
+            if self.model_name.startswith('_V_'):
                 cls_score_hoi = self.predictions["cls_score_hoi"]
                 if self.model_name.__contains__('_rew'):
                     cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)

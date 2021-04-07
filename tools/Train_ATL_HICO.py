@@ -49,8 +49,9 @@ def parse_args():
             help='Number of iterations to perform',
             default=1200000, type=int)
     parser.add_argument('--model', dest='model',
-            help='Select model',
-            default='iCAN_R_ResNet50_HICO', type=str)
+            help='Select model,ATL: ATL_union_batch1_semi_l2_def4_vloss2_rew2_aug5_3_x5new_coco_res101,'
+                 'Baseline: ATL_union_batch1_semi_l2_def4_vloss2_rew2_aug5_3_x5new_rehico_res101',
+            default='ATL_union_batch1_semi_l2_def4_vloss2_rew2_aug5_3_x5new_coco_res101', type=str)
     parser.add_argument('--Pos_augment', dest='Pos_augment',
             help='Number of augmented detection for each one. (By jittering the object detections)',
             default=15, type=int)

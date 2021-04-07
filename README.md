@@ -12,7 +12,7 @@ Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 [Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code on VRD.
 
-Thanks for all reviewer's comments. Our new work, an extension of VCL, will be coming soon.
+Thanks for all reviewer's comments.
 
 ## Prerequisites
 
@@ -43,64 +43,7 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Matlab
    
 
 ## VCL
-
-## Training
-
-1. Train an VCL on HICO-DET
-    ```Shell
-    python tools/Train_VCL_ResNet_HICO.py --num_iteration 800000
-    ```
-    
-2. Train an VCL for rare first zero-shot on HICO-DET
-    ```Shell
-    python tools/Train_VCL_ResNet_HICO.py --model VCL_union_multi_zs3_def1_l2_ml5_rew51_aug5_3_x5new --num_iteration 600000
-    ```
-  
-3. Train an VCL for non-rare first zero-shot on HICO-DET
-    ```Shell
-    python tools/Train_VCL_ResNet_HICO.py --model VCL_union_multi_zs4_def1_l2_ml5_rew51_aug5_3_x5new --num_iteration 400000
-    ```
-
-4. Train an VCL on V-COCO
-    ```Shell
-    python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
-    ```
-
-### Model Parameters
-Our model will converge at around iteration 500000 in HICO-DET. V-COCO will converge after 200000 iterations. We provide the model parameters that we trained as follows,
-
-V-COCO: https://drive.google.com/file/d/1SzzMw6fS6fifZkpuar3B40dIl7YLNoYF/view?usp=sharing. I test the result is 47.82. The baseline also decreases compared to the reported result. The model in my reported result is deleted by accident. Empirically, hyper-parameters $lambda_1$ affects V-COCO more apparently.
-
-HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp=sharing
-
-HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
-
-
-## Testing
-1. Test an VCL on V-COCO
-    ```Shell
-     python tools/Test_ResNet_VCOCO.py --num_iteration 200000
-    ```
-2. Test an VCL on HICO-DET
-    ```Shell
-    python tools/Test_VCL_ResNet_HICO.py --num_iteration 800000
-   
-    cd Data/ho-rcnn/;python ../../scripts/postprocess_test.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 3 --fuse_type spv
-    ```
- 
-    or 
-    ```Shell
-   python scripts/full_test.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 800000
-    ```
-
-3. Illustration of verb and object features
-
-   ```shell
-   python scripts/extract_HO_feature.py --model VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101 --num_iteration 800000
-   
-   python scripts/tsne.py VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101
-   ```
- 
+See [GETTING_STARTED_VCL.md](GETTING_STARTED_VCL.md),
 
 ## FCL
 ### Train
@@ -120,43 +63,7 @@ we provide this scripts to test code and eval the FCL results.
 
 ## ATL
 
-### 1. Train ATL on HICO-DET
-
-### 2. Train ATL on HOI-COCO
-
-```Shell
-python tools/Train_ATL_HOI_COCO_21.py
-```
-
-### 3. Affordance Recognition
-
-1. extract affordance feature
-
-```Shell
-python scripts/affordance/extract_affordance_feature.py
-
-```
-
-2. convert affordance feature to feature bank (select 100 instances for each verb)
-```Shell
-python scripts/affordance/convert_feats_to_affor_bank_hico.py
-```
-
-3. extract object feature
-```Shell
-python scripts/affordance/extract_obj_feature.py
-```
-
-4. obtain hoi prediction
-```Shell
-python scripts/affordance/extract_hoi_preds.py
-```
-
-5. statistic of affordance prediction results.
-
-```Sheel
-python scripts/affordance/stat_hico_affordance.py
-```
+See [GETTING_STARTED_ATL.md](GETTING_STARTED_ATL.md),
 
 ## Data & Model
 #### Data
