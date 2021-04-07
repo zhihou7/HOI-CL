@@ -1,6 +1,9 @@
 ### Affordance Transfer Learning for Human-Object Interaction Detection
 
-Thanks for all reviewer's comments. That's very valuable for our next work.
+Thanks for all reviewer's comments. That's very valuable for our next work. 
+ATL gives a new insight to HOI understanding and in fact inspires a lot to our next work
+
+Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 
 
 ### 1. Train ATL on HICO-DET
