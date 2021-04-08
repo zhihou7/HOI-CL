@@ -84,8 +84,11 @@ Please notice train2017 might contain part of V-COCO test data. Thus, we just us
 ##### Affordance Recognition evaltion dataset
 
 Evalation of Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/GpNkjOHaS8xN5ar
+
 Evalation of COCO (val2017): https://cloudstor.aarnet.edu.au/plus/s/QBXOYiJ5NHqtcti
+
 Evalation of Object365 (novel classes): https://cloudstor.aarnet.edu.au/plus/s/pRBLkhy9TUm5xGo
+
 Evalation of HICO (test): https://cloudstor.aarnet.edu.au/plus/s/AFrv822lPC30iHt
 
 
@@ -97,7 +100,9 @@ COCO: https://cloudstor.aarnet.edu.au/plus/s/9cgMYKq5B4waawA
 
 #### Object Dataset (HOI-COCO)
 Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/VuHvDdp5msRnpqn. (we do not run this experiment).
+
 COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
+
 HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
 
 
@@ -106,7 +111,9 @@ HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
 FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
 
 ATL model (HICO-DET): https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
+
 ATL model (HOI-COCO)(COCO): https://cloudstor.aarnet.edu.au/plus/s/zZfJM4ctylwAEiZ
+
 ATL model (HOI-COCO)(COCO, HICO): https://cloudstor.aarnet.edu.au/plus/s/zih9Vcdlwbpt92v
 
 ### Citations
