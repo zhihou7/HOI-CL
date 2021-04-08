@@ -1,4 +1,4 @@
-### Affordance Transfer Learning for Human-Object Interaction Detection
+### [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867)
 
 Thanks for all reviewer's comments. That's very valuable for our next work. 
 ATL gives a new insight to HOI understanding and in fact inspires a lot to our next work
