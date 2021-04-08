@@ -12,7 +12,7 @@ Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V
 
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 
-[Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code on VRD.
+[Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code on VRD. (The code might be 
 
 Thanks for all reviewer's comments.
 
@@ -65,7 +65,7 @@ we provide this scripts to test code and eval the FCL results.
 
 ## ATL
 
-See [GETTING_STARTED_ATL.md](GETTING_STARTED_ATL.md),
+See [GETTING_STARTED_ATL.md](GETTING_STARTED_ATL.md). We try to use a HOI model to recognize object affordance, i.e. what actions can be applied to an object.
 
 ## Data & Model
 #### Data
