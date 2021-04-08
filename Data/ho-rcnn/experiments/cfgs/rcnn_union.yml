@@ -1,9 +1,0 @@
-ROOT_DIR: "./"
-EXP_DIR: "union"
-USE_UNION: True
-TRAIN:
-  BBOX_REG: False
-  IMS_PER_BATCH: 8
-  BATCH_SIZE: 64
-TEST:
-  BBOX_REG: False
