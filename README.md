@@ -1,7 +1,7 @@
 ### Compositional Learning for Human-Object Interaction Detection
 
 This repository includes the code of [Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407) (ECCV2020), 
-[Detecting Human-Object Interaction via Fabricated Compositional Learning](https://arxiv.org/abs/2103.08214) (CVPR2021), Affordance Transfer Learning for Human-Object Interaction Detection (CVPR2021)
+[Detecting Human-Object Interaction via Fabricated Compositional Learning](https://arxiv.org/abs/2103.08214) (CVPR2021), [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867) (CVPR2021)
 
 This repository is built from the code of previous approaches. Thanks for their excellent work.
 
