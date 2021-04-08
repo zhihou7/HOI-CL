@@ -1440,16 +1440,12 @@ def obtain_data2_large(Pos_augment=15, Neg_select=60, augment_type=0, model_name
 def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', pattern_type=0,
                             zero_shot_type=0, isalign=False, epoch=0, semi_type='default', bnum=2, neg_type_ratio=0):
     assert len(model_name) > 1, model_name
-    if pattern_type == 1:
-        Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_with_pose.pkl', "rb"), encoding='latin1')
-        Trainval_semi = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO_semi.pkl', "rb"), encoding='latin1')
-        Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO_with_pose.pkl', "rb"), encoding='latin1')
-    else:
-        with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
-            Trainval_GT = pickle.load(f, encoding='latin1')
-        Trainval_semi = extract_semi_data(semi_type, model_name)
-        with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb") as f:
-            Trainval_N = pickle.load(f, encoding='latin1')
+
+    with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
+        Trainval_GT = pickle.load(f, encoding='latin1')
+    Trainval_semi = extract_semi_data(semi_type, model_name)
+    with open(cfg.DATA_DIR + '/' + 'Trainval_Neg_HICO.pkl', "rb") as f:
+        Trainval_N = pickle.load(f, encoding='latin1')
 
     g_func = generator2
 

@@ -318,6 +318,96 @@ def test_net_data_fcl(sess, net, output_dir, h_box, o_box, o_cls, h_score, o_sco
     gc.collect()
 
 
+def obtain_test_dataset_with_obj(object_thres, human_thres, dataset_name='test2015', test_type='vcl',
+                                 has_human_threhold=True, stride = 200, hoi_nums=1, model_name=''):
+    print('================================================================================')
+    from sys import version_info
+    if version_info.major == 3:
+        # Test_RCNN = obtain_obj_boxes('train') # this is useless for object
+        if test_type == 'gtval2017':
+            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_VCOCO_COCO_VCOCO_coco.pkl', "rb"))
+        elif test_type == 'gtobj365_coco':
+            # 116841
+            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_VCOCO_COCO_VCOCO_obj365_coco.pkl', "rb"))
+        elif test_type == 'gtobj365':
+            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_VCOCO_COCO_VCOCO_obj365.pkl', "rb"))
+        elif test_type == 'gthico':
+            # we simply use the Ground truth HICO-DET test. This might contain repeats objects.
+            # However this do not affect the comparison between ATL and Baseline
+            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_VCOCO_HICO.pkl', "rb"))
+        else:
+            raise Exception('no test_type {}'.format(test_type))
+        #
+        # print('sdf val all')
+    print('end load', test_type)
+
+    # keys = list(Test_RCNN.keys())
+    print(len(Test_RCNN_coco.keys()), 'length')
+    np.random.seed(cfg.RNG_SEED)
+    def generator1():
+        np.random.seed(cfg.RNG_SEED)
+        # for line in glob.iglob(cfg.DATA_DIR + '/' + 'hico_20160224_det/images/'+dataset_name+'/*.jpg'):
+        for coco_image_id in Test_RCNN_coco:
+            for Object in Test_RCNN_coco[coco_image_id]:
+                if not (np.max(Object[5]) > object_thres):
+                    continue
+                if test_type == 'gtobj365' and int(Object[4]) not in [20, 53, 182, 171, 365, 220, 334, 352, 29, 216, 23, 183, 300, 225, 282, 335]:
+                    # 29: [8, 37, 51, 68, 115, ],  # boots
+                    # 216: [1, 5],  # ship
+                    # 23: [8, 37, 39, 51, 68],  # flower
+                    # 183: [3, 37, 45, 51, 68, 105, ],  # basketball
+                    # 300: [8, 16, 24, 37, 51, 55, 68],  # cheese
+                    # 225: [8, 16, 24, 37, 51],  # watermelon
+                    # 282: [27, 37, 77, 88, 111, 112, 113],  # camel
+                    # 335: [27, 37, 77, 88, 111, 112, 113]  # lion
+                    continue
+                coco_im_orig, coco_im_shape = get_coco_blob(coco_image_id, test_type)
+                # coco_im_orig, coco_im_shape = get_blob(coco_image_id)
+                blobs = {}
+
+                blobs['H_num'] = 0
+                blobs['H_boxes'] = []
+                blobs['O_boxes'] = []
+                blobs['sp'] = []
+
+                blobs['O_cls'] = []
+                blobs['H_score'] = []
+                blobs['O_score'] = []
+
+                blobs['H_num'] += 2
+                blobs['H_boxes'].append(np.array([0, 0, 0, 0, 0]))
+
+                obj_box = np.array(
+                    [0, Object[2][0], Object[2][1], Object[2][2], Object[2][3]])
+                blobs['O_boxes'].append(obj_box)
+                # print(len(Human_out), len(Human_out[6]))
+
+                blobs['sp'].append(np.zeros([64, 64, 2], np.float32))
+                blobs['O_cls'].append(Object[4])
+                blobs['H_score'].append(0) # we do not use this here
+                blobs['O_score'].append(Object[5])
+
+                yield coco_im_orig, blobs, coco_image_id
+
+    dataset = tf.data.Dataset.from_generator(generator1, output_types=(
+        tf.float32, {'H_num': tf.int32, 'H_boxes': tf.float32, 'O_boxes': tf.float32, 'sp': tf.float32,
+                     'O_cls': tf.float32, 'H_score': tf.float32, 'O_score': tf.float32}, tf.int32,),
+                                             output_shapes=(tf.TensorShape([1, None, None, 3]),
+                                                            {'H_num': tf.TensorShape([]),
+                                                             'H_boxes': tf.TensorShape([None, 5]),
+                                                             'O_boxes': tf.TensorShape([None, 5]),
+                                                             'sp': tf.TensorShape([None, 64, 64, 2]),
+                                                             'O_cls': tf.TensorShape([None]),
+                                                             'H_score': tf.TensorShape([None]),
+                                                             'O_score': tf.TensorShape([None])},
+                                                            tf.TensorShape([]))
+                                             )
+    dataset = dataset.prefetch(100)
+    # dataset = dataset.repeat(100000) # TODO improve
+    iterator = dataset.make_one_shot_iterator()
+    image, blobs, image_id = iterator.get_next()
+    return image, blobs, image_id
+
 
 def test_net_data_api_wo_obj(sess, net, output_dir, h_box, o_box, o_cls, h_score, o_score, o_all_score, image_id, debug_type = 0):
     detection = {}
