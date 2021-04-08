@@ -45,7 +45,7 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Matlab
    
 
 ## VCL
-See [GETTING_STARTED_VCL.md](GETTING_STARTED_VCL.md),
+See [GETTING_STARTED_VCL.md](GETTING_STARTED_VCL.md). You can also find details in https://github.com/zhihou7/VCL.
 
 ## FCL
 ### Train
