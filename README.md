@@ -12,9 +12,11 @@ Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V
 
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and ATL based on One-Stage method.
 
-[Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code on VRD. (The code might be 
+[Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code of FCL on VRD.
 
-Thanks for all reviewer's comments.
+Thanks for all reviewer's comments. 
+
+**FCL inspires a lot to ATL. ATL gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
 
 ## Prerequisites
 
