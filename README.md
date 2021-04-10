@@ -16,7 +16,7 @@ Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code
 
 Thanks for all reviewer's comments. 
 
-**FCL inspires a lot to ATL. ATL gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
+**FCL inspires a lot to combine the object feature from object dataset and verb feature (i.e. ATL on HOI detection). ATL further gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
 
 ## Prerequisites
 
