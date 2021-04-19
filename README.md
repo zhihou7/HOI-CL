@@ -3,6 +3,8 @@
 This repository includes the code of [Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407) (ECCV2020), 
 [Detecting Human-Object Interaction via Fabricated Compositional Learning](https://arxiv.org/abs/2103.08214) (CVPR2021), [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867) (CVPR2021)
 
+We also provides a page to introduce our work in brief: https://sites.google.com/view/hoi-cl.
+
 This repository is built from the code of previous approaches. Thanks for their excellent work.
 
 
