@@ -56,13 +56,9 @@ class HOI(parent_model):
     def set_gt_class_HO_for_D_verbs(self, gt_class_HO_for_D_verbs):
         self.gt_class_HO_for_D_verbs = gt_class_HO_for_D_verbs
 
-    def set_add_ph(self, obj_mask, pos1_idx=None, pose_box=None, human_ele_adj=None, obj_ele_adj=None, pose_list=None):
+    def set_add_ph(self, obj_mask, pos1_idx=None):
         self.O_mask = obj_mask
         self.pos1_idx = pos1_idx
-        self.pose_box = pose_box
-        self.human_ele_adj = human_ele_adj
-        self.obj_ele_adj = obj_ele_adj
-        self.pose_list = pose_list
 
 
     def res5_ho(self, pool5_HO, is_training, name):

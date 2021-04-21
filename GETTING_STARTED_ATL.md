@@ -13,17 +13,48 @@ We notice we can also split V-COCO into 24 verbs. Therefore, we also provides th
 python tools/Train_ATL_HICO.py 
 ```
 
-### 2. Train ATL on HOI-COCO (21)
+### 2. Train ATL on HOI-COCO
+
+21 verbs: 
 
 ```Shell
 python tools/Train_ATL_HOI_COCO_21.py
 ```
 
-### 2. Train ATL on HOI-COCO (24)
+24 verbs:
 
 ```Shell
 python tools/Train_ATL_HOI_COCO_24.py
 ```
+
+### 3. Testing
+
+#### HICO-DET
+
+
+we provide this scripts to test code and eval the ATL on HICO-DET. All models on HICO-DET share this evaluation scripts
+
+    ```Shell
+    python scripts/eval.py --model ATL_union_batch1_semi_l2_def4_vloss2_rew2_aug5_3_x5new_coco_res101 --num_iteration 800000
+    ```
+
+#### HOI-COCO
+
+21 verbs:
+
+```Shell
+
+python tools/Test_ATL_ResNet_VCOCO_21.py --num_iteration 200000 --model ATL_union_multi_atl_ml5_l05_t5_def2_aug5_new_VCOCO_coco_CL_21
+```
+
+
+24 verbs:
+
+```Shell
+
+python tools/Test_ATL_ResNet_VCOCO_24.py --num_iteration 200000 --model ATL_union_multi_atl_ml5_l05_t5_def2_aug5_new_VCOCO_coco_CL_24
+```
+
 
 ### 3. Affordance Recognition
 
