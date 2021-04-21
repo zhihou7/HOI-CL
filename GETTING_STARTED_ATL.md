@@ -6,15 +6,23 @@ ATL gives a new insight to HOI understanding and in fact inspires a lot to our n
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 
 
+We notice we can also split V-COCO into 24 verbs. Therefore, we also provides the HOI-COCO with 24 verbs (i.e. both _instr and _obj are kept) 
+
 ### 1. Train ATL on HICO-DET
 ```Shell
 python tools/Train_ATL_HICO.py 
 ```
 
-### 2. Train ATL on HOI-COCO
+### 2. Train ATL on HOI-COCO (21)
 
 ```Shell
 python tools/Train_ATL_HOI_COCO_21.py
+```
+
+### 2. Train ATL on HOI-COCO (24)
+
+```Shell
+python tools/Train_ATL_HOI_COCO_24.py
 ```
 
 ### 3. Affordance Recognition
