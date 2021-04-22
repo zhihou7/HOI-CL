@@ -62,6 +62,8 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Matlab
 See [GETTING_STARTED_VCL.md](GETTING_STARTED_VCL.md). You can also find details in https://github.com/zhihou7/VCL.
 
 ## FCL
+
+See [GETTING_STARTED_FCL.md](GETTING_STARTED_FCL.md)
 ### Train
 
 3. Train Zero-Shot HOI model with FCL on HICO-DET
@@ -119,16 +121,8 @@ COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
 
 HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
 
-
-#### Pre-trained model
-
-FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
-
-ATL model (HICO-DET): https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
-
-ATL model (HOI-COCO)(COCO): https://cloudstor.aarnet.edu.au/plus/s/zZfJM4ctylwAEiZ
-
-ATL model (HOI-COCO)(COCO, HICO): https://cloudstor.aarnet.edu.au/plus/s/zih9Vcdlwbpt92v
+#### Pre-trained Models
+See [MODEL.md](MODEL.md)
 
 ### Qustion & Answer
 
