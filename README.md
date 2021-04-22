@@ -55,7 +55,7 @@ This codebase was developed and tested with Python3.7, Tensorflow 1.14.0, Matlab
     ./misc/download_training_data.sh
     ```
    
-   Due to the limitation of space in my google drive, Additional files for ATL are provided in OneDrive.
+   Due to the limitation of space in my google drive, Additional files for ATL are provided in CloudStor.
    
 
 ## VCL
