@@ -112,8 +112,25 @@ UC is compositional zero-shot HOI detection. UO means novel object zero-shot HOI
 Experimently, FCL achieves better zero-shot performance on compositional zero-shot HOI detection. Under novel object zero-shot HOI detection, ATL is more suitable.
 
 ### Object Affordance Recognition
+Here, we provides the result reported by AP. 
 
 
+|Method | HOI Data | Object | Val2017 | Object365 | HICO-DET | Novel classes |
+|:-|:-:|:-:|:-:|:-:|:-:|:-:|
+|Baseline | HOI | - |      31.91 |  26.16 |     44.00 |      14.27  |
+|FCL  | HOI | - |      41.89 |    32.20 |       55.95|   18.84 |
+|VCL |  HOI  | HOI|        76.43   |       69.04 |  86.89 |        32.36|
+|ATL | HOI  | HOI |   76.52 |       69.27 |     87.20 |   34.20 |
+|ATL |  HOI | COCO |     **90.84** | **85.83** | **92.79** |   **36.28**|
+||||||||
+|Baseline |HICO|- |    19.71 |    17.86 |    23.18 |   6.80 |
+|FCL | HICO | - |       25.11    |     25.21 |         37.32 |    6.80 |
+|VCL |HICO | HICO |     36.74 |  35.73   |       43.15 |  12.05 |
+|ATL  |HICO | HICO|            52.01 |        **50.94**  |    **59.44** |     **15.64**|
+|ATL |HICO | COCO|       **56.05** |       40.83 |       57.41 | 8.52 |
+||||||||
+|ATL<sup>ZS</sup>   |HICO | HICO|      24.21 |       20.88 |     28.56 |       12.26 |
+|ATL<sup>ZS</sup> |HICO | COCO |    **35.55** |   **31.77** |   **39.45** |    **13.25** |
 ## Data & Model
 #### Data
 We present the differences between different detector in our paper and analyze the effect of object boxes on HOI detection. VCL detector and DRG detector can be download from the corresponding paper. Due to the space limitation of Google Drive, there are many files provided in CloudStor. Many thanks to CloudStor and The University of Sydney.
