@@ -119,7 +119,7 @@ Novel Object Zero-Shot
 |FCL* | 0.00 | 13.71 | 11.43|
 |ATL (COCO)* |  **5.05** | 14.69 | 13.08|
 
-* means we remove the object identity information from the detector and only use the boxes.
+\* means we remove the object identity information from the detector and only use the boxes.
 
 UC is compositional zero-shot HOI detection. UO means novel object zero-shot HOI detection.
 
