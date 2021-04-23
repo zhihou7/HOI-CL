@@ -97,6 +97,7 @@ Here, VCL+FCL is the fusion of the two model predictions, which illustrates the 
 
 ### Zero-Shot HOI detection
 
+Compositional Zero-Shot
 
 |Model| Type |Unseen|Seen|Full|
 |:-|:-:|:-:|:-:|:-:|
@@ -106,12 +107,16 @@ Here, VCL+FCL is the fusion of the two model predictions, which illustrates the 
 |VCL(non-rare first)|UC|16.22|18.52|18.06|
 |FCL(non-rare first)|UC|**18.66**|**19.55**|**19.37**|
 |ATL (non-rare first) |UC| 18.25 | 18.78 | 18.67|
+
+Novel Object Zero-Shot
+
+|Model| Type |Unseen|Seen|Full|
 |ATL (HICO-DET) | UO | 11.35 | 20.96 | 19.36 |
-|FCL | UO | 15.54 | 20.74 | 19.87|
+|FCL | UO | **15.54** | 20.74 | 19.87|
 |ATL (COCO) | UO | 15.11 | 21.54 | 20.47 |
 |ATL (HICO-DET)* | UO | 0.00 | 13.67 | 11.39 |
 |FCL* | UO | 0.00 | 13.71 | 11.43|
-|ATL (COCO)* |UO |  5.05 | 14.69 | 13.08|
+|ATL (COCO)* |UO |  **5.05** | 14.69 | 13.08|
 
 * means we remove the object identity information from the detector and only use the boxes.
 
