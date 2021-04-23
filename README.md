@@ -58,20 +58,6 @@ See [GETTING_STARTED_VCL.md](GETTING_STARTED_VCL.md). You can also find details 
 ## FCL
 
 See [GETTING_STARTED_FCL.md](GETTING_STARTED_FCL.md)
-### Train
-
-3. Train Zero-Shot HOI model with FCL on HICO-DET
-    ```Shell
-    python tools/Train_FCL_HICO.py
-    ```
-    
-### Test
-
-we provide this scripts to test code and eval the FCL results.
-
-    ```Shell
-    python scripts/eval.py
-    ```
 
 ## ATL
 
