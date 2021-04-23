@@ -8,7 +8,6 @@ This repository includes the code of
 
  **[Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867) (CVPR2021)**
 
-Project page: https://sites.google.com/view/hoi-cl.
 
 ![avatar](misc/imagine.png)
 
