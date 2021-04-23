@@ -12,8 +12,6 @@ Project page: https://sites.google.com/view/hoi-cl.
 
 ![avatar](misc/imagine.png)
 
-This repository is built from the code of previous approaches. Thanks for their excellent work.
-
 
 Code is being constructed.
 
@@ -23,11 +21,8 @@ Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code
 
 [Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code of FCL on VRD.
 
-Thanks for all reviewer's comments. 
 
-FCL inspires a lot to combine the object feature from object dataset and verb feature (i.e. ATL on HOI detection). ATL further gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. 
-
-** If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
+**If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
 
 
 ## Prerequisites
@@ -125,8 +120,11 @@ HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
 See [MODEL.md](MODEL.md)
 
 ### Qustion & Answer
+Thanks for all reviewer's comments. 
 
+FCL inspires a lot to combine the object feature from object dataset and verb feature (i.e. ATL on HOI detection). ATL further gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. 
 
+1. 
 
 ### Citations
 If you find this series of work are useful for you, please consider citing:
@@ -157,3 +155,9 @@ If you find this series of work are useful for you, please consider citing:
   year={2021}
 }
 ```
+
+
+
+## Acknowledgement
+Codes are built upon [Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407), [iCAN: Instance-Centric Attention Network 
+for Human-Object Interaction Detection](https://arxiv.org/abs/1808.10437), [Transferable Interactiveness Network](https://arxiv.org/abs/1811.08264), [tf-faster-rcnn](https://github.com/endernewton/tf-faster-rcnn).
