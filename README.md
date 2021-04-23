@@ -89,9 +89,9 @@ mAP on HICO-DET (Default)
 |VCL|23.63 | 17.21 | 25.55 |
 |FCL|24.68 | 20.03 | 26.07|
 |VCL+FCL| 25.27| 20.57 |26.67|
-|VCL^$GT$|43.09 | 32.56| 46.24|
-|FCL^$GT$|44.26 | 35.46| 46.88|
-|(VCL+FCL)^$GT$|45.25 | 36.27 | 47.94|
+|VCL <sup>GT</sup>|43.09 | 32.56| 46.24|
+|FCL<sup>GT</sup>|44.26 | 35.46| 46.88|
+|(VCL+FCL)<sup>GT</sup>|45.25 | 36.27 | 47.94|
 
 Here, VCL+FCL is the fusion of the two model predictions, which illustrates the complementary between the two lines of work. Table 12 in ATL also illustrates the differences between VCL and FCL. We also tried to directly train the network with the two methods. However, it is worse than the score fusion result.
 
@@ -106,11 +106,9 @@ Here, VCL+FCL is the fusion of the two model predictions, which illustrates the 
 |VCL(non-rare first)|UC|16.22|18.52|18.06|
 |FCL(non-rare first)|UC|**18.66**|**19.55**|**19.37**|
 |ATL (non-rare first) |UC| 18.25 | 18.78 | 18.67|
-
 |ATL (HICO-DET) | UO | 11.35 | 20.96 | 19.36 |
 |FCL | UO | 15.54 | 20.74 | 19.87|
 |ATL (COCO) | UO | 15.11 | 21.54 | 20.47 |
-
 |ATL (HICO-DET)* | UO | 0.00 | 13.67 | 11.39 |
 |FCL* | UO | 0.00 | 13.71 | 11.43|
 |ATL (COCO)* |UO |  5.05 | 14.69 | 13.08|
