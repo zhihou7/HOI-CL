@@ -143,10 +143,10 @@ Please notice train2017 might contain part of V-COCO test data. Thus, we just us
 
 See [DATA.md](DATA.md) to obtain more test and training data.
 
-#### Pre-trained Models
+### Pre-trained Models
 See [MODEL.md](MODEL.md)
 
-### Qustion & Answer
+## Qustion & Answer
 Thanks for all reviewer's comments. 
 
 FCL inspires a lot to combine the object feature from object dataset and verb feature (i.e. ATL on HOI detection). ATL further gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. 
@@ -155,7 +155,7 @@ FCL inspires a lot to combine the object feature from object dataset and verb fe
 We illustrate the difference between DRG boxes and VCL boxes in Table 16 in FCL. The recall of FCL with DRG box is nearly similar to GT boxes (62.07 (VCL), 82.81(DRG), 86.08(GT) respectively).
 
 
-### Citations
+## Citations
 If you find this series of work are useful for you, please consider citing:
 
 ```
