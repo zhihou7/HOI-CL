@@ -14,12 +14,6 @@ This repository includes the code of
 
 Code is being constructed.
 
-Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V-COCO
-
-Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and ATL based on One-Stage method.
-
-[Here](https://unisydneyedu-my.sharepoint.com/:u:/g/personal/zhou9878_uni_sydney_edu_au/EXOYJZ1N_phJlFW0nTgnABgBuyghLGqVE8C2t5EfiV--xA?e=cXM24T) we provide the code of FCL on VRD.
-
 
 **If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
 
@@ -131,8 +125,10 @@ Here, we provides the result reported by AP.
 ||||||||
 |ATL<sup>ZS</sup>   |HICO | HICO|      24.21 |       20.88 |     28.56 |       12.26 |
 |ATL<sup>ZS</sup> |HICO | COCO |    **35.55** |   **31.77** |   **39.45** |    **13.25** |
+
 ## Data & Model
-#### Data
+### Data
+
 We present the differences between different detector in our paper and analyze the effect of object boxes on HOI detection. VCL detector and DRG detector can be download from the corresponding paper. Due to the space limitation of Google Drive, there are many files provided in CloudStor. Many thanks to CloudStor and The University of Sydney.
 Here, we provide the GT boxes.
 
@@ -145,29 +141,7 @@ HOI-COCO training data: https://cloudstor.aarnet.edu.au/plus/s/6NzReMWHblQVpht
 
 Please notice train2017 might contain part of V-COCO test data. Thus, we just use train2014 in our experiment. If we use train2017, the result might be better (improve about 0.5%). We think that is the case: we have localized objects, but we do not know the interaction. 
 
-##### Affordance Recognition evaltion dataset
-
-Evalation of Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/GpNkjOHaS8xN5ar
-
-Evalation of COCO (val2017): https://cloudstor.aarnet.edu.au/plus/s/QBXOYiJ5NHqtcti
-
-Evalation of Object365 (novel classes): https://cloudstor.aarnet.edu.au/plus/s/pRBLkhy9TUm5xGo
-
-Evalation of HICO (test): https://cloudstor.aarnet.edu.au/plus/s/AFrv822lPC30iHt
-
-
-
-#### Object Dataset (HICO)
-Here we provide the object datasets that we use in this repo. The format is the same as the training data of HICO.
-
-COCO: https://cloudstor.aarnet.edu.au/plus/s/9cgMYKq5B4waawA
-
-#### Object Dataset (HOI-COCO)
-Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/VuHvDdp5msRnpqn. (we do not run this experiment).
-
-COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
-
-HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
+See [DATA.md](DATA.md) to obtain more test and training data.
 
 #### Pre-trained Models
 See [MODEL.md](MODEL.md)
@@ -216,3 +190,6 @@ If you find this series of work are useful for you, please consider citing:
 ## Acknowledgement
 Codes are built upon [Visual Compositional Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2007.12407), [iCAN: Instance-Centric Attention Network 
 for Human-Object Interaction Detection](https://arxiv.org/abs/1808.10437), [Transferable Interactiveness Network](https://arxiv.org/abs/1811.08264), [tf-faster-rcnn](https://github.com/endernewton/tf-faster-rcnn).
+
+Thanks for all reviewer's comments, e.g. object feature illustration by t-SNE figure, 
+which shows the fabricated objects are a bit different from real object features.

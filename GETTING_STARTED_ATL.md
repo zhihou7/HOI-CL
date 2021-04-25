@@ -1,10 +1,9 @@
-### [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867)
+## [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867)
 
-Thanks for all reviewer's comments. That's very valuable for our next work. 
-ATL gives a new insight to HOI understanding and in fact inspires a lot to our next work
 
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 
+![](misc/compose_obj1.png)
 
 We notice we can also split V-COCO into 24 verbs. Therefore, we also provides the HOI-COCO with 24 verbs (i.e. both _instr and _obj are kept) 
 
@@ -129,3 +128,8 @@ If you find this submission is useful for you, please consider citing:
   year={2021}
 }
 ```
+
+## Acknowledgement
+
+Thanks for all reviewer's comments. That's very valuable for our next work. 
+ATL gives a new insight to HOI understanding and in fact inspires a lot to our next work
