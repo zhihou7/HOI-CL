@@ -2,7 +2,7 @@
 
 ![](misc/imagine.png)
 
-## Training
+### Training
 
 1. Train an VCL on HICO-DET
     ```Shell
@@ -24,7 +24,7 @@
     python tools/Train_VCL_ResNet_VCOCO.py --model VCL_union_multi_ml1_l05_t3_rew_aug5_3_new_VCOCO_test --num_iteration 400000
     ```
 
-## Model Parameters
+### Model Parameters
 Our model will converge at around iteration 500000 in HICO-DET. V-COCO will converge after 200000 iterations. We provide the model parameters that we trained as follows,
 
 V-COCO: https://drive.google.com/file/d/1SzzMw6fS6fifZkpuar3B40dIl7YLNoYF/view?usp=sharing. I test the result is 47.82. The baseline also decreases compared to the reported result. The model in my reported result is deleted by accident. Empirically, hyper-parameters $lambda_1$ affects V-COCO more apparently.
@@ -34,7 +34,7 @@ HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp
 HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
 
 
-## Testing
+### Testing
 1. Test an VCL on V-COCO
     ```Shell
      python tools/Test_ResNet_VCOCO.py --num_iteration 200000

@@ -8,14 +8,14 @@ Here ([FCL_VCOCO](https://github.com/zhihou7/FCL_VCOCO)) is the Code of FCL on V
 
 
 
-## Train
+### Train
 
 3. Train Zero-Shot HOI model with FCL on HICO-DET
     ```Shell
     python tools/Train_FCL_HICO.py
     ```
     
-## Test
+### Test
 
 we provide this scripts to test code and eval the FCL results.
 

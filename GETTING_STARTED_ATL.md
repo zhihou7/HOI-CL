@@ -1,9 +1,10 @@
 ## [Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867)
 
 
+![](misc/compose_obj1.png)
+
 Here ([HOI-CL-OneStage](https://github.com/zhihou7/HOI-CL-OneStage)) is the Code of VCL and FCL based on One-Stage method.
 
-![](misc/compose_obj1.png)
 
 We notice we can also split V-COCO into 24 verbs. Therefore, we also provides the HOI-COCO with 24 verbs (i.e. both _instr and _obj are kept) 
 
@@ -85,21 +86,8 @@ python scripts/affordance/extract_hoi_preds.py
 python scripts/affordance/stat_hico_affordance.py
 ```
 
-## Data & Model
-#### Data
-We present the differences between different detector in our paper and analyze the effect of object boxes on HOI detection. VCL detector and DRG detector can be download from the corresponding paper. 
-Here, we provide the GT boxes.
 
-GT boxes annotation: https://drive.google.com/file/d/15UXbsoverISJ9wNO-84uI4kQEbRjyRa8/view?usp=sharing
-
-#### Pre-trained model
-
-FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
-
-ATL model (HOI-COCO): 
-ATL model (HICO-DET): 
-
-### Citations
+## Citations
 If you find this submission is useful for you, please consider citing:
 
 ```
