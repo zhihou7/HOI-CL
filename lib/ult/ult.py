@@ -2192,6 +2192,7 @@ def get_new_Trainval_N(Trainval_N, is_zero_shot, unseen_idx):
 def get_zero_shot_type(model_name):
     zero_shot_type = 0
     if model_name.__contains__('_zs_'):
+        # for open long-tailed hoi detection
         zero_shot_type = 7
     elif model_name.__contains__('zsnrare'):
         zero_shot_type = 4
