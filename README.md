@@ -12,7 +12,6 @@ This repository includes the code of
 ![avatar](misc/imagine.png)
 
 
-Code is being constructed.
 
 
 **If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
@@ -151,9 +150,13 @@ Thanks for all reviewer's comments.
 
 FCL inspires a lot to combine the object feature from object dataset and verb feature (i.e. ATL on HOI detection). ATL further gives a lot of insight to us in HOI understanding. We are still working on the relationship between HOI understanding and object understanding, the compositionality of HOI. 
 
-#### Different Object Detectors
-We illustrate the difference between DRG boxes and VCL boxes in Table 16 in FCL. The recall of FCL with DRG box is nearly similar to GT boxes (62.07 (VCL), 82.81(DRG), 86.08(GT) respectively).
 
+
+### Different Object Detectors
+We illustrate the difference between DRG boxes and VCL boxes in Table 16 in FCL. **The recall of FCL with DRG box is nearly similar to GT boxes (62.07 (VCL), 82.81(DRG), 86.08(GT) respectively).**
+
+### Human Box Verb
+Following VCL, We extract the verb representation from union box in ATL. However, we find the verb representation (union box vs human box) has an important effect on affordance recognition. Please see https://github.com/zhihou7/HOI-CL/issues/1. Thanks for this issue. We'll update appendix in the version of arxiv.
 
 ## Citations
 If you find this series of work are useful for you, please consider citing:
