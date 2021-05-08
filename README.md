@@ -9,7 +9,7 @@ This repository includes the code of
  **[Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867) (CVPR2021)**
 
 
-![avatar](misc/imagine.png)
+![avatar](misc/compose_obj1.png)
 
 
 
