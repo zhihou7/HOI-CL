@@ -1072,17 +1072,17 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
     g_func = generator2
 
     def generator3(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type):
-        buffer = [[] for i in range(8)]
+        buffer = [[] for i in range(7)]
         import time
         st = time.time()
         count_time = 0
         avg_time = 0
         for im_orig, image_id, num_pos, Human_augmented, \
-            Object_augmented, action_HO, Pattern, pose_list, obj_mask in g_func(Trainval_GT, Trainval_N, Pos_augment,
+            Object_augmented, action_HO, Pattern in g_func(Trainval_GT, Trainval_N, Pos_augment,
                                                                                 Neg_select,
                                                                                 augment_type, pattern_type,
                                                                                 zero_shot_type, isalign,
-                                                                                0, neg_type_ratio):
+                                                                                0):
             buffer[0].append(im_orig)
             buffer[1].append(image_id)
             buffer[2].append(num_pos)
@@ -1090,7 +1090,6 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
             buffer[4].append(Object_augmented)
             buffer[5].append(action_HO)
             buffer[6].append(Pattern)
-            buffer[7].append(obj_mask)
             # buffer[8].append(pose_list)
             # print(im_orig.shape, image_id, num_pos,
             #       Human_augmented.shape, Object_augmented.shape, action_HO.shape, Pattern.shape, obj_mask.shape)
@@ -1138,23 +1137,13 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
                              [(0, 0), (0, max(0, width - im_shape2[1])), (0, max(0, height - im_shape2[2])), (0, 0)],
                              mode='constant')
 
-                im_shape1 = buffer[7][0].shape
-                im_shape2 = buffer[7][1].shape
-                width = max(im_shape1[1], im_shape2[1])
-                height = max(im_shape1[2], im_shape2[2])
-                mask1 = np.pad(buffer[7][0],
-                               [(0, 0), (0, max(0, width - im_shape1[1])), (0, max(0, height - im_shape1[2])), (0, 0)],
-                               mode='constant')
-                mask2 = np.pad(buffer[7][1],
-                               [(0, 0), (0, max(0, width - im_shape2[1])), (0, max(0, height - im_shape2[2])), (0, 0)],
-                               mode='constant')
 
                 split_idx = pos1
                 yield np.concatenate([im1, im2], axis=0), buffer[1], pos1 + pos2, buffer[3], buffer[4], buffer[5], \
-                      buffer[6], np.concatenate([mask1, mask2], axis=0), split_idx
+                      buffer[6], split_idx
                 # image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, split_idx
 
-                buffer = [[] for i in range(8)]
+                buffer = [[] for i in range(7   )]
                 # avg_time = ((time.time() - st) + avg_time * count_time) / (count_time + 1)
                 # count_time += 1
                 # print('generate batch:', time.time() - st, "average;",  avg_time)
@@ -1167,7 +1156,7 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
     dataset = tf.data.Dataset.from_generator(
         partial(generator3, Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type),
         output_types=(
-            tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.int32),
+            tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.int32),
         output_shapes=(
             tf.TensorShape([2, None, None, 3]),
             tf.TensorShape([2, ]),
@@ -1176,7 +1165,6 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
             tf.TensorShape([None, 5]),
             tf.TensorShape([None, 600]),
             tf.TensorShape([None, 64, 64, pattern_channel]),
-            tf.TensorShape([None, None, None, 1]),
             tf.TensorShape([])
             # tf.TensorShape([2, None, None, None, 1])
         )
@@ -1190,8 +1178,8 @@ def obtain_data2(Pos_augment=15, Neg_select=60, augment_type=0, model_name='', p
     # dataset._dataset.batch(3)
     iterator = dataset.make_one_shot_iterator()
     obj_mask = None
-    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, split_idx = iterator.get_next()
-    return image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, split_idx
+    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, split_idx = iterator.get_next()
+    return image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, split_idx
 
 def get_new_Trainval_GT(Trainval_GT, is_zero_shot, unseen_idx):
     unseen_idx = set(unseen_idx)
@@ -1330,9 +1318,9 @@ def obtain_data2_large(Pos_augment=15, Neg_select=60, augment_type=0, model_name
         avg_time = 0
         # np.random.seed(0)
         for im_orig, image_id, num_pos, Human_augmented, Object_augmented, \
-            action_HO, Pattern, pose_list, obj_mask in g_func(Trainval_GT, Trainval_N, Pos_augment, Neg_select,
+            action_HO, Pattern in g_func(Trainval_GT, Trainval_N, Pos_augment, Neg_select,
                                                               augment_type,
-                                                              pattern_type, zero_shot_type, isalign, 0, neg_type_ratio):
+                                                              pattern_type, zero_shot_type, isalign, 0):
             buffer[0].append(im_orig)
             buffer[1].append(image_id)
             buffer[2].append(num_pos)
@@ -1340,7 +1328,6 @@ def obtain_data2_large(Pos_augment=15, Neg_select=60, augment_type=0, model_name
             buffer[4].append(Object_augmented)
             buffer[5].append(action_HO)
             buffer[6].append(Pattern)
-            buffer[7].append(obj_mask)
             buffer[3][-1][:, 0] = len(buffer[3]) - 1
             buffer[4][-1][:, 0] = len(buffer[3]) - 1
             # print(im_orig.shape, image_id, num_pos,
@@ -1388,13 +1375,9 @@ def obtain_data2_large(Pos_augment=15, Neg_select=60, augment_type=0, model_name
                 width = max([buffer[7][b].shape[1] for b in range(bnum)])
                 height = max([buffer[7][b].shape[2] for b in range(bnum)])
 
-                mask_list = []
-                for b in range(bnum):
-                    mask_list.append(np.pad(buffer[7][b], [(0, 0), (0, max(0, width - buffer[7][b].shape[1])),
-                                                           (0, max(0, height - buffer[7][b].shape[2])), (0, 0)],
-                                            mode='constant'))
+
                 yield np.concatenate(im_list, axis=0), buffer[1], sum(pos_semi_list), \
-                      buffer[3], buffer[4], buffer[5], buffer[6], np.concatenate(mask_list, axis=0), pos_semi_list[0]
+                      buffer[3], buffer[4], buffer[5], buffer[6], pos_semi_list[0]
                 # image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, split_idx
 
                 buffer = [[] for i in range(8)]
@@ -1450,7 +1433,7 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
     g_func = generator2
 
     def generator3(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type):
-        buffer = [[] for i in range(8)]
+        buffer = [[] for i in range(7)]
         import time
         st = time.time()
         count_time = 0
@@ -1458,12 +1441,12 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
         # np.random.seed(0)
         # image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pose_list, obj_mask
         semi_g = generator2(Trainval_semi, {}, Pos_augment, Neg_select, augment_type, False, zero_shot_type, isalign,
-                            epoch, neg_type_ratio)
+                            epoch, )
         for im_orig, image_id, num_pos, Human_augmented, Object_augmented, \
-            action_HO, Pattern, pose_list, obj_mask in g_func(Trainval_GT, Trainval_N, Pos_augment, Neg_select,
+            action_HO, Pattern in g_func(Trainval_GT, Trainval_N, Pos_augment, Neg_select,
                                                               augment_type,
                                                               pattern_type, zero_shot_type, False, epoch,
-                                                              neg_type_ratio):
+                                                              ):
             buffer[0].append(im_orig)
             buffer[1].append(image_id)
             buffer[2].append(num_pos)
@@ -1471,9 +1454,8 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
             buffer[4].append(Object_augmented)
             buffer[5].append(action_HO)
             buffer[6].append(Pattern)
-            buffer[7].append(obj_mask)
             for b in range(bnum):
-                im_orig, image_id, num_pos, Human_augmented, Object_augmented, action_HO, Pattern, _, obj_mask = next(
+                im_orig, image_id, num_pos, Human_augmented, Object_augmented, action_HO, Pattern, = next(
                     semi_g)
                 buffer[0].append(im_orig)
                 buffer[1].append(image_id)
@@ -1482,7 +1464,6 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
                 buffer[4].append(Object_augmented)
                 buffer[5].append(action_HO)
                 buffer[6].append(Pattern)
-                buffer[7].append(obj_mask)
                 buffer[3][b + 1][:, 0] = b + 1
                 buffer[4][b + 1][:, 0] = b + 1
                 assert num_pos == len(Human_augmented)
@@ -1526,19 +1507,12 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
             width = max([buffer[7][b].shape[1] for b in range(bnum + 1)])
             height = max([buffer[7][b].shape[2] for b in range(bnum + 1)])
 
-            mask_list = []
-            for b in range(bnum + 1):
-                mask_list.append(np.pad(buffer[7][b], [(0, 0), (0, max(0, width - buffer[7][b].shape[1])),
-                                                       (0, max(0, height - buffer[7][b].shape[2])), (0, 0)],
-                                        mode='constant'))
-                # print('ddd:', im_list[-1].shape)
-
             split_idx = pos1
             yield np.concatenate(im_list, axis=0), buffer[1], pos1 + sum(pos_semi_list), \
-                  buffer[3], buffer[4], buffer[5], buffer[6], np.concatenate(mask_list, axis=0), split_idx
+                  buffer[3], buffer[4], buffer[5], buffer[6], split_idx
             # image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, split_idx
 
-            buffer = [[] for i in range(8)]
+            buffer = [[] for i in range(7)]
             # avg_time = ((time.time() - st) + avg_time * count_time) / (count_time + 1)
             # count_time += 1
             # print('generate batch:', time.time() - st, "average;",  avg_time)
@@ -2392,7 +2366,7 @@ def generator2(Trainval_GT, Trainval_N, Pos_augment, Neg_select, augment_type, p
                     im_shape,
                     Pos_augment=cur_pos_augment,
                     Neg_select=cur_neg_select,
-                    with_pose=pattern_type,
+                    pattern_type=pattern_type,
                     isalign=isalign)
 
                 # maintain same number of augmentation,
@@ -2485,16 +2459,14 @@ def obtain_data(Pos_augment=15, Neg_select=60, augment_type=0, pattern_type=0, z
 
     dataset = tf.data.Dataset.from_generator(partial(generator2, Trainval_GT, Trainval_N, Pos_augment, Neg_select,
                                                      augment_type, pattern_type, zero_shot_type, isalign, epoch,
-                                                     neg_type), output_types=(
-        tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32),
+                                                     ), output_types=(
+        tf.float32, tf.int32, tf.int64, tf.float32, tf.float32, tf.float32, tf.float32),
                                              output_shapes=(
                                                  tf.TensorShape([1, None, None, 3]), tf.TensorShape([]),
                                                  tf.TensorShape([]),
                                                  tf.TensorShape([None, 5]), tf.TensorShape([None, 5]),
                                                  tf.TensorShape([None, 600]),
-                                                 tf.TensorShape([None, 64, 64, 2]),
-                                                 tf.TensorShape([None, 51]),
-                                                 tf.TensorShape([None, None, None, 1])))
+                                                 tf.TensorShape([None, 64, 64, 2])))
     # dataset = tf.data.Dataset.from_generator(gen, output_types=(tf.float32, tf.int32),
     #                                          output_shapes=(tf.TensorShape([1, None, None, 3]), tf.TensorShape([])))
     dataset = dataset.prefetch(100)
@@ -2503,8 +2475,8 @@ def obtain_data(Pos_augment=15, Neg_select=60, augment_type=0, pattern_type=0, z
     # dataset = dataset.repeat(1000).shuffle(1000)
     # dataset._dataset.batch(3)
     iterator = dataset.make_one_shot_iterator()
-    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pose_list, obj_mask = iterator.get_next()
-    return image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pose_list, obj_mask
+    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = iterator.get_next()
+    return image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp
 
 
 def obtain_test_data(Pos_augment=15, Neg_select=60, augment_type=0, with_pose=False, large_neg_for_ho=False,

@@ -226,8 +226,8 @@ class Fabricator(object):
         gt_class_HO_for_G_verbs = tf.concat([tmp_gan_v_gt_class_HO, gt_class_HO_for_G_verbs], axis=0)
 
         self.network.set_gt_class_HO_for_G_verbs(gt_class_HO_for_G_verbs)
-        fc7_vo = self.network.head_to_tail_hoi(fc7_O_G, fc7_verbs_G, None, None, is_training, 'fc_HO')
-        cls_prob_verbs = self.network.region_classification_hoi(fc7_vo, is_training, initializer, 'classification',
+        fc7_vo = self.network.head_to_tail_ho(fc7_O_G, fc7_verbs_G, None, None, is_training, 'fc_HO')
+        cls_prob_verbs = self.network.region_classification_ho(fc7_vo, is_training, initializer, 'classification',
                                                                 nameprefix='fake_G_')
 
 
@@ -412,12 +412,23 @@ class Fabricator(object):
         return fc7_O, fc7_verbs
 
     def cal_dax_loss(self, fake_obj_list, initializer, is_training, new_fc7_verbs_D_1, new_ho_class_D_1, item_weights=None, nameprefix='fake_tmp_'):
+        """
+        This includes all objects. ie for each verb, fabricate all kinds of objects.
+        :param fake_obj_list:
+        :param initializer:
+        :param is_training:
+        :param new_fc7_verbs_D_1:
+        :param new_ho_class_D_1:
+        :param item_weights:
+        :param nameprefix:
+        :return:
+        """
         print('before', new_ho_class_D_1)
 
-        fc7_vo = self.network.head_to_tail_hoi(fake_obj_list, new_fc7_verbs_D_1, None, None, is_training, 'fc_HO')
-        cls_prob_verbs = self.network.region_classification_hoi(fc7_vo, is_training, initializer, 'classification',
+        fc7_vo = self.network.head_to_tail_ho(fake_obj_list, new_fc7_verbs_D_1, None, None, is_training, 'fc_HO')
+        cls_prob_verbs = self.network.region_classification_ho(fc7_vo, is_training, initializer, 'classification',
                                                                 nameprefix=nameprefix)
-        fake_cls_score_verbs = self.network.predictions[nameprefix + "cls_score_verbs"]
+        fake_cls_score_verbs = self.network.predictions[nameprefix + "cls_score_hoi"]
         print('lllll', fake_cls_score_verbs)
         import numpy as np
         # reweights = np.log(1 / (self.network.num_inst_all / np.sum(self.network.num_inst_all)))

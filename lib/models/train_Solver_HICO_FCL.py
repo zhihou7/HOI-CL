@@ -194,8 +194,6 @@ def train_net(network, Trainval_GT, Trainval_N, output_dir, tb_dir, Pos_augment,
     tfconfig.gpu_options.allow_growth = True
 
     with tf.Session(config=tfconfig) as sess:
-        network.init_verbs_objs_cls()
-        network.init_table()
         sw = SolverWrapperFCL(sess, network, Trainval_GT, Trainval_N, output_dir, tb_dir, Pos_augment, Neg_select,
                               Restore_flag, pretrained_model)
 

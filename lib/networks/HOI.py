@@ -568,7 +568,7 @@ class HOI(parent_model):
                 tmp_label_HO = self.gt_class_HO_for_D_verbs
                 cls_score_hoi = self.predictions["cls_score_hoi"][:tf.shape(self.gt_class_HO[:num_stop])[0], :]
                 if self.model_name.__contains__('_rew'):
-                    cls_score_verbs = tf.multiply(cls_score_hoi, reweights)
+                    cls_score_verbs = tf.multiply(cls_score_hoi, self.HO_weight)
                 elif self.model_name.__contains__('_xrew'):
                     reweights = np.log(1 / (self.num_inst / np.sum(self.num_inst)))
                     # print(reweights, self.HO_weight, self.num_inst_all, self.num_inst)
@@ -596,8 +596,8 @@ class HOI(parent_model):
                 if self.model_name.__contains__('_orig_'):
                     loss = loss + O_cross_entropy + H_cross_entropy
                     print('Add all loss')
-                if 'fake_G_cls_score_verbs' in self.predictions:
-                    fake_cls_score_verbs = self.predictions["fake_G_cls_score_verbs"]
+                if 'fake_G_cls_score_hoi' in self.predictions:
+                    fake_cls_score_verbs = self.predictions["fake_G_cls_score_hoi"]
                     if self.model_name.__contains__('_rew_'):
                         fake_cls_score_verbs = tf.multiply(fake_cls_score_verbs, self.HO_weight)
 

@@ -145,15 +145,15 @@ if __name__ == '__main__':
     # Generate_HICO_detection(output_file, HICO_dir)
     if args.model.__contains__('res101'):
         os.environ['DATASET'] = 'HICO_res101'
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
     elif args.model.__contains__('VCOCO'):
         os.environ['DATASET'] = 'VCOCO1'
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
     else:
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
 
     real_dataset_name = args.dataset if not args.dataset.startswith('gtobj365_coco') else 'gtobj365_coco'
     output_file = cfg.LOCAL_DATA + '/feats/' + str(args.iteration) + '_' + args.model + '_{}_{}.pkl'.format(args.dataset, args.num)

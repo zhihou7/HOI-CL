@@ -57,14 +57,14 @@ if __name__ == '__main__':
     tb_dir     = cfg.ROOT_DIR + '/logs/' + args.model + '/'
 
     # output directory where the models are saved
-    output_dir = cfg.LOCAL_DATA + '/Weights/' + args.model + '/'
+    output_dir = cfg.ROOT_DIR + '/Weights/' + args.model + '/'
     if os.path.exists(output_dir + 'checkpoint'):
         args.Restore_flag = -1
     import os
     os.environ['DATASET'] = 'VCOCO'
-    from networks.HOI import DisentanglingNet
+    from networks.HOI import HOI
     augment_type =4
-    network = DisentanglingNet(args.model)
+    network = HOI(args.model)
     image, image_id, num_pos, blobs = obtain_coco_data_hoicoco_24(args.Pos_augment, args.Neg_select)
     if args.model.__contains__('atl'):
         image, image_id, num_pos, blobs = obtain_coco_data_hoicoco_24_atl(args.Pos_augment, args.Neg_select)

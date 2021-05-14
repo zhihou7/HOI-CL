@@ -81,15 +81,15 @@ if __name__ == '__main__':
     # Generate_HICO_detection(output_file, HICO_dir)
     if args.model.__contains__('VCOCO'):
         os.environ['DATASET'] = 'VCOCO1'
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
     elif args.model.__contains__('res101'):
         os.environ['DATASET'] = 'HICO_res101'
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
     else:
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
 
     stride = 200
 

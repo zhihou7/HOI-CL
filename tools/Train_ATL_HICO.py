@@ -35,7 +35,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 from ult.config import cfg
-from models.train_Solver_HICO import train_net, SolverWrapper
 from models.train_Solver_HICO_MultiBatch import SolverWrapperMultiBatch
 
 from ult.ult import obtain_data, get_zero_shot_type, get_augment_type, obtain_data2, \
@@ -88,20 +87,21 @@ if __name__ == '__main__':
     np.random.seed(cfg.RNG_SEED)
     tf.random.set_random_seed(0)
     if args.model.__contains__('res101'):
-        weight    = cfg.LOCAL_DATA + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'
+        weight    = cfg.ROOT_DIR + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'
     else:
-        weight    = cfg.LOCAL_DATA + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
+        weight    = cfg.ROOT_DIR + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
 
     # output directory where the logs are saved
     tb_dir     = cfg.LOCAL_DATA + '/logs/' + args.model + '/'
 
     # output directory where the models are saved
-    output_dir = cfg.LOCAL_DATA + '/Weights/' + args.model + '/'
+    output_dir = cfg.ROOT_DIR + '/Weights/' + args.model + '/'
     start_epoch = 0
     if args.Restore_flag == 5:
         if os.path.exists(output_dir+'checkpoint'):
             args.Restore_flag = -1
         elif args.model.__contains__('cosine') and not args.model.__contains__('s0'):
+            # This is for fine-tuning
             args.Restore_flag = -7
         elif args.model.__contains__('unique_weights'):
             args.Restore_flag = 6
@@ -118,11 +118,11 @@ if __name__ == '__main__':
 
     if args.model.__contains__('res101'):
         os.environ['DATASET'] = 'HICO_res101'
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
     else:
-        from networks.HOI import DisentanglingNet
-        net = DisentanglingNet(model_name=args.model)
+        from networks.HOI import HOI
+        net = HOI(model_name=args.model)
 
     pattern_type = 0
     zero_shot_type = get_zero_shot_type(args.model)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
         if args.model.__contains__('batch3'):
             bnum = 4
 
-        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, pos1_idx = obtain_batch_data_semi1(
+        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pos1_idx = obtain_batch_data_semi1(
             Pos_augment=args.Pos_augment,
             Neg_select=args.Neg_select,
             augment_type=augment_type, model_name=args.model, pattern_type=pattern_type, zero_shot_type=zero_shot_type, isalign=isalign,
@@ -173,14 +173,14 @@ if __name__ == '__main__':
             bnum = 2
         elif args.model.__contains__('large1'):
             bnum = 3
-        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, pos1_idx = obtain_data2_large(
+        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pos1_idx = obtain_data2_large(
             Pos_augment=args.Pos_augment,
             Neg_select=args.Neg_select,
             augment_type=augment_type,
             model_name=args.model,
             pattern_type=pattern_type, zero_shot_type=zero_shot_type, bnum=bnum, neg_type_ratio=neg_type_ratio)
     else:
-        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask, pos1_idx = obtain_data2(
+        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pos1_idx = obtain_data2(
             Pos_augment=args.Pos_augment,
             Neg_select=args.Neg_select,
             augment_type=augment_type,
@@ -188,8 +188,8 @@ if __name__ == '__main__':
             pattern_type=pattern_type,
             zero_shot_type=zero_shot_type,
         neg_type_ratio=neg_type_ratio)
-    net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask)
-    net.set_add_ph(obj_mask, pos1_idx)
+    net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
+    net.set_add_ph(None, pos1_idx)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -211,7 +211,7 @@ if __name__ == '__main__':
         else:
             sw = SolverWrapperMultiBatch(sess, net, output_dir, tb_dir,
                                         args.Restore_flag, weight)
-        sw.set_data(image, image_id, num_pos, Human_augmented, Object_augmented, net.gt_class_HO, sp, obj_mask)
+        sw.set_data(image, image_id, num_pos, Human_augmented, Object_augmented, net.gt_class_HO, sp, None)
         print('Solving..., Pos augment = ' + str(args.Pos_augment) + ', Neg augment = ' + str(
             args.Neg_select) + ', Restore_flag = ' + str(args.Restore_flag))
         sw.train_model(sess, args.max_iters)

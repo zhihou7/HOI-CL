@@ -36,7 +36,6 @@ class SolverWrapperMultiBatch(SolverWrapper):
         self.O_boxes  = None
         self.gt_class_HO  = None
         self.H_num  = None
-        self.obj_mask = None
 
     def set_data(self, image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask):
         self.image = image
@@ -46,7 +45,6 @@ class SolverWrapperMultiBatch(SolverWrapper):
         self.O_boxes = Object_augmented
         self.gt_class_HO = action_HO
         self.H_num = num_pos
-        self.obj_mask = obj_mask
 
     def construct_graph(self, sess):
         print("construct_graph")
@@ -150,7 +148,6 @@ class SolverWrapperMultiBatch(SolverWrapper):
         logger.setLevel(logging.DEBUG)
         iter = self.get_init_step()
         while iter < max_iters + 1:
-            self.net.increase_global_steps(iter)
             timer.tic()
             if (iter % cfg.TRAIN.SUMMARY_INTERVAL == 0) or (iter < 20):
 

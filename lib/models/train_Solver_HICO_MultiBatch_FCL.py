@@ -164,7 +164,6 @@ class SolverWrapperMultiBatchFCL(SolverWrapper):
 
     def train_model_stepwise_inner(self, D_loss, g_loss, iter, lr, max_iters, sess, timer, train_op, train_op_g):
         while iter < max_iters + 1:
-            self.net.increase_global_steps(iter)
             timer.tic()
 
             total_loss = 0
@@ -231,7 +230,6 @@ class SolverWrapperMultiBatchFCL(SolverWrapper):
 
     def train_model_epic3_inner(self, D_loss, g_loss, iter, lr, max_iters, sess, timer, train_op, train_op_g):
         while iter < max_iters + 1:
-            self.net.increase_global_steps(iter)
             timer.tic()
 
             total_loss = 0

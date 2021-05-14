@@ -166,7 +166,6 @@ class VCOCOSolverWrapperCL(SolverWrapper):
         # Data_length = len(self.Trainval_GT)
         iter = self.get_init_step()
         while iter < max_iters + 1:
-            self.net.increase_global_steps(iter)
             timer.tic()
 
             blobs = {}

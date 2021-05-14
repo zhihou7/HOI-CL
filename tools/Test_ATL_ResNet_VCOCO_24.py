@@ -87,9 +87,9 @@ if __name__ == '__main__':
     import os
 
     os.environ['DATASET'] = 'VCOCO1'
-    from networks.HOI import DisentanglingNet
+    from networks.HOI import HOI
 
-    net = DisentanglingNet(args.model)
+    net = HOI(args.model)
 
     print('Pre-trained weights loaded.')
 
