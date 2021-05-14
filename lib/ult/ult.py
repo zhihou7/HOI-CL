@@ -1455,8 +1455,7 @@ def obtain_batch_data_semi1(Pos_augment=15, Neg_select=60, augment_type=0, model
             buffer[5].append(action_HO)
             buffer[6].append(Pattern)
             for b in range(bnum):
-                im_orig, image_id, num_pos, Human_augmented, Object_augmented, action_HO, Pattern, = next(
-                    semi_g)
+                im_orig, image_id, num_pos, Human_augmented, Object_augmented, action_HO, Pattern, = next(semi_g)
                 buffer[0].append(im_orig)
                 buffer[1].append(image_id)
                 buffer[2].append(num_pos)
