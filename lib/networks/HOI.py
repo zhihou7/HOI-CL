@@ -297,7 +297,7 @@ class HOI(parent_model):
             # if self.model_name.__contains__('laobj'):
             #     # this aims to evaluate the effect of regularizing fabricated object features, we do not use.
             #     all_fc7_O = fc7_O
-            #     tmp_class = self.gt_class_HO_for_D_verbs
+            #     tmp_class = self.get_hoi_labels()
             #     self.gt_obj_class = tf.cast(
             #         tf.matmul(tmp_class, self.obj_to_HO_matrix, transpose_b=True) > 0,
             #         tf.float32)
@@ -325,13 +325,11 @@ class HOI(parent_model):
             fc7_O = fc7_O[:num_stop]
             fc7_verbs = fc7_verbs[:num_stop]
 
+        with tf.device('cpu:0'):
+            fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_verbs), num_stop, tf.shape(self.gt_class_HO)], 'testettt before')
+
         fc7_vo = self.head_to_tail_ho(fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, 'fc_HO')
         cls_prob_verbs = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
-        if self.gt_class_HO_for_D_verbs is None:
-            print('set', self.gt_class_HO_for_D_verbs, num_stop)
-            self.gt_class_HO_for_D_verbs = self.gt_class_HO[:num_stop]
-            if self.model_name.__contains__('VCOCO') and self.model_name.__contains__('CL'):
-                self.gt_class_HO_for_D_verbs = self.gt_compose[:num_stop]
 
         if self.model_name.__contains__('_l0_') or self.model_name.__contains__('_scale_'):
             """
@@ -353,6 +351,15 @@ class HOI(parent_model):
             self.predictions['cls_prob_verbs'] += (tmp_fc7_O_vectors + tmp_fc7_verbs_vectors)
 
         self.score_summaries.update(self.predictions)
+
+    def get_hoi_labels(self):
+        if self.gt_class_HO_for_D_verbs is not None:
+            # we might have changed label in Fabricator
+            return self.gt_class_HO_for_D_verbs
+        else:
+            if self.model_name.__contains__('VCOCO') and self.model_name.__contains__('CL'):
+                return self.gt_compose
+            return self.gt_class_HO
 
     def add_visual_for_test(self, fc7_HO_raw, fc7_H_raw, fc7_O_raw, head, is_training, pool5_O):
         self.test_visualize['fc7_H_raw'] = tf.expand_dims(tf.reduce_mean(fc7_H_raw, axis=-1), axis=-1)
@@ -496,17 +503,14 @@ class HOI(parent_model):
                 loss = hoi_cross_entropy
             elif self.model_name.__contains__('_fac_'):
                 # factorized
-                # tmp_label_HO = self.gt_class_HO_for_D_verbs
-                gt_verb_label = self.gt_verb_class[:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
-                gt_obj_label = self.gt_obj_class[:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                gt_verb_label = self.gt_verb_class[:num_stop, :]
+                gt_obj_label = self.gt_obj_class[:num_stop, :]
                 # label_verb = tf.matmul()
-                cls_score_verbs = self.predictions["cls_score_verbs_f"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
-                cls_score_objs = self.predictions["cls_score_objs"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
+                cls_score_verbs = self.predictions["cls_score_verbs_f"][:num_stop, :]
+                cls_score_objs = self.predictions["cls_score_objs"][:num_stop, :]
                 hoi_cross_entropy = self.add_factorized_hoi_loss(cls_score_objs, cls_score_verbs, gt_obj_label,
                                                                  gt_verb_label)
 
-                # tmp_verb_prob = self.predictions["cls_prob_verbs_f"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
-                # tmp_verb_obj = self.predictions["cls_prob_objs"][:tf.shape(self.gt_class_HO_for_D_verbs)[0], :]
                 # result = tf.equal(tf.cast(tmp_verb_prob * gt_verb_label > 0.5, tf.float32),
                 #                   tf.cast(gt_verb_label, tf.float32))
                 # print('res', result)
@@ -526,10 +530,9 @@ class HOI(parent_model):
             elif self.model_name.startswith('VCL_') or self.model_name.startswith('FCL_') \
                     or self.model_name.startswith('ATL_'):
 
-                tmp_label_HO = self.gt_class_HO_for_D_verbs[:num_stop, :]
+                tmp_label_HO = self.get_hoi_labels()[:num_stop]
 
                 cls_score_hoi = self.predictions["cls_score_hoi"][:num_stop, :]
-                # with tf.device('cpu:0'): tmp_label_HO = tf.Print(tmp_label_HO, [tf.shape(tmp_label_HO), tf.shape(cls_score_hoi)], 'testettt')
                 if self.model_name.__contains__('_rew'):
                     cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)
                 elif self.model_name.__contains__('_xrew'):
@@ -596,7 +599,6 @@ class HOI(parent_model):
         return loss
 
     def add_factorized_hoi_loss(self, cls_score_objs, cls_score_verbs, gt_obj_label, gt_verb_label):
-        print('debug gt_class_HO_for_D_verbs:', self.gt_class_HO_for_D_verbs, cls_score_verbs)
         # cls_score_verbs = tf.multiply(cls_score_verbs, self.HO_weight)
         # cls_score_objs = tf.multiply(cls_score_objs, self.HO_weight)
         # tmp_label_HO = tf.Print(tmp_label_HO, [tf.shape(tmp_label_HO), tf.shape(cls_score_verbs)],'sdfsdfsdf')
@@ -680,7 +682,7 @@ class HOI(parent_model):
                 labels=self.gt_obj_class[:num_stop], logits=obj_cls_score[:num_stop, :]))
         else:
             label_obj = tf.cast(
-                tf.matmul(self.gt_class_HO_for_D_verbs, self.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(self.get_hoi_labels(), self.obj_to_HO_matrix, transpose_b=True) > 0,
                 tf.float32)
             obj_cls_cross_entropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
                 labels=label_obj[:tf.shape(obj_cls_score)[0], :], logits=obj_cls_score))

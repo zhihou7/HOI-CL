@@ -12,9 +12,9 @@ class IOTestCase(tf.test.TestCase):
         pass
 
     def test_obtain_data1(self):
-        from ult.ult import obtain_data1
+        from ult.ult import obtain_data_vcl_hico
 
-        image, img_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data1(
+        image, img_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data_vcl_hico(
             Pos_augment=15, Neg_select=60, augment_type=5, zero_shot_type=0, isalign=True)
 
         with self.test_session() as sess:

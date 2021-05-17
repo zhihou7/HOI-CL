@@ -28,7 +28,7 @@ logger.setLevel(logging.DEBUG)
 from ult.config import cfg
 from models.train_Solver_HICO_MultiGPU import SolverWrapperMultiGPU
 
-from ult.ult import obtain_data, obtain_data1, get_zero_shot_type, get_augment_type
+from ult.ult import obtain_data, obtain_data_vcl_hico, get_zero_shot_type, get_augment_type
 
 from tensorflow.python.client import device_lib
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     zero_shot_type = get_zero_shot_type(args.model)
     assert args.model.__contains__('multi')
 
-    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data1(
+    image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data_vcl_hico(
         Pos_augment=args.Pos_augment,
         Neg_select=args.Neg_select,
         augment_type=augment_type, with_pose=with_pose, zero_shot_type=zero_shot_type)

@@ -2962,8 +2962,8 @@ def get_epoch_iters(model_name):
     return epoch_iters
 
 
-def obtain_data1(Pos_augment=15, Neg_select=60, augment_type=0, with_pose=False, zero_shot_type=0, isalign=False,
-                 epoch=0):
+def obtain_data_vcl_hico(Pos_augment=15, Neg_select=60, augment_type=0, with_pose=False, zero_shot_type=0, isalign=False,
+                         epoch=0):
     # we do not use pose, thus we remove it.
     with open(cfg.DATA_DIR + '/' + 'Trainval_GT_HICO.pkl', "rb") as f:
         Trainval_GT = pickle.load(f, encoding='latin1')
