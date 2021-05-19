@@ -62,9 +62,11 @@ if __name__ == '__main__':
     Trainval_N = None
     np.random.seed(cfg.RNG_SEED)
 
-    weight    = cfg.ROOT_DIR + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'
+    if args.model.__contains__('res101'):
+        weight    = cfg.ROOT_DIR + '/Weights/res101_faster_rcnn_iter_1190000.ckpt'
+    else:
     # we will provide the resnet50 model in the released version
-    # weight    = cfg.ROOT_DIR + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
+        weight    = cfg.ROOT_DIR + '/Weights/res50_faster_rcnn_iter_1190000.ckpt'
 
     print(weight)
     tb_dir     = cfg.ROOT_DIR + '/logs/' + args.model + '/'
