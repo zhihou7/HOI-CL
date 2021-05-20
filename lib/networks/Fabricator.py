@@ -343,18 +343,18 @@ class Fabricator(object):
         gan_fc7_verbs = fc7_verbs
         gan_v_gt_class_HO = v_gt_class_HO
 
-        word2vec_list_G, new_fc7_verbs_G, new_fc7_objects_G, new_ho_class_G = \
-                self.get_variable_by_all(gan_fc7_verbs, gan_fc7_O, gan_v_gt_class_HO)
+        # word2vec_list_G, new_fc7_verbs_G, new_fc7_objects_G, new_ho_class_G = \
+        #         self.get_variable_by_all(gan_fc7_verbs, gan_fc7_O, gan_v_gt_class_HO)
 
-        fake_obj_list = self.convert_emb_feats(word2vec_list_G, new_fc7_verbs_G, type= noise_type)
+        # fake_obj_list = self.convert_emb_feats(word2vec_list_G, new_fc7_verbs_G, type= noise_type)
         # with tf.device('/cpu:0'):
         #     tf.summary.histogram('fake_obj_g', fake_obj_list)
         #     tf.summary.histogram('real_obj_g', new_fc7_objects_G)
         # self.add_discriminator_loss(fake_obj_list, new_fc7_objects, initializer, is_training)
-        fc7_O_G = fake_obj_list
-        fc7_verbs_G = new_fc7_verbs_G
-        gt_class_HO_for_G_verbs = new_ho_class_G
-        print('===========', fc7_verbs, gt_class_HO_for_G_verbs)
+        # fc7_O_G = fake_obj_list
+        # fc7_verbs_G = new_fc7_verbs_G
+        # gt_class_HO_for_G_verbs = new_ho_class_G
+        # print('===========', fc7_verbs, gt_class_HO_for_G_verbs)
 
         obj_labels = tf.tile(tf.expand_dims(tf.one_hot(tf.range(self.obj_num_classes), self.obj_num_classes), axis=0), [tf.shape(gan_fc7_verbs)[0], 1, 1])
         obj_labels = tf.reshape(obj_labels, [tf.shape(gan_fc7_verbs)[0] * self.obj_num_classes, self.obj_num_classes])
