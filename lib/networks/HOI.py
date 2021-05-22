@@ -325,9 +325,6 @@ class HOI(parent_model):
             fc7_O = fc7_O[:num_stop]
             fc7_verbs = fc7_verbs[:num_stop]
 
-        with tf.device('cpu:0'):
-            fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_verbs), num_stop, tf.shape(self.gt_class_HO)], 'testettt before')
-
         fc7_vo = self.head_to_tail_ho(fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, 'fc_HO')
         cls_prob_verbs = self.region_classification_ho(fc7_vo, is_training, initializer, 'classification')
 

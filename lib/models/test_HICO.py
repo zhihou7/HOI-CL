@@ -11,7 +11,7 @@ from __future__ import print_function
 from ult.tools import get_convert_matrix
 from ult.config import cfg
 from ult.timer import Timer
-from ult.ult import Get_next_sp, Get_next_sp_with_pose
+from ult.ult import Get_next_sp
 
 import cv2
 import pickle
@@ -20,7 +20,7 @@ import glob
 
 import tensorflow as tf
 
-from networks.tools import get_cooccurence_matrix
+from networks.tools import get_convert_matrix as get_cooccurence_matrix
 # This strategy is based on TIN and is effective
 human_num_thres = 4
 object_num_thres = 4
@@ -841,10 +841,8 @@ def obtain_test_dataset2(object_thres, human_thres, dataset_name='test2015', tes
                             obj_box = np.array(
                                 [0, Object[2][0], Object[2][1], Object[2][2], Object[2][3]])
                             blobs['O_boxes'].append(obj_box)
-                            if len(Human_out) <= 6:
-                                blobs['sp'].append(Get_next_sp(Human_out[2], Object[2]))
-                            else:
-                                blobs['sp'].append(Get_next_sp_with_pose(Human_out[2], Object[2], Human_out[6]))
+                            blobs['sp'].append(Get_next_sp(Human_out[2], Object[2]))
+                            # blobs['sp'].append(Get_next_sp_with_pose(Human_out[2], Object[2], Human_out[6]))
 
 
                             blobs['O_cls'].append(Object[4])
@@ -899,10 +897,8 @@ def obtain_test_dataset2(object_thres, human_thres, dataset_name='test2015', tes
                         obj_box = np.array(
                             [0, Object[2][0], Object[2][1], Object[2][2], Object[2][3]])
                         blobs['O_boxes'].append(obj_box)
-                        if len(Human_out) <= 6:
-                            blobs['sp'].append(Get_next_sp(Human_out[2], Object[2]))
-                        else:
-                            blobs['sp'].append(Get_next_sp_with_pose(Human_out[2], Object[2], Human_out[6]))
+                        blobs['sp'].append(Get_next_sp(Human_out[2], Object[2]))
+                            # blobs['sp'].append(Get_next_sp_with_pose(Human_out[2], Object[2], Human_out[6]))
 
 
                         blobs['O_cls'].append(Object[4])
