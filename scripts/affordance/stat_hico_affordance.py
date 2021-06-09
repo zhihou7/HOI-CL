@@ -6,7 +6,7 @@
 
 import _init_paths
 
-from networks.tools import get_cooccurence_matrix
+from networks.tools import get_convert_matrix as get_cooccurence_matrix
 from ult.config import cfg
 
 dataset = 'gtobj365_coco'
@@ -105,9 +105,9 @@ obj_verb = {}
 for i in range(81):
     obj_verb[i] = []
 
-fobj = open('../Data/hico_list_obj.txt')
-fhoi = open('../Data/hico_list_hoi.txt')
-fvb = open('../Data/hico_list_vb.txt')
+fobj = open('../../Data/hico_list_obj.txt')
+fhoi = open('../../Data/hico_list_hoi.txt')
+fvb = open('../../Data/hico_list_vb.txt')
 id_obj = {}
 hoi_to_obj = {}
 hoi_to_verbs = {}

@@ -18,8 +18,8 @@ import pickle
 
 from ult.timer import Timer
 from ult.config import cfg
-from networks.tools import get_cooccurence_matrix, get_cooccurence_matrix_coco3
-
+from networks.tools import get_convert_matrix as get_cooccurence_matrix
+from networks.tools import get_convert_matrix_coco3 as get_cooccurence_matrix_coco3
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Test an iCAN on HICO')

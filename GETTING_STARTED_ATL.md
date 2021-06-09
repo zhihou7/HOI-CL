@@ -77,7 +77,7 @@ python scripts/affordance/extract_obj_feature.py
 
 4. obtain hoi prediction
 ```Shell
-python scripts/affordance/extract_hoi_preds.py
+python scripts/affordance/obtain_hoi_preds.py
 ```
 
 5. statistic of affordance prediction results.

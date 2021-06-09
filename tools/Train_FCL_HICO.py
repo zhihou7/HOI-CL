@@ -71,7 +71,7 @@ if __name__ == '__main__':
     print(weight)
     tb_dir     = cfg.ROOT_DIR + '/logs/' + args.model + '/'
     # output directory where the models are saved
-    output_dir = cfg.LOCAL_DATA + '/Weights/' + args.model + '/'
+    output_dir = cfg.ROOT_DIR + '/Weights/' + args.model + '/'
 
     augment_type = get_augment_type(args.model)
     start_epoch = 0

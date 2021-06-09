@@ -2835,6 +2835,65 @@ def coco_generator_atl(Pos_augment = 15, Neg_select=0, augment_type = 0, pattern
             # i = i % len(Trainval_GT)
 
 
+def obtain_coco_data2(Pos_augment = 15, Neg_select=30, augment_type = 0, type =0 ):
+    # Trainval_GT = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_GT_VCOCO.pkl', "rb"), encoding='latin1')
+    # Trainval_N = pickle.load(open(cfg.DATA_DIR + '/' + 'Trainval_Neg_VCOCO.pkl', "rb"), encoding='latin1')
+    if type == 0:
+        compose_classes = 222
+        verb_num = 24
+        g_func = coco_generator2
+    elif type == 1:
+        compose_classes = 222
+        verb_num = 21
+        g_func = coco_generator3
+    elif type == 2:
+        compose_classes = 238
+        verb_num = 29
+        g_func = coco_generator1
+
+    # generator()
+    dataset = tf.data.Dataset.from_generator(partial(g_func, Pos_augment, Neg_select, augment_type), output_types=(tf.float32, tf.int32, tf.int32, {
+        'H_boxes': tf.float32,
+        'Hsp_boxes': tf.float32,
+        'O_boxes': tf.float32,
+        'gt_class_sp': tf.float32,
+        'gt_class_HO': tf.float32,
+        'gt_class_H': tf.float32,
+        'gt_class_C': tf.float32,
+        'gt_class_obj': tf.float32,
+        'Mask_sp': tf.float32,
+        'Mask_HO': tf.float32,
+        'Mask_H': tf.float32,
+        'sp': tf.float32,
+        'O_mask': tf.float32,
+    }), output_shapes=(tf.TensorShape([1, None, None, 3]), tf.TensorShape([]), tf.TensorShape([]),
+                       {
+                           'H_boxes': tf.TensorShape([None, 5]),
+                           'Hsp_boxes': tf.TensorShape([None, 5]),
+                           'O_boxes': tf.TensorShape([None, 5]),
+                           'gt_class_sp': tf.TensorShape([None, verb_num]),
+                           'gt_class_HO': tf.TensorShape([None, verb_num]),
+                           'gt_class_H': tf.TensorShape([None, verb_num]),
+                           'gt_class_C': tf.TensorShape([None, compose_classes]),
+                           'gt_class_obj': tf.TensorShape([None, 80]),
+                           'Mask_sp': tf.TensorShape([None, verb_num]),
+                           'Mask_HO': tf.TensorShape([None, verb_num]),
+                           'Mask_H': tf.TensorShape([None, verb_num]),
+                           'sp': tf.TensorShape([None, 64, 64, 3]),
+                           'O_mask': tf.TensorShape([None, None, None, 1])
+                       }))
+
+    dataset = dataset.prefetch(100)
+    # dataset = dataset.shuffle(1000)
+    # dataset = dataset.repeat(100)
+    # dataset = dataset.repeat(1000).shuffle(1000)
+    # dataset._dataset.batch(3)
+    iterator = dataset.make_one_shot_iterator()
+    image, image_id, num_pos, blobs = iterator.get_next()
+    return image, image_id, num_pos, blobs
+    # image, num_pos = iterator.get_next()
+    # return image, num_pos
+
 
 def obtain_coco_data_atl(Pos_augment=15, Neg_select=30, augment_type=0, pattern_type=False, is_zero_shot=0, type=0, vcoco_type=21):
     if vcoco_type == 21:

@@ -6,7 +6,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
+import _init_paths
 import os
 
 os.environ['DATASET'] = 'HICO'
@@ -17,7 +17,7 @@ import pickle
 
 from ult.timer import Timer
 from ult.config import cfg
-from networks.tools import get_cooccurence_matrix
+from networks.tools import get_convert_matrix as get_cooccurence_matrix
 
 
 def parse_args():
