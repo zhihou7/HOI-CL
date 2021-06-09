@@ -37,12 +37,6 @@ def parse_args():
 
 if __name__ == '__main__':
     import os
-    os.environ['DATASET'] = 'HICO'
-    os.environ["KMP_BLOCKTIME"] = str(0)
-    os.environ["KMP_SETTINGS"] = str(1)
-    os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
-    os.environ["OMP_NUM_THREADS"] = str(8)
-
     args = parse_args()
 
     np.random.seed(cfg.RNG_SEED)

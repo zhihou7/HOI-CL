@@ -715,7 +715,7 @@ def Augmented_HO_spNeg3(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
     mask_sp = mask_sp_
     mask_HO = mask_HO_
     mask_H = mask_H_
-    Pattern = np.empty((0, 64, 64, 3), dtype=np.float32)
+    Pattern = np.empty((0, 64, 64, 2), dtype=np.float32)
     pose_box = []
     # print('pose infor:', GT[5], pose_list)
     # pose_box = obtain_pose_box(Human_augmented, pose_list, shape)
@@ -739,8 +739,8 @@ def Augmented_HO_spNeg3(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
 
     obj_mask = np.empty((0, shape[0] // 16, shape[1] // 16, 1), dtype=np.float32)
     for i in range(num_pos_neg):
-        Pattern_ = Get_next_sp(Human_augmented[i][1:], Object_augmented[i][1:]).reshape(1, 64, 64, 2)
-        Pattern_ = np.concatenate([Pattern_, np.zeros([1, 64, 64, 1])], axis=-1)
+        Pattern_ = Get_next_sp(Human_augmented[i][1:], Object_augmented[i][1:]).reshape([1, 64, 64, 2])
+        # Pattern_ = np.concatenate([Pattern_, np.zeros([1, 64, 64, 1])], axis=-1)
         Pattern = np.concatenate((Pattern, Pattern_), axis=0)
 
         mask = np.zeros(shape=(1, shape[0] // 16, shape[1] // 16, 1), dtype=np.float32)
@@ -751,7 +751,7 @@ def Augmented_HO_spNeg3(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
         # mask = transform.resize(mask, [1, shape[0] // 16, shape[1] // 16, 1], order=0, preserve_range=True)
         obj_mask = np.concatenate((obj_mask, mask), axis=0)
 
-    Pattern = Pattern.reshape(num_pos_neg, 64, 64, 3)
+    Pattern = Pattern.reshape(num_pos_neg, 64, 64, 2)
     Human_augmented_sp = Human_augmented.reshape(num_pos_neg, 5)
     Object_augmented = Object_augmented[:num_pos].reshape(num_pos, 5)
     action_sp = action_sp.reshape(num_pos_neg, 21)
@@ -762,7 +762,7 @@ def Augmented_HO_spNeg3(GT, Trainval_Neg, shape, Pos_augment, Neg_select):
     mask_HO = mask_HO.reshape(num_pos, 21)
     mask_H = mask_H.reshape(num_pos, 21)
 
-    return Pattern, Human_augmented_sp, Human_augmented, Object_augmented, action_sp, action_HO, action_H, mask_sp, mask_HO, mask_H, obj_mask, action_compose, pose_box
+    return Pattern, Human_augmented_sp, Human_augmented, Object_augmented, action_sp, action_HO, action_H, mask_sp, mask_HO, mask_H, action_compose
 
 
 def Generate_action_HICO(action_list):
@@ -2679,7 +2679,7 @@ def coco_generator3(Pos_augment = 15, Neg_select=30, augment_type = 0, pattern_t
             im_orig = im_orig.reshape(1, im_shape[0], im_shape[1], 3)
 
             Pattern, Human_augmented_sp, Human_augmented, Object_augmented, \
-            action_sp, action_HO, action_H, mask_sp, mask_HO, mask_H, obj_mask, gt_compose, pose_box = Augmented_HO_spNeg3(GT, Trainval_N, im_shape, Pos_augment, Neg_select)
+            action_sp, action_HO, action_H, mask_sp, mask_HO, mask_H, gt_compose = Augmented_HO_spNeg3(GT, Trainval_N, im_shape, Pos_augment, Neg_select)
 
             blobs = {}
             # blobs['image'] = im_orig
@@ -2694,8 +2694,6 @@ def coco_generator3(Pos_augment = 15, Neg_select=30, augment_type = 0, pattern_t
             blobs['Mask_HO'] = mask_HO
             blobs['Mask_H'] = mask_H
             blobs['sp'] = Pattern
-            blobs['O_mask'] = obj_mask
-            blobs['pose_box'] = pose_box
 
             # blobs['H_num'] = len(action_H)
             # print(image_id, len(action_H))

@@ -33,6 +33,9 @@ if 'DATASET' not in os.environ or os.environ['DATASET'] == 'HICO':
 elif os.environ['DATASET'] == 'HICO_res101':
     from networks.ResNet101_HICO import ResNet101, resnet_arg_scope
     parent_model = ResNet101
+elif os.environ['DATASET'] == 'VCOCO1':
+    from networks.ResNet50_VCOCO_HOI import ResNet50, resnet_arg_scope
+    parent_model = ResNet50
 else:
     from networks.ResNet50_VCOCO import ResNet50, resnet_arg_scope
     parent_model = ResNet50
@@ -450,6 +453,10 @@ class HOI(parent_model):
                 label_H = self.gt_class_H
                 label_HO = self.gt_class_HO
                 label_sp = self.gt_class_sp
+                if self.model_name.__contains__('_CL'):
+                    label_H = self.gt_compose
+                    label_HO = self.gt_compose
+                    label_sp = self.gt_compose
             else:
                 label_H = self.gt_class_HO[:num_stop]
                 # label_HO = self.gt_class_HO_for_verbs
@@ -484,6 +491,7 @@ class HOI(parent_model):
                     reweights = np.log(1 / (self.num_inst_all / np.sum(self.num_inst_all)))
                     cls_score_sp = tf.multiply(cls_score_sp, reweights)
 
+                print(label_sp, cls_score_sp)
                 sp_cross_entropy = tf.reduce_mean(
                     tf.nn.sigmoid_cross_entropy_with_logits(labels=label_sp, logits=cls_score_sp))
 

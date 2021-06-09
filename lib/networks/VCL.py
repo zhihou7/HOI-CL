@@ -46,8 +46,10 @@ class VCL(object):
             gt_verb_class0 = tf.cast(
                 tf.matmul(cur_gt_class_HO[i], self.net.verb_to_HO_matrix, transpose_b=True) > 0,
                 tf.float32)
+            print(self.net.verb_to_HO_matrix, gt_verb_class0)
             gt_obj_class_l.append(gt_obj_class0)
             gt_verb_class_l.append(gt_verb_class0)
+        print('nongsha', cur_gt_class_HO, gt_verb_class_l, type)
         # with tf.device('/cpu:0'):
         #     fc7_O_0 = tf.Print(fc7_O_0,
         #                                    [tf.shape(fc7_O_0), tf.shape(fc7_O_1) ], 'input:', first_n=100)
@@ -56,6 +58,7 @@ class VCL(object):
         fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1 = self.select_compose_candidate_elements(fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1,
                                                                                     gt_obj_class_l, gt_verb_class_l,
                                                                                     type)
+        print(cur_gt_class_HO, gt_verb_class_l, type)
         if self.net.model_name.__contains__('_def1') and not is_single:
             # this is similar to the default. This operation will compose relations from the single image.
             len = tf.maximum(tf.shape(fc7_O_0)[0], tf.shape(fc7_O_1)[0])
@@ -85,6 +88,7 @@ class VCL(object):
             gt_obj_class_l[1] = gt_obj_class_l[1][:len]
             gt_verb_class_l[0] = gt_verb_class_l[0][:len]
             gt_verb_class_l[1] = gt_verb_class_l[1][:len]
+            print(gt_verb_class_l)
         elif self.net.model_name.__contains__('_def3') and not is_single:
             # tile the short part. When I use tf.tile, it will throw an Exception, which I do not how to fix.
             # I do not know whether this will affect the performance or not.
@@ -118,6 +122,7 @@ class VCL(object):
         # the composite verb items are same with the original verb items
         gt_obj_class_orig = tf.concat([gt_obj_class_l[1], gt_obj_class_l[0]], axis=0)
 
+        print(gt_verb_class, self.net.verb_to_HO_matrix)
         tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.net.obj_to_HO_matrix) > 0
         tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.net.verb_to_HO_matrix) > 0
         new_gt_class_HO = tf.cast(tf.logical_and(tmp_ho_class_from_obj, tmp_ho_class_from_vb), tf.float32)
@@ -197,36 +202,137 @@ class VCL(object):
             ll = 2.
         return ll
 
-    def merge_generate(self, O_features, V_features, cur_gt_class_HO, type = 'default'):
+    def merge_generate(self, O_features, V_features, cur_gt_class_HO, type = 'default', gt_obj_class_list = None):
         # assert type == 0 or type == 1 or type == 2 or type == 3
         compose_item_weights = 1.
-        # if type.__contains__('compose_all_hos'):
-        #     fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all(O_features, V_features,
-        #                                                                        cur_gt_class_HO)
-        # else:
-        fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, gt_obj_class, gt_obj_class_orig = self.compose_ho_between_images(
-            O_features, V_features,
-            cur_gt_class_HO, type)
+
+        if type.__contains__('compose_all_hos'):
+            fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all(O_features, V_features,
+                                                                                                                cur_gt_class_HO, gt_obj_class_list)
+            new_gt_class_HO, fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class = self.conds_zeros(
+                new_gt_class_HO, fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class)
+        elif type.__contains__('atl'):
+            print('semi ============================================== merge generate')
+            fc7_O = O_features[1]
+            fc7_V = V_features[0]
+            gt_obj_class = tf.cast(
+                tf.matmul(cur_gt_class_HO[1], self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.float32)
+            if gt_obj_class_list is not None:
+                gt_obj_class = gt_obj_class_list[1]
+            gt_obj_class_orig = tf.cast(
+                tf.matmul(cur_gt_class_HO[0], self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.float32)
+            gt_verb_class = tf.cast(
+                tf.matmul(cur_gt_class_HO[0], self.net.verb_to_HO_matrix, transpose_b=True) > 0,
+                tf.float32)
+            # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_obj_class_orig)[0]], 'test:',
+            #                  first_n=200)
+            tile_mul = tf.constant(3.)
+            if self.net.model_name.__contains__('_def1'):
+                # error this is similar to the default. This operation will compose relations from the single image.
+                fc7_O = tf.concat([O_features[1], O_features[0]], axis=0)
+                # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_obj_class_orig)[0]], 'test:',
+                #                  first_n=200)
+                gt_obj_class = tf.concat([gt_obj_class, gt_obj_class_orig], axis=0)
+                length = tf.shape(gt_obj_class_orig)[0]
+                gt_obj_class_orig = gt_obj_class_orig[:length]
+                gt_obj_class = gt_obj_class[:length]
+                gt_verb_class = gt_verb_class[:length]
+                fc7_V = fc7_V[:length]
+                fc7_O = fc7_O[:length]
+            elif self.net.model_name.__contains__('_def2'):
+                # error this is similar to the default. This operation will compose relations from the single image.
+                length = tf.minimum(tf.shape(gt_obj_class)[0], tf.shape(gt_obj_class_orig)[0])
+                gt_obj_class_orig = gt_obj_class_orig[:length]
+                gt_obj_class = gt_obj_class[:length]
+                gt_verb_class = gt_verb_class[:length]
+                fc7_V = fc7_V[:length]
+                fc7_O = fc7_O[:length]
+            elif self.net.model_name.__contains__('_def3'):
+                # tile_mul = tf.ceil(tf.shape(O_features[1])[0] / tf.shape(V_features[1])[0])
+                # tile_mul = 10
+                # gt_verb_class = tf.tile(gt_verb_class, [tile_mul, 1])
+                # gt_obj_class_orig = tf.tile(gt_obj_class_orig, [tile_mul, 1])
+                # fc7_V = tf.tile(fc7_V, [tile_mul, 1])
+                gt_verb_class = tf.concat([gt_verb_class for i in range(3)], axis=0)
+                gt_obj_class_orig = tf.concat([gt_obj_class_orig for i in range(3)], axis=0)
+                fc7_V = tf.concat([fc7_V for i in range(3)], axis=0)
+
+                length = tf.minimum(tf.shape(gt_obj_class)[0], tf.shape(gt_obj_class_orig)[0])
+                gt_obj_class_orig = gt_obj_class_orig[:length]
+                gt_obj_class = gt_obj_class[:length]
+                gt_verb_class = gt_verb_class[:length]
+                fc7_V = fc7_V[:length]
+                fc7_O = fc7_O[:length]
+            elif self.net.model_name.__contains__('_def4'):
+                # tile_mul = tf.ceil(tf.shape(O_features[1])[0] / tf.shape(V_features[1])[0])
+                # tile_mul = 10
+                # gt_verb_class = tf.tile(gt_verb_class, [tile_mul, 1])
+                # gt_obj_class_orig = tf.tile(gt_obj_class_orig, [tile_mul, 1])
+                # fc7_V = tf.tile(fc7_V, [tile_mul, 1])
+                fc7_O = tf.concat([O_features[1], O_features[0]], axis=0)
+                # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_obj_class_orig)[0]], 'test:',
+                #                  first_n=200)
+                gt_obj_class = tf.cast(
+                    tf.matmul(tf.concat([cur_gt_class_HO[1], cur_gt_class_HO[0]], axis=0),
+                              self.net.obj_to_HO_matrix,
+                              transpose_b=True) > 0, tf.float32)
+
+                gt_verb_class = tf.concat([gt_verb_class for i in range(10)], axis=0)
+                gt_obj_class_orig = tf.concat([gt_obj_class_orig for i in range(10)], axis=0)
+                fc7_V = tf.concat([fc7_V for i in range(10)], axis=0)
+
+                length = tf.minimum(tf.shape(gt_obj_class)[0], tf.shape(gt_obj_class_orig)[0])
+                gt_obj_class_orig = gt_obj_class_orig[:length]
+                gt_obj_class = gt_obj_class[:length]
+                gt_verb_class = gt_verb_class[:length]
+                fc7_V = fc7_V[:length]
+                fc7_O = fc7_O[:length]
+
+            tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.net.obj_to_HO_matrix) > 0
+            tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.net.verb_to_HO_matrix) > 0
+            new_gt_class_HO = tf.cast(tf.logical_and(tmp_ho_class_from_obj, tmp_ho_class_from_vb), tf.float32)
+        else:
+            fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, gt_obj_class, gt_obj_class_orig = self.compose_ho_between_images(
+                O_features, V_features,
+                cur_gt_class_HO, type)
+
+        if self.net.model_name.__contains__('atl1'):
+            print('semi1=====', fc7_O, fc7_V)
+            with tf.device('/cpu:0'):
+                new_gt_class_HO = tf.Print(new_gt_class_HO, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_verb_class), tf.shape(new_gt_class_HO)], 'semi1 before:', first_n=100)
+
+            fc7_V, fc7_O, new_gt_class_HO, gt_obj_class, gt_obj_class_orig, gt_verb_class = self.conds_zeros(
+                fc7_V, fc7_O, new_gt_class_HO, gt_obj_class, gt_obj_class_orig, gt_verb_class)
+            with tf.device('/cpu:0'):
+                new_gt_class_HO = tf.Print(new_gt_class_HO, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_verb_class), tf.shape(new_gt_class_HO)], 'semi1 after:', first_n=100)
 
         compose_item_weights, conds, fc7_O, fc7_V, gt_verb_class, new_gt_class_HO = self.select_composited_hois(
-                fc7_O,
-                fc7_V,
-                gt_obj_class,
-                gt_obj_class_orig,
-                gt_verb_class,
-                False,
-                new_gt_class_HO,
-                base_compose_item_weights=compose_item_weights)
+            fc7_O,
+            fc7_V,
+            gt_obj_class,
+            gt_obj_class_orig,
+            gt_verb_class,
+            False,
+            new_gt_class_HO,
+            base_compose_item_weights=compose_item_weights)
 
         new_gt_class_HO, compose_item_weights, fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class = self.conds_zeros(
             new_gt_class_HO, compose_item_weights, fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class)
 
-        # with tf.device('/cpu:0'):
-        #     new_gt_class_HO = tf.Print(new_gt_class_HO, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_verb_class), tf.shape(new_gt_class_HO)], 'message:', first_n=100)
-        # print('degut===============', fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, compose_item_weights)
+        if self.net.model_name.__contains__('atl1'):
+            print('semi1=====', fc7_O, fc7_V)
+            fc7_V, fc7_O, gt_verb_class, new_gt_class_HO, compose_item_weights = \
+                self.conds_zeros(fc7_V, fc7_O, gt_verb_class, new_gt_class_HO, compose_item_weights)
 
-        new_loss = self.cal_loss_with_new_composing_features(fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, type, compose_item_weights=compose_item_weights, orig_len=tf.shape(O_features[0])[0] + tf.shape(O_features[1])[0])
+        new_loss = self.cal_loss_with_new_composing_features(fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, type,
+                                                             compose_item_weights=compose_item_weights,
+                                                             orig_len=tf.shape(O_features[0])[0] + tf.shape(O_features[1])[0])
+
         return new_loss
+
+
 
     def conds_zeros(self, new_gt_class_HO, *args):
 

@@ -1,7 +1,7 @@
 # --------------------------------------------------------
 # Tensorflow VCL
 # Licensed under The MIT License [see LICENSE for details]
-# Written by Zhi Hou, based on code from iCAN, Chen Gao, Zheqi he and Xinlei Chen
+# Written by Zhi Hou, based on code from Transferable-Interactiveness-Network, Chen Gao, Zheqi he and Xinlei Chen
 # --------------------------------------------------------
 
 from __future__ import absolute_import
@@ -15,7 +15,6 @@ from tensorflow.contrib.slim.python.slim.nets import resnet_utils
 from tensorflow.contrib.slim.python.slim.nets import resnet_v1
 from tensorflow.python.framework import ops
 
-from ult.tools import get_convert_matrix_coco2
 from ult.config import cfg
 from ult.visualization import draw_bounding_boxes_HOI
 
@@ -62,23 +61,29 @@ class ResNet50():
         self.losses = {}
 
         self.image       = tf.placeholder(tf.float32, shape=[1, None, None, 3], name = 'image')
-        self.spatial     = tf.placeholder(tf.float32, shape=[None, 64, 64, 2], name = 'sp')
+        self.spatial     = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name = 'sp')
         # self.Hsp_boxes   = tf.placeholder(tf.float32, shape=[None, 5], name = 'Hsp_boxes')
         self.H_boxes = tf.placeholder(tf.float32, shape=[None, 5], name='H_boxes')
         self.O_boxes     = tf.placeholder(tf.float32, shape=[None, 5], name = 'O_boxes')
-        self.gt_class_H  = tf.placeholder(tf.float32, shape=[None, 29], name = 'gt_class_H')
-        self.gt_class_HO = tf.placeholder(tf.float32, shape=[None, 29], name = 'gt_class_HO')
-        self.gt_class_sp = tf.placeholder(tf.float32, shape=[None, 29], name = 'gt_class_sp')
-        self.Mask_HO     = tf.placeholder(tf.float32, shape=[None, 29], name = 'HO_mask')
-        self.Mask_H      = tf.placeholder(tf.float32, shape=[None, 29], name = 'H_mask')
-        self.Mask_sp     = tf.placeholder(tf.float32, shape=[None, 29], name = 'sp_mask')
-        self.gt_compose  = tf.placeholder(tf.float32, shape=[None, 238], name='gt_compose')
+        self.gt_class_H  = tf.placeholder(tf.float32, shape=[None, 24], name = 'gt_class_H')
+        self.gt_class_HO = tf.placeholder(tf.float32, shape=[None, 24], name = 'gt_class_HO')
+        self.gt_class_sp = tf.placeholder(tf.float32, shape=[None, 24], name = 'gt_class_sp')
+        self.Mask_HO     = tf.placeholder(tf.float32, shape=[None, 24], name = 'HO_mask')
+        self.Mask_H      = tf.placeholder(tf.float32, shape=[None, 24], name = 'H_mask')
+        self.Mask_sp     = tf.placeholder(tf.float32, shape=[None, 24], name = 'sp_mask')
+        self.gt_compose  = tf.placeholder(tf.float32, shape=[None, 222], name='gt_compose')
+        self.gt_obj = tf.placeholder(tf.float32, shape=[None, 80], name='gt_obj')
         self.H_num       = tf.placeholder(tf.int32)
         self.image_id = tf.placeholder(tf.int32)
-        self.num_classes = 29
+        self.num_classes = 24
+        if self.model_name.__contains__('_t4_'):
+            self.num_classes = 222
+        if self.model_name.__contains__('_t5_'):
+            self.verb_num_classes = 21
+            self.num_classes = 222
         self.num_fc      = 1024
-        self.verb_num_classes = 29
-        self.obj_num_classes = 1
+        self.verb_num_classes = 24
+        self.obj_num_classes = 80
         self.scope       = 'resnet_v1_50'
         self.stride      = [16, ]
         # self.lr          = tf.placeholder(tf.float32)
@@ -99,51 +104,56 @@ class ResNet50():
                 print("unique_weights2")
                 self.blocks.append(resnet_v1_block('block6', base_depth=512, num_units=3, stride=1))
 
-        self.HO_weight = np.array([3.3510249, 3.4552405, 4.0257854, 0.0, 4.088436,
+        # remove 3, 17 22, 23 27
+        self.HO_weight = np.array([3.3510249, 3.4552405, 4.0257854, 4.088436,
                                    3.4370995, 3.85842, 4.637334, 3.5487218, 3.536237,
                                    2.5578923, 3.342811, 3.8897269, 4.70686, 3.3952892,
-                                   3.9706533, 4.504736, 0.0, 1.4873443, 3.700363,
-                                   4.1058283, 3.6298118, 0.0, 6.490651, 5.0808263,
-                                   1.520838, 3.3888445, 0.0, 3.9899964], dtype='float32').reshape(1, 29)
-        self.H_weight = np.array([4.0984106, 4.102459, 4.0414762, 4.060745, 4.0414762,
+                                   3.9706533, 4.504736, 1.4873443, 3.700363,
+                                   4.1058283, 3.6298118, 5.0808263,
+                                   1.520838, 3.3888445, 3.9899964], dtype='float32').reshape(1, 24)
+        self.H_weight = np.array([4.0984106, 4.102459, 4.0414762, 4.0414762,
                                   3.9768186, 4.23686, 5.3542085, 3.723717, 3.4699364,
                                   2.4587274, 3.7167964, 4.08836, 5.050695, 3.9077065,
-                                  4.534647, 3.4699364, 2.9466882, 1.8585607, 3.9433942,
-                                  3.9433942, 4.3523254, 3.8368235, 6.4963055, 5.138182,
-                                  1.7807873, 4.080392, 1.9544303, 4.5761204], dtype='float32').reshape(1, 29)
+                                  4.534647, 3.4699364, 1.8585607, 3.9433942,
+                                  3.9433942, 4.3523254, 5.138182,
+                                  1.7807873, 4.080392, 4.5761204], dtype='float32').reshape(1, 24)
         self.reset_classes()
 
-    def set_ph(self, image, image_id, H_num, spatial, H_boxes, O_boxes, gt_cls_H,
-               gt_cls_HO, gt_cls_sp,Mask_HO, Mask_H, Mask_sp, gt_compose):
-
+    def set_ph(self, image, image_id, num_pos, sp, Human_augmented, Object_augmented,
+               gt_cls_H = None, gt_cls_HO = None, gt_cls_sp = None,
+               Mask_HO = None, Mask_H = None, Mask_sp = None, gt_compose = None, gt_obj=None):
+        # image, image_id, H_num, spatial, H_boxes, O_boxes, gt_cls_H,
+        # gt_cls_HO, gt_cls_sp, Mask_HO, Mask_H, Mask_sp, gt_compose
         if image is not None: self.image       = image
         if image_id is not None: self.image_id = image_id
-        if spatial is not None: self.spatial     = spatial
-        if H_boxes is not None: self.H_boxes     = H_boxes
+        if sp is not None: self.spatial     = sp
+        if Human_augmented is not None: self.H_boxes     = Human_augmented
         # self.Hsp_boxes   = Hsp_boxes
-        if O_boxes is not None: self.O_boxes     = O_boxes
+        if Object_augmented is not None: self.O_boxes     = Object_augmented
         if gt_cls_H is not None: self.gt_class_H  = gt_cls_H
         if gt_cls_HO is not None: self.gt_class_HO = gt_cls_HO
         if gt_cls_sp is not None: self.gt_class_sp = gt_cls_sp
         if Mask_HO is not None: self.Mask_HO     = Mask_HO
         if Mask_H is not None: self.Mask_H      = Mask_H
         if Mask_sp is not None: self.Mask_sp     = Mask_sp
-        if H_num is not None: self.H_num       = H_num
-        self.gt_compose = gt_compose
+        if num_pos is not None: self.H_num       = num_pos
+        if gt_compose is not None: self.gt_compose = gt_compose
+        if gt_obj is not None: self.gt_obj = gt_obj
         print("set ph:", self.image)
         if self.gt_compose is not None:
             self.reset_classes()
 
     def reset_classes(self):
 
-        if self.model_name.__contains__('_t2_') or self.model_name.__contains__('_t3_'):
-            # we use t3. this is a simple id for some strategies.
-            self.verb_num_classes = 29
+        from networks.tools import get_convert_matrix_coco3
+        if self.model_name.__contains__('_t1_'):
+            raise Exception("wrong model. t1 is depressed")
+        elif self.model_name.__contains__('_t2_') or self.model_name.__contains__('_t3_'):
+            self.verb_num_classes = 24
             self.obj_num_classes = 80
-            self.num_classes = 29
-            self.compose_num_classes = 238
-            # Noticeably, we regard str and obj differently. In our further experiment, this do not have effect on VCL.
-            verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix_coco2(self.verb_num_classes, self.obj_num_classes)
+            self.num_classes = 24
+            self.compose_num_classes = 222
+            verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix_coco3(self.verb_num_classes, self.obj_num_classes)
 
             self.obj_to_HO_matrix = tf.constant(obj_to_HO_matrix, tf.float32)
             self.verb_to_HO_matrix = tf.constant(verb_to_HO_matrix, tf.float32)
@@ -151,8 +161,71 @@ class ResNet50():
                                         tf.float32)
             self.gt_verb_class = tf.cast(tf.matmul(self.gt_compose, self.verb_to_HO_matrix, transpose_b=True) > 0,
                                          tf.float32)
+        elif self.model_name.__contains__('_t4_'):
+            self.verb_num_classes = 24
+            self.obj_num_classes = 80
+            self.num_classes = 222
+            self.compose_num_classes = 222
+            verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix_coco3(self.verb_num_classes, self.obj_num_classes)
 
+            self.obj_to_HO_matrix = tf.constant(obj_to_HO_matrix, tf.float32)
+            self.verb_to_HO_matrix = tf.constant(verb_to_HO_matrix, tf.float32)
+            self.gt_obj_class = tf.cast(tf.matmul(self.gt_compose, self.obj_to_HO_matrix, transpose_b=True) > 0,
+                                        tf.float32)
+            self.gt_verb_class = tf.cast(tf.matmul(self.gt_compose, self.verb_to_HO_matrix, transpose_b=True) > 0,
+                                         tf.float32)
+        elif self.model_name.__contains__('_t5_'):
+            self.verb_num_classes = 21
+            self.obj_num_classes = 80
+            self.num_classes = 222
+            self.compose_num_classes = 222
+            verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix_coco3(self.verb_num_classes, self.obj_num_classes)
 
+            self.obj_to_HO_matrix_np = obj_to_HO_matrix
+            self.verb_to_HO_matrix_np = verb_to_HO_matrix
+            self.obj_to_HO_matrix = tf.constant(obj_to_HO_matrix, tf.float32)
+            self.verb_to_HO_matrix = tf.constant(verb_to_HO_matrix, tf.float32)
+            self.gt_obj_class = tf.cast(tf.matmul(self.gt_compose, self.obj_to_HO_matrix, transpose_b=True) > 0,
+                                        tf.float32)
+            self.gt_verb_class = tf.cast(tf.matmul(self.gt_compose, self.verb_to_HO_matrix, transpose_b=True) > 0,
+                                         tf.float32)
+
+            num_inst = np.asarray([485, 434, 3, 6, 6, 3, 3, 207, 1, 3, 4, 7, 1, 7, 32, 2, 160, 37, 67, 9, 126, 1, 24,
+                                   6, 31, 108, 73, 292, 134, 398, 86, 28, 39, 21, 3, 60, 4, 7, 1, 61, 110, 80, 56, 56,
+                                   119, 107, 96, 59, 2, 1, 4, 430, 136, 55, 1, 5, 1, 20, 165, 278, 26, 24, 1, 29, 228,
+                                   1, 15, 55, 54, 1, 2, 57, 52, 93, 72, 3, 7, 12, 6, 6, 1, 11, 105, 4, 2, 1, 1, 7, 1,
+                                   17, 1, 1, 2, 170, 91, 445, 6, 1, 2, 5, 1, 12, 4, 1, 1, 1, 14, 18, 7, 7, 5, 8, 4, 7,
+                                   4, 1, 3, 9, 390, 45, 156, 521, 15, 4, 5, 338, 254, 3, 5, 11, 15, 12, 43, 12, 12, 2,
+                                   2, 14, 1, 11, 37, 18, 134, 1, 7, 1, 29, 291, 1, 3, 4, 62, 4, 75, 1, 22, 228, 109,
+                                   233, 1, 366, 86, 50, 46, 68, 1, 1, 1, 1, 8, 14, 45, 2, 5, 45, 70, 89, 9, 99, 186,
+                                   50, 56, 54, 9, 120, 66, 56, 160, 269, 32, 65, 83, 67, 197, 43, 13, 26, 5, 46, 3, 6,
+                                   1, 60, 67, 56, 20, 2, 78, 11, 58, 1, 350, 1, 83, 41, 18, 2, 9, 1, 466, 224, 32])
+            self.num_inst = self.num_inst_all = num_inst
+            tmp = np.where(num_inst > 10)[0]
+            tmp1 = np.zeros(self.num_classes)
+            tmp1[tmp] = 1
+            self.non_rare_cls_index = tf.constant(tmp1)
+
+            tmp = np.where(num_inst <= 10)[0]
+            tmp1 = np.zeros(self.num_classes)
+            tmp1[tmp] = 1
+            self.rare_cls_index = tf.constant(tmp1)
+
+        else:
+            pass
+            # verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix_coco(self.verb_num_classes, self.obj_num_classes)
+            # self.obj_to_HO_matrix = tf.constant(obj_to_HO_matrix, tf.float32)
+            # self.verb_to_HO_matrix = tf.constant(verb_to_HO_matrix, tf.float32)
+            # self.gt_obj_class = tf.cast(tf.matmul(self.gt_class_HO, self.obj_to_HO_matrix, transpose_b=True) > 0,
+            #                             tf.float32)
+            # self.gt_verb_class = tf.cast(tf.matmul(self.gt_class_HO, self.verb_to_HO_matrix, transpose_b=True) > 0,
+            #                              tf.float32)
+
+        from networks.tools import get_word2vec
+        word2vec = get_word2vec()
+        self.word2vec_emb = tf.constant(word2vec)
+        self.gt_class_HO_for_G_verbs = None
+        self.gt_class_HO_for_D_verbs = None
 
     def build_base(self):
         with tf.variable_scope(self.scope, self.scope, reuse=tf.AUTO_REUSE,):
@@ -171,6 +244,7 @@ class ResNet50():
                                          include_root_block=False,
                                          reuse=tf.AUTO_REUSE,
                                          scope=self.scope)
+
         with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
             if self.model_name.__contains__('unique_weights'):
                 print("unique_weights3")
@@ -183,6 +257,7 @@ class ResNet50():
                                           include_root_block=False,
                                           reuse=tf.AUTO_REUSE,
                                           scope=self.scope)
+
         return head
 
 
@@ -260,6 +335,7 @@ class ResNet50():
 
             batch_ids    = tf.squeeze(tf.slice(rois, [0, 0], [-1, 1], name="batch_id"), [1])
             bboxes = self.trans_boxes_by_feats(bottom, rois)
+
             if cfg.RESNET.MAX_POOL:
                 pre_pool_size = cfg.POOLING_SIZE * 2
                 crops = tf.image.crop_and_resize(bottom, bboxes, tf.to_int32(batch_ids), [pre_pool_size, pre_pool_size], name="crops")
@@ -282,7 +358,7 @@ class ResNet50():
     def attention_pool_layer_H(self, bottom, fc7_H, is_training, name):
         with tf.variable_scope(name) as scope:
 
-            fc1         = slim.fully_connected(fc7_H, 512, scope='fc1_b')
+            fc1         = slim.fully_connected(fc7_H, 512, scope='fc1_b', reuse=tf.AUTO_REUSE, )
             fc1         = slim.dropout(fc1, keep_prob=0.8, is_training=is_training, scope='dropout1_b')
             fc1         = tf.reshape(fc1, [tf.shape(fc1)[0], 1, 1, tf.shape(fc1)[1]])
             att         = tf.reduce_mean(tf.multiply(bottom, fc1), 3, keep_dims=True)
@@ -303,7 +379,7 @@ class ResNet50():
     def attention_pool_layer_O(self, bottom, fc7_O, is_training, name):
         with tf.variable_scope(name) as scope:
 
-            fc1         = slim.fully_connected(fc7_O, 512, scope='fc1_b')
+            fc1         = slim.fully_connected(fc7_O, 512, scope='fc1_b', reuse=tf.AUTO_REUSE)
             fc1         = slim.dropout(fc1, keep_prob=0.8, is_training=is_training, scope='dropout1_b')
             fc1         = tf.reshape(fc1, [tf.shape(fc1)[0], 1, 1, tf.shape(fc1)[1]])
             att         = tf.reduce_mean(tf.multiply(bottom, fc1), 3, keep_dims=True)
@@ -359,12 +435,14 @@ class ResNet50():
     def bottleneck(self, bottom, is_training, name, reuse=False):
         with tf.variable_scope(name) as scope:
 
-            if reuse:
-                scope.reuse_variables()
+            # if reuse:
+            #     scope.reuse_variables()
 
-            head_bottleneck = slim.conv2d(bottom, 1024, [1, 1], scope=name)
+            head_bottleneck = slim.conv2d(bottom, 1024, [1, 1], scope=name, reuse=tf.AUTO_REUSE, )
 
         return head_bottleneck
+
+
 
     def build_network(self, is_training):
         initializer = tf.random_normal_initializer(mean=0.0, stddev=0.01)
@@ -423,8 +501,8 @@ class ResNet50():
 
         val_summaries = []
         with tf.device("/cpu:0"):
-            val_summaries.append(self.add_gt_image_summary_H())
-            val_summaries.append(self.add_gt_image_summary_HO())
+            # val_summaries.append(self.add_gt_image_summary_H())
+            # val_summaries.append(self.add_gt_image_summary_HO())
             # tf.summary.image('ATTENTION_MAP_H',  self.visualize["attention_map_H"], max_outputs=1)
             # tf.summary.image('ATTENTION_MAP_O',  self.visualize["attention_map_O"], max_outputs=1)
             for key, var in self.event_summaries.items():
