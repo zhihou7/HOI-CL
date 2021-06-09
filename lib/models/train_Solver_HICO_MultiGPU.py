@@ -73,7 +73,7 @@ class SolverWrapperMultiGPU(SolverWrapper):
 
             for i in range(2):
                 gpu_idx = i
-                if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
+                if 'CUDA_VISIBLE_DEVICES' not in os.environ or len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
                     gpu_idx = 0
                 # TODO if there are multiple GPUs, the code possibly raises an Exception.
                 #  But I think multiple GPUs should obtain better result.
@@ -138,7 +138,7 @@ class SolverWrapperMultiGPU(SolverWrapper):
 
 
     def train_model(self, sess, max_iters):
-        if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
+        if 'CUDA_VISIBLE_DEVICES' not in os.environ or len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
             lr, train_op, t_loss = self.construct_graph2(sess)
         else:
             lr, train_op, t_loss = self.construct_graph2(sess)

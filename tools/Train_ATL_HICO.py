@@ -11,15 +11,6 @@ from __future__ import print_function
 
 import os
 
-
-# os.environ['DATASET'] = 'HICO'
-# os.environ["KMP_BLOCKTIME"] = str(0)
-# os.environ["KMP_SETTINGS"] = str(1)
-# os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
-# os.environ["OMP_NUM_THREADS"] = str(8)
-# os.environ['CUDA_VISIBLE_DEVICES'] = '5'
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 import _init_paths
 import tensorflow as tf
 import numpy as np

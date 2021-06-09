@@ -59,7 +59,7 @@ class VCOCOSolverWrapperCL(SolverWrapper):
 
             for i in range(2):
                 gpu_idx = i
-                if len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
+                if 'CUDA_VISIBLE_DEVICES' not in os.environ or len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1:
                     gpu_idx = 0
                 with tf.device('/gpu:%d' % gpu_idx):
                     with tf.name_scope('%s_%d' % ('HICO', i), ) as scope:
