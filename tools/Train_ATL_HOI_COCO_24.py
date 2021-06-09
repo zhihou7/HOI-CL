@@ -10,13 +10,11 @@ import _init_paths
 import tensorflow as tf
 import numpy as np
 import argparse
-import pickle
-import ipdb
 
+from models.train_Solver_VCOCO_HOI import VCOCOSolverWrapperCL
 from models.train_Solver_VCOCO_MultiGPU import VCOCOSolverWrapperMultiGPU
 from ult.config import cfg
-from models.train_Solver_HICO_MultiGPU import SolverWrapperMultiGPU
-from ult.ult import obtain_coco_data, obtain_coco_data_hoicoco_24, obtain_coco_data3_hoicoco_24_atl
+from ult.ult import obtain_coco_data, obtain_coco_data_hoicoco_24, obtain_coco_data_atl
 
 
 def parse_args():
@@ -26,7 +24,7 @@ def parse_args():
             default=500000, type=int)
     parser.add_argument('--model', dest='model',
             help='Select model',
-            default='ATL_union_multi_atl_ml5_l05_t5_def2_aug5_new_VCOCO_coco_CL_24', type=str)
+            default='ATL_union_multi_atl_ml5_l05_t4_def2_aug5_new_VCOCO_coco_CL_24', type=str)
     parser.add_argument('--Restore_flag', dest='Restore_flag',
             help='Number of Res5 blocks',
             default=5, type=int)
@@ -61,13 +59,22 @@ if __name__ == '__main__':
     if os.path.exists(output_dir + 'checkpoint'):
         args.Restore_flag = -1
     import os
-    os.environ['DATASET'] = 'VCOCO'
+    os.environ['DATASET'] = 'VCOCO1'
     from networks.HOI import HOI
-    augment_type =4
+    augment_type = 4
     network = HOI(args.model)
     image, image_id, num_pos, blobs = obtain_coco_data_hoicoco_24(args.Pos_augment, args.Neg_select)
     if args.model.__contains__('atl'):
-        image, image_id, num_pos, blobs = obtain_coco_data_hoicoco_24_atl(args.Pos_augment, args.Neg_select)
+        atl_type = 1
+    if args.model.__contains__('_hico_'):
+        atl_type = 2
+    elif args.model.__contains__('_both_'):
+        atl_type = 3
+    elif args.model.__contains__('_vcoco_'):
+        atl_type = 5
+    elif args.model.__contains__('_coco_'):
+        atl_type = 9
+        image, image_id, num_pos, blobs = obtain_coco_data_atl(args.Pos_augment, args.Neg_select, atl_type, vcoco_type=24)
     else:
         image, image_id, num_pos, blobs = obtain_coco_data_hoicoco_24(args.Pos_augment, args.Neg_select)
 
@@ -84,7 +91,7 @@ if __name__ == '__main__':
     tfconfig.gpu_options.allow_growth = True
 
     with tf.Session(config=tfconfig) as sess:
-        sw = VCOCOSolverWrapperMultiGPU(sess, network, output_dir, tb_dir,
+        sw = VCOCOSolverWrapperCL(sess, network, output_dir, tb_dir,
                                     args.Restore_flag, weight)
         print(blobs)
         sw.set_coco_data(image, image_id, num_pos, blobs)
