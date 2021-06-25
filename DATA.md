@@ -31,8 +31,8 @@ COCO: https://cloudstor.aarnet.edu.au/plus/s/9cgMYKq5B4waawA
 #### Object Dataset (HOI-COCO)
 Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/VuHvDdp5msRnpqn. (we do not run this experiment).
 
-COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
+COCO (2014 training set): https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
 
-HICO: https://cloudstor.aarnet.edu.au/plus/s/MglGuWmtDgUgJLl
+HICO (training set): https://cloudstor.aarnet.edu.au/plus/s/MglGuWmtDgUgJLl
 
 HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
