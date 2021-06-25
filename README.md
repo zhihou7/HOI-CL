@@ -157,6 +157,9 @@ We illustrate the difference between DRG boxes and VCL boxes in Table 16 in FCL.
 ### Human Box Verb
 Following VCL, We extract the verb representation from union box in ATL. However, we find the verb representation (union box vs human box) has an important effect on affordance recognition. Please see https://github.com/zhihou7/HOI-CL/issues/1. Thanks for this issue. We'll update appendix in the version of arxiv.
 
+### Verb vs HOI prediction.
+Currently, some approaches predict verbs for HOI detection, while here we directly predict HOI categories. Experimentally, we find the performance of object affordance recognition apparently drops on HOI-COCO, while it achieves a similar result when we directly predict HOI categories or verb categories.
+
 ## Citations
 If you find this series of work are useful for you, please consider citing:
 
