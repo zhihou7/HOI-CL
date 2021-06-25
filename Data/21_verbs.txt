@@ -1,0 +1,23 @@
+{
+0: ['surf_instr'],
+1: ['ski_instr'],
+2: ['cut_instr', 'cut_obj'],
+3: ['ride_instr'],
+4: ['talk_on_phone_instr'],
+5: ['kick_obj'],
+6: ['work_on_computer_instr'],
+7: ['eat_obj', 'eat_instr'],
+8: ['sit_instr'],
+9: ['jump_instr'],
+10: ['lay_instr'],
+11: ['drink_instr'],
+12: ['carry_obj'],
+13: ['throw_obj'],
+14: ['look_obj'],
+15: ['hit_instr', 'hit_obj'],
+16: ['snowboard_instr'],
+17: ['read_obj'],
+18: ['hold_obj'],
+19: ['skateboard_instr'],
+20: ['catch_obj']
+}
