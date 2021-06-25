@@ -12,7 +12,6 @@ This repository includes the code of
 ![avatar](misc/cl_image.png)
 
 
-code is being constructed
 
 **If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
 
