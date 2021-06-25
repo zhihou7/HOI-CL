@@ -33,4 +33,6 @@ Object365_COCO: https://cloudstor.aarnet.edu.au/plus/s/VuHvDdp5msRnpqn. (we do n
 
 COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
 
+HICO: https://cloudstor.aarnet.edu.au/plus/s/MglGuWmtDgUgJLl
+
 HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
