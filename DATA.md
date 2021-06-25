@@ -36,3 +36,14 @@ COCO: https://cloudstor.aarnet.edu.au/plus/s/N35ovTXWtLmG9ZN
 HICO: https://cloudstor.aarnet.edu.au/plus/s/MglGuWmtDgUgJLl
 
 HOI-COCO: https://cloudstor.aarnet.edu.au/plus/s/YEiPiX0B3jaFasU
+
+
+#### Additional Files
+We also provide all files here: https://cloudstor.aarnet.edu.au/plus/s/9YxboaI6d5lITLk. 
+If I omit some files, you can find the corresponding files in this directory. 
+Noticeably, this directory might include some useless files and broken files that I never use.   
+
+
+I use Cyberduck upload the files to Cloudstor. You might use Cyberduck similar to this (I do not how to download the public files with duck):
+
+> duck -u user@institute.edu.au --parallel 8 -e compare --download davs://cloudstor.aarnet.edu.au/plus/remote.php/webdav/test/ /tmp/testdata/
