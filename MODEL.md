@@ -4,11 +4,17 @@
 FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
 
 ### ATL 
-ATL model (HICO-DET): https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
+ATL model (HICO-DET) : https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
 
-ATL model (HOI-COCO)(COCO): https://cloudstor.aarnet.edu.au/plus/s/zZfJM4ctylwAEiZ
+This is the ATL pre-trained model on HICO-DET. This model is fine-tuned with around 500000 iterations after we train th ATL model. We pick the the best checkpoint on HOI detection. Noticeably, the fine-tuning step does not improve the result of affordance recognition apparently. The model name is ATL_union_batch1_atl_l2_def4_epoch2_epic2_cosine5_s0_7_vloss2_rew2_aug5_3_x5new_coco_res101.
+
+ATL model (HOI-COCO)(COCO): https://cloudstor.aarnet.edu.au/plus/s/zZfJM4ctylwAEiZ 
+
+model name is ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_coco_CL_21
 
 ATL model (HOI-COCO)(COCO, HICO): https://cloudstor.aarnet.edu.au/plus/s/zih9Vcdlwbpt92v
+
+model name is ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_both_CL_21
 
 ### VCL 
 Our model will converge at around iteration 500000 in HICO-DET. V-COCO will converge after 200000 iterations. We provide the model parameters that we trained as follows,
@@ -17,4 +23,8 @@ VCL on V-COCO: https://drive.google.com/file/d/1SzzMw6fS6fifZkpuar3B40dIl7YLNoYF
 
 VCL on HICO: https://drive.google.com/file/d/16unS3joUleoYlweX0iFxlU2cxG8csTQf/view?usp=sharing
 
+model name is VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new
+
 VCL on HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
+
+model name is iCAN_R_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101. Here ``iCAN_R'' has no special meaning, just because the code is based on the repository of iCAN.
