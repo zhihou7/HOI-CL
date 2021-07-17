@@ -6,6 +6,8 @@
 # ---------
 import _init_paths
 import numpy as np
+
+from networks.tools import visual_tsne_multi
 from ult.tools import visual_tsne, obtain_hoi_to_verb, obtain_hoi_to_obj
 from ult.config import cfg
 
@@ -33,3 +35,6 @@ if __name__ == '__main__':
     visual_tsne(np.asarray(feats['O_list'])[:length], np.asarray(obj_lists)[:length], 80, model_name + 'O_list', save_fig=True)
 
     visual_tsne(np.asarray(feats['V_list'])[:length], np.asarray(verb_lists)[:length], 117, model_name + 'V_list', save_fig=True)
+
+    visual_tsne_multi(np.asarray(feats['V_list'][:length]), np.asarray(verb_lists[:length]), np.asarray(obj_lists)[:length],
+                  80, 117, model_name + 'Multi_verb_list'+str(80), save_fig=True, old_plt=None)
