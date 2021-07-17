@@ -54,9 +54,9 @@ if __name__ == '__main__':
     print(model_name)
     # _train_
     # feats = pickle.load(open('/opt/data/private/{}_train_HICO_HO_feats.pkl'.format(model_name), 'rb'))
-    if not os.path.exists('/project/ZHIHOU/feats/{}_train_HICO_HO_feats_all.pkl'.format(model_name)):
+    if not os.path.exists('/project/ZHIHOU/feats/{}_train_HICO_HO_feats.pkl'.format(model_name)):
         print('you should first extract the feature by extract_HO_feature.py')
-    feats = pickle.load(open('/project/ZHIHOU/feats/{}_train_HICO_HO_feats_all.pkl'.format(model_name), 'rb'))
+    feats = pickle.load(open('/project/ZHIHOU/feats/{}_train_HICO_HO_feats.pkl'.format(model_name), 'rb'))
 
     hoi_to_obj, obj_names = obtain_hoi_to_obj()
     hoi_to_verb, verb_names = obtain_hoi_to_verb()
