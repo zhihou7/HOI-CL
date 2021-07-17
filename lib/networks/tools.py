@@ -102,6 +102,177 @@ def get_convert_matrix(verb_class_num=117, obj_class_num=80):
     return verb_to_HO_matrix, obj_to_HO_matrix
 
 
+def visual_tsne(X, y, label_nums = 80, title=  'tsne', save_fig=False, old_plt=None):
+    import numpy as np
+    import pickle
+    hoi_to_obj, obj_names = obtain_hoi_to_obj()
+
+
+
+    import numpy as np
+
+    from matplotlib.ticker import NullFormatter
+    from sklearn import manifold, datasets
+    from time import time
+    import matplotlib.cm as cm
+
+    n_components = 2
+
+    t0 = time()
+    tsne = manifold.TSNE(n_components=n_components, init='random',
+                         random_state=0, perplexity=10)
+    Y = tsne.fit_transform(X)
+    print(Y.shape)
+    t1 = time()
+    print("circles, perplexity=%d in %.2g sec" % (30, t1 - t0))
+    # ax.set_title("Perplexity=30")
+    colors = cm.rainbow(np.linspace(0, 1, label_nums))
+    handles = []
+    if old_plt is None:
+        import matplotlib.pyplot as plt
+        plt.rcParams['figure.figsize'] = (8.0, 4.0)
+        plt.clf()
+    else:
+        plt = old_plt
+    for i in range(label_nums):
+        label = y == i
+        # print(label, colors[i])
+        print('label1:', i, colors[i])
+        p = plt.scatter(Y[label, 0], Y[label, 1], c=colors[i])
+        # p = plt.plot(Y[label, 0], Y[label, 1], c=colors[i], label=obj_names[i])
+        handles.append(p)
+    # plt.legend(loc=2, bbox_to_anchor=(1.05,1.0),borderaxespad = 0., fontsize = 'xx-small')
+    # plt.legend(handles[:3], obj_names[:3], loc=10)
+    # ax.xaxis.set_major_formatter(NullFormatter())
+    # ax.yaxis.set_major_formatter(NullFormatter())
+    # ax.axis('tight')
+    if old_plt is not None:
+        return
+    plt.title(title)
+    if save_fig:
+        print('save')
+        plt.savefig('/project/ZHIHOU/jpg_test/{}.eps'.format(title), dpi=300)
+        print('save')
+    else:
+        plt.show()
+
+
+def visual_tsne_multi(X, y, y2, label2_nums=80, label_nums = 80, title= 'tsne', save_fig=False, old_plt=None):
+    import numpy as np
+    from sklearn import manifold, datasets
+    from time import time
+    import matplotlib.cm as cm
+
+    n_components = 2
+
+    t0 = time()
+    tsne = manifold.TSNE(n_components=n_components, init='random',
+                         random_state=0, perplexity=10)
+    Y = tsne.fit_transform(X)
+    print(Y.shape)
+    t1 = time()
+    print("circles, perplexity=%d in %.2g sec" % (30, t1 - t0))
+    colors = cm.rainbow(np.linspace(0, 1, label_nums))
+    colors_2 = cm.rainbow(np.linspace(0, 1, label2_nums))
+    if label2_nums == 2:
+        print(colors_2[0], colors_2[1])
+    handles = []
+    if old_plt is None:
+        import matplotlib.pyplot as plt
+        plt.rcParams['figure.figsize'] = (8.0, 4.0)
+        plt.clf()
+    else:
+        plt = old_plt
+    area = (30 * np.arange(0, label2_nums)) ** 2  # 0 to 15 point radii
+    for i in range(label_nums):
+        label = y == i
+        # label1 = y2 == 1
+        size = area[y2]
+        print('label1:', i, colors[i])
+        for j in range(label2_nums):
+            label2 = y2 == j
+            merge_label = np.logical_and(label, label2)
+            p = plt.scatter(Y[merge_label, 0], Y[merge_label, 1], c=colors[i], edgecolors=colors_2[j])
+            print('label2:', j, colors_2[j])
+            # p = plt.plot(Y[label, 0], Y[label, 1], c=colors[i], label=obj_names[i])
+            handles.append(p)
+    if old_plt is not None:
+        return
+    plt.title(title)
+    if save_fig:
+        print('save')
+        plt.savefig('/project/ZHIHOU/jpg_test/{}.eps'.format(title), dpi=300)
+        print('save')
+    else:
+        plt.show()
+
+
+def visual_tsne1(X, y, y2, label_nums = 80, title=  'tsne', save_fig=False, old_plt=None):
+    import numpy as np
+    import pickle
+    hoi_to_obj, obj_names = obtain_hoi_to_obj()
+
+
+
+    import numpy as np
+
+    from matplotlib.ticker import NullFormatter
+    from sklearn import manifold, datasets
+    from time import time
+    import matplotlib.cm as cm
+
+    n_components = 2
+
+    t0 = time()
+    tsne = manifold.TSNE(n_components=n_components, init='random',
+                         random_state=0, perplexity=10)
+    Y = tsne.fit_transform(X)
+    print(Y.shape)
+    t1 = time()
+    print("circles, perplexity=%d in %.2g sec" % (30, t1 - t0))
+    # ax.set_title("Perplexity=30")
+    colors = cm.rainbow(np.linspace(0, 1, label_nums))
+    handles = []
+    if old_plt is None:
+        import matplotlib.pyplot as plt
+        plt.rcParams['figure.figsize'] = (8.0, 4.0)
+        plt.clf()
+    else:
+        plt = old_plt
+    halp_len = int(len(y) / 2)
+    for i in range(label_nums):
+        # import ipdb;ipdb.set_trace()
+        label = y[:halp_len] == i
+        # label = label[:halp_len]
+        # label2 = y2 == i
+        # print(label, colors[i])
+        p = plt.scatter(Y[:halp_len][label, 0], Y[:halp_len][label, 1], c=colors[i], marker = 'o')
+        # p = plt.plot(Y[label, 0], Y[label, 1], c=colors[i], label=obj_names[i])
+        handles.append(p)
+
+
+    for i in range(label_nums):
+        label = y[halp_len:] == i
+
+        # label2 = y2 == i
+        # print(label, colors[i])
+        p = plt.scatter(Y[halp_len:][label, 0], Y[halp_len:][label, 1], c=colors[i], marker = 'D')
+        # p = plt.plot(Y[label, 0], Y[label, 1], c=colors[i], label=obj_names[i])
+        handles.append(p)
+    # plt.legend(loc=2, bbox_to_anchor=(1.05,1.0),borderaxespad = 0., fontsize = 'xx-small')
+    # plt.legend(handles[:3], obj_names[:3], loc=10)
+    # ax.xaxis.set_major_formatter(NullFormatter())
+    # ax.yaxis.set_major_formatter(NullFormatter())
+    # ax.axis('tight')
+    if old_plt is not None:
+        return
+    plt.title(title)
+    if save_fig:
+        plt.savefig('/project/ZHIHOU/jpg_test/{}.eps'.format(title), dpi=300)
+    else:
+        plt.show()
+
+
 def get_convert_matrix_coco3(verb_class_num=24, obj_class_num=80):
     if verb_class_num == 24:
         set_list = [(0, 38), (1, 31), (1, 32), (2, 43), (2, 44), (2, 77), (3, 1), (3, 19), (3, 28), (3, 46), (3, 47),

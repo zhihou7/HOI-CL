@@ -36,7 +36,7 @@ from matplotlib import gridspec
 # plt.show()
 # exit()
 import _init_paths
-from networks.generate_objects import obtain_hoi_to_obj, visual_tsne, obtain_hoi_to_verb, visual_tsne1, \
+from networks.tools import obtain_hoi_to_obj, visual_tsne, obtain_hoi_to_verb, visual_tsne1, \
     visual_tsne_multi
 
 if __name__ == '__main__':
