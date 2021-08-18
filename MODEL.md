@@ -3,6 +3,8 @@
 
 ### FCL
 FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
+Zero shot (rare first): https://cloudstor.aarnet.edu.au/plus/s/CiVjoneqoiYD0Re
+Zero-Shot (non-rare first): https://cloudstor.aarnet.edu.au/plus/s/Q1NSDfiPPMXZxBC
 
 ### ATL 
 ATL model (HICO-DET) : https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
