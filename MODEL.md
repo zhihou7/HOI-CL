@@ -1,7 +1,14 @@
 
 ## Pre-trained model
 
+### FCL
 FCL Long-tailed Model: https://drive.google.com/file/d/144F7srsnVaXFa92dvsQtWm2Sm0b30jpi/view?usp=sharing
+
+Zero shot (rare first): https://cloudstor.aarnet.edu.au/plus/s/CiVjoneqoiYD0Re
+
+Zero-Shot (non-rare first): https://cloudstor.aarnet.edu.au/plus/s/Q1NSDfiPPMXZxBC
+
+
 
 ### ATL 
 ATL model (HICO-DET) : https://cloudstor.aarnet.edu.au/plus/s/NfKOuJKV5bUWiIA
@@ -28,3 +35,7 @@ model name is VCL_union_multi_ml5_def1_l2_rew2_aug5_3_x5new
 VCL on HICO(Res101): https://drive.google.com/file/d/1iiCywBR0gn6n5tPzOvOSmZw_abOmgg53/view?usp=sharing
 
 model name is iCAN_R_union_multi_ml5_def1_l2_rew2_aug5_3_x5new_res101. Here ``iCAN_R'' has no special meaning, just because the code is based on the repository of iCAN.
+
+Here, we also provide zero-shot models:
+- non-rare first (better than reported): https://cloudstor.aarnet.edu.au/plus/s/1CmocazcoNGtM4D
+- rare first (a bit worse than reported): https://cloudstor.aarnet.edu.au/plus/s/TqhEN5IzPREMr5F
