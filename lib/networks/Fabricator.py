@@ -54,7 +54,11 @@ class Fabricator(object):
                 noise = tf.random_normal(shape=tf.shape(verbs), mean=0.0, stddev=1., dtype=tf.float32)
                 v = tf.concat([word2vec, verbs, noise], axis=-1)
             elif type == 3:
+                # won_
                 v = tf.concat([word2vec, verbs, tf.zeros_like(verbs, dtype=tf.float32)], axis=-1)
+            elif type == 8:
+                # won1
+                v = tf.concat([word2vec, verbs], axis=-1)
             elif type == 4:
                 noise = tf.random_normal(shape=tf.shape(verbs), mean=0.0, stddev=1., dtype=tf.float32)
                 noise = tf.nn.relu(noise)
@@ -164,20 +168,27 @@ class Fabricator(object):
         """
         noise_type = 0
         if self.network.model_name.__contains__('_woa_'):
+            # with verb
             noise_type = 2
         elif self.network.model_name.__contains__('_won_'):
-            # no noise
+            # no noise, with empty variable to keep dimension of FC unchanged
             noise_type = 3
         elif self.network.model_name.__contains__('_won1_'):
             # no noise
             noise_type = 8
         elif self.network.model_name.__contains__('_n1_'):
+            # we use positive noise. Because the verb representation is after relu.
+            # this is useless. I can not understand why I tried this.
             noise_type = 4
         elif self.network.model_name.__contains__('_woa1_'):
+            # without verb, but we add a placeholder variable to make sure the dimension of FC unchanged.
             noise_type = 5
         elif self.network.model_name.__contains__('_woa2_'):
+            # without verb, but we add a duplicate word embedding to make sure the dimension of FC unchanged.
+            # However, this is a little bug because the dimensions of word embedding and Verb representation are different.
             noise_type = 7
         elif self.network.model_name.__contains__('_woo_'):
+            # without object, this is for verb fabricator.
             noise_type = 6
         return noise_type
 
