@@ -61,7 +61,7 @@ python tools/Test_ATL_ResNet_VCOCO_24.py --num_iteration 200000 --model ATL_unio
 1. extract affordance feature
 
 ```Shell
-python scripts/affordance/extract_affordance_feature.py 
+python scripts/affordance/extract_affordance_feature.py --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
 
 ```
 
@@ -73,22 +73,25 @@ python scripts/affordance/convert_feats_to_affor_bank_hico.py
 
 3. extract object feature
 ```Shell
-python scripts/affordance/extract_obj_feature.py --type gthico
+python scripts/affordance/extract_obj_feature.py --type gthico --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
 ```
 
 The type includes gthico, gtval2017, gtobj365, and gtobj365_coco.
 
 4. obtain hoi prediction
 ```Shell
-python scripts/affordance/obtain_hoi_preds.py
+python scripts/affordance/obtain_hoi_preds.py --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21 --dataset gthico
 ```
 
 5. statistic of affordance prediction results.
 
 ```Shell
-python scripts/affordance/stat_hico_affordance.py
+python scripts/affordance/stat_hico_affordance.py gthico ATL_R_union_vloss2_l2_rew_aug5_3_x5new_res101
 ```
-
+or
+```Shell
+python scripts/affordance/stat_vcoco_affordance.py gthico ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
+```
 
 ## Citations
 If you find this submission is useful for you, please consider citing:
