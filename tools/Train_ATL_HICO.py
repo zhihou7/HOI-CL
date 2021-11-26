@@ -180,7 +180,7 @@ if __name__ == '__main__':
             zero_shot_type=zero_shot_type,
         neg_type_ratio=neg_type_ratio)
     net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
-    net.set_add_ph(None, pos1_idx)
+    net.set_add_ph(pos1_idx)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -202,7 +202,7 @@ if __name__ == '__main__':
         else:
             sw = SolverWrapperMultiBatch(sess, net, output_dir, tb_dir,
                                         args.Restore_flag, weight)
-        sw.set_data(image, image_id, num_pos, Human_augmented, Object_augmented, net.gt_class_HO, sp, None)
+        sw.set_data(image, image_id, num_pos, Human_augmented, Object_augmented, net.gt_class_HO, sp)
         print('Solving..., Pos augment = ' + str(args.Pos_augment) + ', Neg augment = ' + str(
             args.Neg_select) + ', Restore_flag = ' + str(args.Restore_flag))
         sw.train_model(sess, args.max_iters)

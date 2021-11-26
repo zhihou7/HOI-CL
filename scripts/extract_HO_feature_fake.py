@@ -81,23 +81,18 @@ if __name__ == '__main__':
         large_neg_for_ho = False
         if args.model.endswith('_aug5_new') or args.model.endswith('_aug6_new'):
             large_neg_for_ho = True
-        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, pose_list, obj_mask = obtain_data(
+        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_data(
             Pos_augment=0, Neg_select=0, augment_type=-1, pattern_type=False)
-        net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask)
-        net.set_add_ph(obj_mask)
+        net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     else:
 
         large_neg_for_ho = False
-        if args.model.endswith('_aug5_new') or args.model.endswith('_aug6_new'):
-            large_neg_for_ho = True
-        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask = obtain_test_data(
+        image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp = obtain_test_data(
             Pos_augment=0,
             Neg_select=0,
             augment_type=-1,
-            pattern_type=False,
             large_neg_for_ho=large_neg_for_ho)
-        net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask)
-        net.set_add_ph(obj_mask)
+        net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     net.init_verbs_objs_cls()
     net.create_architecture(False)
 

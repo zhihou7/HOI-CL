@@ -65,15 +65,18 @@ python scripts/affordance/extract_affordance_feature.py
 
 ```
 
-2. convert affordance feature to feature bank (select 100 instances for each verb)
+2. convert affordance feature to feature bank (select 100 instances for each verb). 
+   For V-COCO, it is not necessary since the number of verbs on V-COCO is few. 
 ```Shell
 python scripts/affordance/convert_feats_to_affor_bank_hico.py
 ```
 
 3. extract object feature
 ```Shell
-python scripts/affordance/extract_obj_feature.py
+python scripts/affordance/extract_obj_feature.py --type gthico
 ```
+
+The type includes gthico, gtval2017, gtobj365, and gtobj365_coco.
 
 4. obtain hoi prediction
 ```Shell

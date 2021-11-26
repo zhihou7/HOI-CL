@@ -59,7 +59,7 @@ class HOI(parent_model):
     def set_gt_class_HO_for_D_verbs(self, gt_class_HO_for_D_verbs):
         self.gt_class_HO_for_D_verbs = gt_class_HO_for_D_verbs
 
-    def set_add_ph(self, obj_mask, pos1_idx=None):
+    def set_add_ph(self, pos1_idx=None):
         self.pos1_idx = pos1_idx
 
 

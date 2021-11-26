@@ -104,7 +104,6 @@ if __name__ == '__main__':
                gt_cls_H=None,
                gt_cls_HO=None, gt_cls_sp=None, Mask_HO=None, Mask_H=None, Mask_sp=None, gt_compose = None)
 
-    net.set_add_ph(obj_mask=blobs['O_mask'], pose_box=blobs['pose_box'])
     net.create_architecture(False)
 
     saver = tf.train.Saver()
@@ -115,7 +114,6 @@ if __name__ == '__main__':
     test_net_data_api_24(sess, net, Test_RCNN, prior_mask, Action_dic_inv, output_file,
                          args.object_thres, args.human_thres, args.prior_flag, blobs, image_id, image)
 
-    # test_net(sess, net, Test_RCNN, prior_mask, Action_dic_inv, output_file, args.object_thres, args.human_thres, args.prior_flag)
     sess.close()
 
     vcocoeval = VCOCOeval(cfg.DATA_DIR + '/' + 'v-coco/data/vcoco/vcoco_test.json',

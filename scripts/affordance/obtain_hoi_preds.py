@@ -34,7 +34,7 @@ def parse_args():
             default=0., type=float)
     parser.add_argument('--human_thres', dest='human_thres',
                         help='Human threshold',
-                        default=0.8, type=float)
+                        default=0., type=float)
     parser.add_argument('--dataset', dest='dataset',
                         help='dataset type: gthico',
                         default='gthico', type=str)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
         _t['im_detect'].tic()
         try:
             merge_probs, new_o_box, new_o_cls, new_o_score, _image_id, hoi_gt_action_list = sess.run(
-                [net.predictions["merge_cls_prob_verbs"], o_box, o_cls, o_score, image_id, hoi_gt_action])
+                [net.predictions["merge_cls_prob_hoi"], o_box, o_cls, o_score, image_id, hoi_gt_action])
         except tf.errors.OutOfRangeError:
             print('END')
             break

@@ -603,7 +603,6 @@ def test_net_data_api_21(sess, net, Test_RCNN, prior_mask, Action_dic_inv, outpu
 
             o_boxes_list = _blobs['O_boxes']
             o_score_list = _blobs['O_score']
-            o_mask_list = _blobs['O_mask']
             o_cls_list = _blobs['O_cls']
 
             # Predict actrion using human and object appearance

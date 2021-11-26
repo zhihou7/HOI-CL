@@ -37,7 +37,7 @@ class SolverWrapperMultiBatch(SolverWrapper):
         self.gt_class_HO  = None
         self.H_num  = None
 
-    def set_data(self, image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp, obj_mask):
+    def set_data(self, image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp):
         self.image = image
         self.image_id = image_id
         self.spatial = sp

@@ -100,7 +100,6 @@ if __name__ == '__main__':
             Pos_augment=0,
             Neg_select=0,
             augment_type=-1,
-            pattern_type=False,
             large_neg_for_ho=False)
         net.set_ph(image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp)
     net.create_architecture(False)

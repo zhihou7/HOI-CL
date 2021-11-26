@@ -609,7 +609,7 @@ def obtain_test_dataset_with_obj(object_thres, human_thres, dataset_name='test20
         elif test_type == 'gthico':
             # we simply use the Ground truth HICO-DET test. This might contain repeats objects.
             # However this do not affect the comparison between ATL and Baseline
-            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_VCOCO_HICO.pkl', "rb"))
+            Test_RCNN_coco = pickle.load(open(cfg.LOCAL_DATA + '/Test_GT_HICO_COCO_HICO.pkl', "rb"))
         else:
             raise Exception('no test_type {}'.format(test_type))
         #
