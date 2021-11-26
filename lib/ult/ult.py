@@ -1969,7 +1969,7 @@ def get_new_Trainval_N(Trainval_N, is_zero_shot, unseen_idx):
         new_Trainval_N = {}
         for k in Trainval_N.keys():
             new_Trainval_N[k] = []
-            for item in Trainval_N[4]:
+            for item in Trainval_N[k]: # the original code include a bug (k is wrongly set to 4)
                 if item[1] not in unseen_idx:
                     new_Trainval_N[k].append(item)
         Trainval_N = new_Trainval_N
