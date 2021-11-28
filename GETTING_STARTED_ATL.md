@@ -61,36 +61,36 @@ python tools/Test_ATL_ResNet_VCOCO_24.py --num_iteration 200000 --model ATL_unio
 1. extract affordance feature
 
 ```Shell
-python scripts/affordance/extract_affordance_feature.py --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
+python scripts/affordance/extract_affordance_feature.py --num_iteration 160000 --model ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_coco_CL_21
 
 ```
 
 2. convert affordance feature to feature bank (select 100 instances for each verb). 
    For V-COCO, it is not necessary since the number of verbs on V-COCO is few. 
 ```Shell
-python scripts/affordance/convert_feats_to_affor_bank_hico.py
+python scripts/affordance/convert_feats_to_affor_bank_hico.py --model ATL_union_batch1_atl_l2_def4_epoch2_epic2_cosine5_s0_7_vloss2_rew2_aug5_3_x5new_coco_res101 --num_iteration 259638 
 ```
 
 3. extract object feature
 ```Shell
-python scripts/affordance/extract_obj_feature.py --type gthico --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
+python scripts/affordance/extract_obj_feature.py --type gthico --num_iteration 160000 --model ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_coco_CL_21
 ```
 
 The type includes gthico, gtval2017, gtobj365, and gtobj365_coco.
 
 4. obtain hoi prediction
 ```Shell
-python scripts/affordance/obtain_hoi_preds.py --num_iteration 100000 --model ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21 --dataset gthico
+python scripts/affordance/obtain_hoi_preds.py --num_iteration 160000 --model ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_coco_CL_21 --dataset gthico
 ```
 
 5. statistic of affordance prediction results.
 
 ```Shell
-python scripts/affordance/stat_hico_affordance.py gthico ATL_R_union_vloss2_l2_rew_aug5_3_x5new_res101
+python scripts/affordance/stat_hico_affordance.py gthico 
 ```
 or
 ```Shell
-python scripts/affordance/stat_vcoco_affordance.py gthico ATL_union_multi_base_l05_t5_aug5_3_new_VCOCO_test_CL_21
+python scripts/affordance/stat_vcoco_affordance.py gthico ATL_union_multi_atl_ml5_l05_t5_def2_aug5_3_new_VCOCO_test_coco_CL_21
 ```
 
 ## Citations
