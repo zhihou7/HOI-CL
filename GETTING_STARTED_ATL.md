@@ -86,7 +86,7 @@ python scripts/affordance/obtain_hoi_preds.py --num_iteration 160000 --model ATL
 5. statistic of affordance prediction results.
 
 ```Shell
-python scripts/affordance/stat_hico_affordance.py gthico 
+python scripts/affordance/stat_hico_affordance.py gthico ATL_union_batch1_atl_l2_def4_epoch2_epic2_cosine5_s0_7_vloss2_rew2_aug5_3_x5new_coco_res101
 ```
 or
 ```Shell
