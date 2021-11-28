@@ -44,7 +44,7 @@ if __name__ == '__main__':
     last_img_id = -1
     count = 0
     _t['im_detect'].tic()
-    feats = pickle.load(open(cfg.LOCAL_DATA + '/feats1/'+'{}_train_HOI_verb_feats.pkl'.format(args.model), 'rb'))
+    feats = pickle.load(open(cfg.LOCAL_DATA + '/feats/'+'{}_train_HOI_verb_feats.pkl'.format(args.model), 'rb'))
     verb_feats = feats['V_list']
     action_list = feats['A_list']
     print(feats['img_id_list'][:10])
