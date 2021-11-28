@@ -205,7 +205,7 @@ class ResNet101():
     def init_table(self):
         pass
 
-    def set_ph(self, image, image_id, num_pos, Human_augmented, Object_augmented, action_HO, sp):
+    def set_ph(self, image, image_id, num_pos, Human_augmented, Object_augmented, action_HO=None, sp=None):
         if image is not None: self.image = image
         if image_id is not None: self.image_id = image_id
         if sp is not None: self.spatial = sp
