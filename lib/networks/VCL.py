@@ -14,11 +14,18 @@ class VCL(object):
     def __init__(self, net):
         self.net = net
         self.additional_loss = None
+        self.obj_to_HO_matrix = self.net.obj_to_HO_matrix
+        self.verb_to_HO_matrix = self.net.verb_to_HO_matrix
+        self.decouple_HO_to_obj_matrix = self.net.obj_to_HO_matrix
+        self.decouple_HO_to_verb_matrix = self.net.verb_to_HO_matrix
+        self.losses = {}
         pass
 
     def compose_ho_between_images(self, O_features, V_features, cur_gt_class_HO, type):
         return self.compose_ho_inner(O_features, V_features, cur_gt_class_HO, type)
 
+    def compose_ho_single_images(self, O_features, V_features, cur_gt_class_HO, type):
+        return self.compose_ho_inner(O_features, V_features, cur_gt_class_HO, type, is_single=True)
 
     def compose_ho_inner(self, O_features, V_features, cur_gt_class_HO, type, is_single=False):
         """
@@ -41,10 +48,10 @@ class VCL(object):
         gt_verb_class_l = []
         for i in range(2):
             gt_obj_class0 = tf.cast(
-                tf.matmul(cur_gt_class_HO[i], self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(cur_gt_class_HO[i], self.decouple_HO_to_obj_matrix, transpose_b=True) > 0,
                 tf.float32)
             gt_verb_class0 = tf.cast(
-                tf.matmul(cur_gt_class_HO[i], self.net.verb_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(cur_gt_class_HO[i], self.decouple_HO_to_verb_matrix, transpose_b=True) > 0,
                 tf.float32)
             print(self.net.verb_to_HO_matrix, gt_verb_class0)
             gt_obj_class_l.append(gt_obj_class0)
@@ -58,9 +65,29 @@ class VCL(object):
         fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1 = self.select_compose_candidate_elements(fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1,
                                                                                     gt_obj_class_l, gt_verb_class_l,
                                                                                     type)
-        print(cur_gt_class_HO, gt_verb_class_l, type)
-        if self.net.model_name.__contains__('_def1') and not is_single:
-            # this is similar to the default. This operation will compose relations from the single image.
+        if self.net.model_name.__contains__('_def4') and not is_single:
+            fc7_O_0 = tf.concat([fc7_O_0 for i in range(10)], axis=0)
+            fc7_V_0 = tf.concat([fc7_V_0 for i in range(10)], axis=0)
+            gt_obj_class_l[0] = tf.concat([gt_obj_class_l[0] for i in range(10)], axis=0)
+            gt_verb_class_l[0] = tf.concat(
+                [gt_verb_class_l[0] for i in range(10)], axis=0)
+
+            len = tf.maximum(tf.shape(fc7_O_0)[0], tf.shape(fc7_O_1)[0])
+            fc7_O_0 = fc7_O_0[:len]
+            fc7_O_1 = fc7_O_1[:len]
+            fc7_V_1 = fc7_V_1[:len]
+            fc7_V_0 = fc7_V_0[:len]
+            with tf.device('/cpu:0'):
+                fc7_O_0 = tf.Print(fc7_O_0,
+                                   [tf.shape(fc7_O_0), tf.shape(fc7_O_1), tf.shape(fc7_V_0), tf.shape(fc7_V_1)],
+                                   'shape c2:', first_n=100)
+
+            gt_obj_class_l[0] = gt_obj_class_l[0][:len]
+            gt_obj_class_l[1] = gt_obj_class_l[1][:len]
+            gt_verb_class_l[0] = gt_verb_class_l[0][:len]
+            gt_verb_class_l[1] = gt_verb_class_l[1][:len]
+        elif self.net.model_name.__contains__('_def1') and not is_single:
+            # error this is similar to the default. This operation will compose relations from the single image.
             len = tf.maximum(tf.shape(fc7_O_0)[0], tf.shape(fc7_O_1)[0])
             fc7_O_0 = fc7_O_0[:len]
             fc7_O_1 = fc7_O_1[:len]
@@ -122,9 +149,8 @@ class VCL(object):
         # the composite verb items are same with the original verb items
         gt_obj_class_orig = tf.concat([gt_obj_class_l[1], gt_obj_class_l[0]], axis=0)
 
-        print(gt_verb_class, self.net.verb_to_HO_matrix)
-        tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.net.obj_to_HO_matrix) > 0
-        tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.net.verb_to_HO_matrix) > 0
+        tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.obj_to_HO_matrix) > 0
+        tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.verb_to_HO_matrix) > 0
         new_gt_class_HO = tf.cast(tf.logical_and(tmp_ho_class_from_obj, tmp_ho_class_from_vb), tf.float32)
 
         return fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, gt_obj_class, gt_obj_class_orig
@@ -156,16 +182,7 @@ class VCL(object):
         :param type:
         :return:
         """
-        if self.net.model_name.__contains__('_c2_'):
-            # ignore the augmentation data
-            fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1 = self.create_new_HO_features_c2(fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1,
-                                                                                gt_obj_class_l, gt_verb_class_l)
-            with tf.device('/cpu:0'):
-                fc7_O_0 = tf.Print(fc7_O_0,
-                                   [tf.shape(fc7_O_0), tf.shape(fc7_O_1), tf.shape(fc7_V_0), tf.shape(fc7_V_1)],
-                                   'shape c1:', first_n=100)
-
-        elif not type.__contains__('default'): # all
+        if not type.__contains__('default'): # all
             fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1 = self.create_new_HO_features(fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1,
                                                                              gt_obj_class_l, gt_verb_class_l)
             with tf.device('/cpu:0'):
@@ -202,6 +219,20 @@ class VCL(object):
             ll = 2.
         return ll
 
+    def stat_affordance(self, O_features, V_features, cur_gt_class_HO, type = 'default'):
+        fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all(
+                O_features, V_features,
+                cur_gt_class_HO)
+        gt_verb_class1 = tf.expand_dims(gt_verb_class, axis=-1)
+        gt_obj_class1 = tf.expand_dims(gt_obj_class, axis=1)
+        gt_verb_obj = tf.matmul(gt_verb_class1, gt_obj_class1)
+        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_class, gt_obj_class)
+        cls_prob_hoi = self.net.region_classification_ho(fc7_vo, True,
+                                                         tf.random_normal_initializer(mean=0.0, stddev=0.01),
+                                                         'classification', nameprefix='stat_affordance')
+        tmp_result = tf.constant(0.)
+        tmp_result, gt_verb_obj = self.net.stat_running_affordance(cls_prob_hoi, gt_verb_obj)
+
     def merge_generate(self, O_features, V_features, cur_gt_class_HO, type = 'default', gt_obj_class_list = None):
         # assert type == 0 or type == 1 or type == 2 or type == 3
         compose_item_weights = 1.
@@ -216,15 +247,15 @@ class VCL(object):
             fc7_O = O_features[1]
             fc7_V = V_features[0]
             gt_obj_class = tf.cast(
-                tf.matmul(cur_gt_class_HO[1], self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(cur_gt_class_HO[1], self.decouple_HO_to_obj_matrix, transpose_b=True) > 0,
                 tf.float32)
             if gt_obj_class_list is not None:
                 gt_obj_class = gt_obj_class_list[1]
             gt_obj_class_orig = tf.cast(
-                tf.matmul(cur_gt_class_HO[0], self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(cur_gt_class_HO[0], self.decouple_HO_to_obj_matrix, transpose_b=True) > 0,
                 tf.float32)
             gt_verb_class = tf.cast(
-                tf.matmul(cur_gt_class_HO[0], self.net.verb_to_HO_matrix, transpose_b=True) > 0,
+                tf.matmul(cur_gt_class_HO[0], self.decouple_HO_to_verb_matrix, transpose_b=True) > 0,
                 tf.float32)
             # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_obj_class_orig)[0]], 'test:',
             #                  first_n=200)
@@ -275,8 +306,7 @@ class VCL(object):
                 # fc7_O = tf.Print(fc7_O, [tf.shape(fc7_O), tf.shape(fc7_V), tf.shape(gt_obj_class_orig)[0]], 'test:',
                 #                  first_n=200)
                 gt_obj_class = tf.cast(
-                    tf.matmul(tf.concat([cur_gt_class_HO[1], cur_gt_class_HO[0]], axis=0),
-                              self.net.obj_to_HO_matrix,
+                    tf.matmul(tf.concat([cur_gt_class_HO[1], cur_gt_class_HO[0]], axis=0), self.obj_to_HO_matrix,
                               transpose_b=True) > 0, tf.float32)
 
                 gt_verb_class = tf.concat([gt_verb_class for i in range(10)], axis=0)
@@ -290,8 +320,8 @@ class VCL(object):
                 fc7_V = fc7_V[:length]
                 fc7_O = fc7_O[:length]
 
-            tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.net.obj_to_HO_matrix) > 0
-            tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.net.verb_to_HO_matrix) > 0
+            tmp_ho_class_from_obj = tf.matmul(gt_obj_class, self.obj_to_HO_matrix) > 0
+            tmp_ho_class_from_vb = tf.matmul(gt_verb_class, self.verb_to_HO_matrix) > 0
             new_gt_class_HO = tf.cast(tf.logical_and(tmp_ho_class_from_obj, tmp_ho_class_from_vb), tf.float32)
         else:
             fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, gt_obj_class, gt_obj_class_orig = self.compose_ho_between_images(
@@ -329,10 +359,83 @@ class VCL(object):
         new_loss = self.cal_loss_with_new_composing_features(fc7_O, fc7_V, gt_verb_class, new_gt_class_HO, type,
                                                              compose_item_weights=compose_item_weights,
                                                              orig_len=tf.shape(O_features[0])[0] + tf.shape(O_features[1])[0])
+        if self.net.model_name.__contains__('affordance'):
+            tmp_all_cls_loss = self.cal_affordance(O_features, V_features, cur_gt_class_HO, gt_obj_class_list)
 
-        return new_loss
+        if self.net.model_name.__contains__('affordance'):
+            lambda_3 = 1.
+            if self.net.model_name.__contains__('_a05_'):
+                lambda_3 = 0.5
+            elif self.net.model_name.__contains__('_a1_'):
+                lambda_3 = 1.
+            elif self.net.model_name.__contains__('_a2_'):
+                lambda_3 = 2.
+            elif self.net.model_name.__contains__('_a4_'):
+                lambda_3 = 4.
+            elif self.net.model_name.__contains__('_a5_'):
+                lambda_3 = 8.
+            new_loss = new_loss + lambda_3 * tmp_all_cls_loss
+        self.losses['vcl_loss'] = new_loss
 
+        return self.losses
 
+    def cal_affordance(self, O_features, V_features, cur_gt_class_HO, gt_obj_class_list):
+        fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all(
+            O_features, V_features,
+            cur_gt_class_HO, gt_obj_class_list)
+        if self.net.model_name.__contains__('semi'):
+            _fc7_O = O_features[1]
+            _fc7_V = V_features[0]
+            _gt_obj_list = tf.cast(tf.matmul(cur_gt_class_HO[1], self.decouple_HO_to_obj_matrix, transpose_b=True) > 0,
+                                   tf.float32)
+            if gt_obj_class_list is not None:
+                _gt_obj_list = gt_obj_class_list[1]
+            fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all_inner(
+                _fc7_O, _fc7_V, cur_gt_class_HO[0], _gt_obj_list)
+        gt_verb_class1 = tf.expand_dims(gt_verb_class, axis=-1)
+        gt_obj_class1 = tf.expand_dims(gt_obj_class, axis=1)
+        gt_verb_obj = tf.matmul(gt_verb_class1, gt_obj_class1)
+        gt_verb_obj_orig = gt_verb_obj
+        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_class, gt_obj_class)
+        cls_prob_hoi = self.net.region_classification_ho(fc7_vo, True,
+                                                         tf.random_normal_initializer(mean=0.0, stddev=0.01),
+                                                         'classification', nameprefix='stat_affordance')
+        cls_prob_hoi_orig = cls_prob_hoi
+        tmp_result = tf.constant(0.)
+        tmp_all_cls_loss = tf.constant(0.)
+        if self.net.model_name.__contains__('AF7'):
+            afford_stat = tf.stop_gradient(self.net.affordance_stat)
+            if self.net.model_name.__contains__('AF71'):
+                label_conds = tf.cast(afford_stat > 0., tf.float32)
+            else:
+                label_conds = tf.cast(afford_stat > 0.5, tf.float32)
+            label_conds = tf.reshape(label_conds, [-1, self.net.verb_num_classes * self.net.obj_num_classes])
+            gt_verb_obj = tf.reshape(gt_verb_obj,
+                                     [-1, self.net.verb_num_classes * self.net.obj_num_classes])
+            new_gt_verb_obj = gt_verb_obj * label_conds
+            if self.net.model_name.__contains__('AF71'):
+                gt_verb_obj = tf.reshape(gt_verb_obj,
+                                         [-1, self.net.verb_num_classes, self.net.obj_num_classes])
+                gt_verb_class = tf.multiply(gt_verb_obj, tf.expand_dims(afford_stat, axis=0))
+                gt_verb_class = tf.reduce_sum(gt_verb_class, axis=-1)
+                # if self.net.model_name.__contains__('AF716'):
+                #     label_conds1 = tf.cast(
+                #         tf.matmul(self.verb_to_HO_matrix, self.obj_to_HO_matrix, transpose_b=True) == 0., tf.float32)
+                #     new_gt_verb_obj = new_gt_verb_obj * label_conds1
+                if self.net.model_name.__contains__('AF711'):
+                    cls_prob_hoi = cls_prob_hoi / 2.
+                    # This value has an important effect on the convergence.
+                if self.net.model_name.__contains__('AF713'):
+                    gt_verb_class = gt_verb_class / tf.reduce_max(afford_stat)
+
+            _, cls_prob_hoi_, gt_verb_class_ = self.conds_zeros(new_gt_verb_obj, cls_prob_hoi, gt_verb_class)
+            if not self.net.model_name.__contains__('VERB'):
+                gt_verb_class_ = tf.matmul(gt_verb_class_, self.net.verb_to_HO_matrix)
+            tmp_all_cls_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                labels=gt_verb_class_, logits=cls_prob_hoi_))
+            pass
+        tmp_result, gt_verb_obj = self.net.stat_running_affordance(cls_prob_hoi_orig, gt_verb_obj_orig)
+        return tmp_all_cls_loss
 
     def conds_zeros(self, new_gt_class_HO, *args):
 
@@ -360,7 +463,12 @@ class VCL(object):
                                               'classification_aux', nameprefix='merge_')
             self.net.num_classes = orig_num_classes
         else:
-            fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'fc_HO')
+            gt_obj_label = tf.cast(tf.matmul(new_gt_class_HO, self.obj_to_HO_matrix, transpose_b=True) > 0,
+                                   tf.float32)
+            gt_verb_label = tf.cast(
+                tf.matmul(new_gt_class_HO, self.verb_to_HO_matrix, transpose_b=True) > 0,
+                tf.float32)
+            fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_label, gt_obj_label)
             self.net.region_classification_ho(fc7_vo, True, tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                               'classification', nameprefix='merge_')
         cls_score_verbs = self.net.predictions["merge_cls_score_hoi"]
@@ -409,31 +517,39 @@ class VCL(object):
         _fc7_O = tf.concat([O_features[0], O_features[1]], axis=0)
         _fc7_V = tf.concat([V_features[0], V_features[1]], axis=0)
         _gt_class_HO = tf.concat([cur_gt_class_HO[0], cur_gt_class_HO[1]], axis=0)
+        if gt_obj_list is not None:
+            _gt_obj_list = tf.concat([gt_obj_list[0], gt_obj_list[1]], axis=0)
+        else:
+            _gt_obj_list = None
 
-        fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO = self.compose_ho_all_inner(_fc7_O, _fc7_V, _gt_class_HO)
+        fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, \
+        gt_verb_class, new_gt_class_HO = self.compose_ho_all_inner(_fc7_O, _fc7_V, _gt_class_HO, _gt_obj_list)
+
         return fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO
 
 
-    def compose_ho_all_inner(self, fc7_O, fc7_V, gt_class_HO):
-        _fc7_O = fc7_O
-        gt_obj_class = tf.cast(
-            tf.matmul(gt_class_HO, self.net.obj_to_HO_matrix, transpose_b=True) > 0,
+    def compose_ho_all_inner(self, fc7_O, fc7_V, gt_class_HO, gt_obj_class = None):
+        gt_obj_class_orig = tf.cast(
+            tf.matmul(gt_class_HO, self.decouple_HO_to_obj_matrix, transpose_b=True) > 0,
             tf.float32)
-        gt_obj_class_orig = gt_obj_class
+        if gt_obj_class is None:
+            gt_obj_class = gt_obj_class_orig
+
+
         gt_verb_class = tf.cast(
-            tf.matmul(gt_class_HO, self.net.verb_to_HO_matrix, transpose_b=True) > 0,
+            tf.matmul(gt_class_HO, self.decouple_HO_to_verb_matrix, transpose_b=True) > 0,
             tf.float32)
+        return self.compose_ho_all_inner1(fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class)
+
+    def compose_ho_all_inner1(self, fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class):
+        _fc7_O = fc7_O
         last_obj_dim = 2048
         with tf.device('/cpu:0'):
             fc7_V = tf.Print(fc7_V,
-                              [tf.shape(fc7_V)],
-                              'fc7_V================:', first_n=100)
-        if not self.net.model_name.__contains__('pose'):
-            last_vb_dim = 2048
-        elif self.net.model_name.__contains__('posesp'):
-            last_vb_dim = 7456
-        else:
-            last_vb_dim = tf.shape(fc7_V)[-1]
+                             [tf.shape(fc7_V)],
+                             'fc7_V================:', first_n=100)
+        last_vb_dim = 2048
+
         shape_O = tf.shape(fc7_O)[0]
         shape_V = tf.shape(fc7_V)[0]
         fc7_O = tf.expand_dims(fc7_O, dim=0)
@@ -452,10 +568,10 @@ class VCL(object):
                                    [shape_V * shape_O,
                                     self.net.verb_num_classes])
         gt_obj_class_orig = tf.reshape(tf.tile(gt_obj_class_orig, [1, shape_O, 1]),
-                                   [shape_V * shape_O,
-                                    self.net.obj_num_classes])
-        tmp_ho_class_from_obj = tf.cast(tf.matmul(gt_obj_class, self.net.obj_to_HO_matrix) > 0, tf.float32)
-        tmp_ho_class_from_vb = tf.cast(tf.matmul(gt_verb_class, self.net.verb_to_HO_matrix) > 0,
+                                       [shape_V * shape_O,
+                                        self.net.obj_num_classes])
+        tmp_ho_class_from_obj = tf.cast(tf.matmul(gt_obj_class, self.obj_to_HO_matrix) > 0, tf.float32)
+        tmp_ho_class_from_vb = tf.cast(tf.matmul(gt_verb_class, self.verb_to_HO_matrix) > 0,
                                        tf.float32)
         new_gt_class_HO = tf.cast(tmp_ho_class_from_obj + tmp_ho_class_from_vb > 1., tf.float32)
         return fc7_O, fc7_V, gt_obj_class, gt_obj_class_orig, gt_verb_class, new_gt_class_HO
@@ -562,17 +678,23 @@ class VCL(object):
         return fc7_O_0, fc7_O_1, fc7_V_0, fc7_V_1
 
     def calculate_loss_by_removing_useless(self, cls_score_verbs, new_gt_class_HO, weights=None):
+        if self.net.model_name.__contains__('VERB'):
+            new_gt_class_HO = tf.matmul(new_gt_class_HO, self.verb_to_HO_matrix, transpose_b=True)
+            pass
         tmp = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-            labels=new_gt_class_HO, logits=cls_score_verbs), axis=-1)
+                labels=new_gt_class_HO, logits=cls_score_verbs), axis=-1)
+
         if weights is not None:
-            print('calculate_loss_by_removing_useless======= not none')
+            # we in fact do not use this
             tmp = tf.multiply(tmp, weights)
-        new_loss = tf.reduce_mean(tmp)
+            new_loss = tf.div_no_nan(tf.reduce_sum(tmp), tf.reduce_sum(weights))
+        else:
+            new_loss = tf.reduce_mean(tmp)
         return new_loss
 
     def calculate_loss_by_removing_useless_coco(self, cls_score_verbs, new_gt_class_HO, weights=None):
         new_gt_class_verbs = tf.cast(
-            tf.matmul(new_gt_class_HO, self.net.verb_to_HO_matrix, transpose_b=True) > 0,
+            tf.matmul(new_gt_class_HO, self.verb_to_HO_matrix, transpose_b=True) > 0,
             tf.float32)
         tmp = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
             labels=new_gt_class_verbs, logits=cls_score_verbs), axis=-1)

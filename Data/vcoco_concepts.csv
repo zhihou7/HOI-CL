@@ -1,0 +1,1444 @@
+yes 2 0 cut_instr person
+new 3 0 ride_instr person
+new 4 0 talk_on_phone_instr person
+new 5 0 kick_obj person
+new 6 0 work_on_computer_instr person
+new 7 0 eat_obj person
+new 8 0 sit_instr person
+new 10 0 lay_instr person
+new 11 0 drink_instr person
+yes 12 0 carry_obj person
+new 13 0 throw_obj person
+yes 14 0 look_obj person
+new 15 0 hit_instr person
+new 16 0 snowboard_instr person
+new 17 0 read_obj person
+yes 18 0 hold_obj person
+new 19 0 skateboard_instr person
+new 20 0 catch_obj person
+new 2 1 cut_instr bicycle
+yes 3 1 ride_instr bicycle
+new 4 1 talk_on_phone_instr bicycle
+new 5 1 kick_obj bicycle
+new 6 1 work_on_computer_instr bicycle
+new 7 1 eat_obj bicycle
+yes 8 1 sit_instr bicycle
+new 10 1 lay_instr bicycle
+new 11 1 drink_instr bicycle
+new 12 1 carry_obj bicycle
+new 13 1 throw_obj bicycle
+yes 14 1 look_obj bicycle
+new 15 1 hit_instr bicycle
+new 16 1 snowboard_instr bicycle
+new 17 1 read_obj bicycle
+yes 18 1 hold_obj bicycle
+new 19 1 skateboard_instr bicycle
+new 20 1 catch_obj bicycle
+new 2 2 cut_instr car
+yes 3 2 ride_instr car
+new 4 2 talk_on_phone_instr car
+new 5 2 kick_obj car
+new 6 2 work_on_computer_instr car
+new 7 2 eat_obj car
+new 8 2 sit_instr car
+new 10 2 lay_instr car
+new 11 2 drink_instr car
+new 12 2 carry_obj car
+new 13 2 throw_obj car
+yes 14 2 look_obj car
+new 15 2 hit_instr car
+new 16 2 snowboard_instr car
+new 17 2 read_obj car
+new 18 2 hold_obj car
+new 19 2 skateboard_instr car
+new 20 2 catch_obj car
+new 2 3 cut_instr motorcycle
+yes 3 3 ride_instr motorcycle
+new 4 3 talk_on_phone_instr motorcycle
+new 5 3 kick_obj motorcycle
+new 6 3 work_on_computer_instr motorcycle
+new 7 3 eat_obj motorcycle
+yes 8 3 sit_instr motorcycle
+new 10 3 lay_instr motorcycle
+new 11 3 drink_instr motorcycle
+new 12 3 carry_obj motorcycle
+new 13 3 throw_obj motorcycle
+yes 14 3 look_obj motorcycle
+new 15 3 hit_instr motorcycle
+new 16 3 snowboard_instr motorcycle
+new 17 3 read_obj motorcycle
+yes 18 3 hold_obj motorcycle
+new 19 3 skateboard_instr motorcycle
+new 20 3 catch_obj motorcycle
+new 2 4 cut_instr airplane
+new 3 4 ride_instr airplane
+new 4 4 talk_on_phone_instr airplane
+new 5 4 kick_obj airplane
+new 6 4 work_on_computer_instr airplane
+new 7 4 eat_obj airplane
+new 8 4 sit_instr airplane
+new 10 4 lay_instr airplane
+new 11 4 drink_instr airplane
+new 12 4 carry_obj airplane
+new 13 4 throw_obj airplane
+yes 14 4 look_obj airplane
+new 15 4 hit_instr airplane
+new 16 4 snowboard_instr airplane
+new 17 4 read_obj airplane
+new 18 4 hold_obj airplane
+new 19 4 skateboard_instr airplane
+new 20 4 catch_obj airplane
+new 2 5 cut_instr bus
+yes 3 5 ride_instr bus
+new 4 5 talk_on_phone_instr bus
+new 5 5 kick_obj bus
+new 6 5 work_on_computer_instr bus
+new 7 5 eat_obj bus
+new 8 5 sit_instr bus
+new 10 5 lay_instr bus
+new 11 5 drink_instr bus
+new 12 5 carry_obj bus
+new 13 5 throw_obj bus
+yes 14 5 look_obj bus
+new 15 5 hit_instr bus
+new 16 5 snowboard_instr bus
+new 17 5 read_obj bus
+new 18 5 hold_obj bus
+new 19 5 skateboard_instr bus
+new 20 5 catch_obj bus
+new 2 6 cut_instr train
+yes 3 6 ride_instr train
+new 4 6 talk_on_phone_instr train
+new 5 6 kick_obj train
+new 6 6 work_on_computer_instr train
+new 7 6 eat_obj train
+new 8 6 sit_instr train
+new 10 6 lay_instr train
+new 11 6 drink_instr train
+new 12 6 carry_obj train
+new 13 6 throw_obj train
+yes 14 6 look_obj train
+new 15 6 hit_instr train
+new 16 6 snowboard_instr train
+new 17 6 read_obj train
+new 18 6 hold_obj train
+new 19 6 skateboard_instr train
+new 20 6 catch_obj train
+new 2 7 cut_instr truck
+yes 3 7 ride_instr truck
+new 4 7 talk_on_phone_instr truck
+new 5 7 kick_obj truck
+new 6 7 work_on_computer_instr truck
+new 7 7 eat_obj truck
+new 8 7 sit_instr truck
+new 10 7 lay_instr truck
+new 11 7 drink_instr truck
+new 12 7 carry_obj truck
+new 13 7 throw_obj truck
+yes 14 7 look_obj truck
+new 15 7 hit_instr truck
+new 16 7 snowboard_instr truck
+new 17 7 read_obj truck
+yes 18 7 hold_obj truck
+new 19 7 skateboard_instr truck
+new 20 7 catch_obj truck
+new 2 8 cut_instr boat
+yes 3 8 ride_instr boat
+new 4 8 talk_on_phone_instr boat
+new 5 8 kick_obj boat
+new 6 8 work_on_computer_instr boat
+new 7 8 eat_obj boat
+new 8 8 sit_instr boat
+new 10 8 lay_instr boat
+new 11 8 drink_instr boat
+new 12 8 carry_obj boat
+new 13 8 throw_obj boat
+new 14 8 look_obj boat
+new 15 8 hit_instr boat
+new 16 8 snowboard_instr boat
+new 17 8 read_obj boat
+yes 18 8 hold_obj boat
+new 19 8 skateboard_instr boat
+new 20 8 catch_obj boat
+new 2 9 cut_instr traffic light
+new 3 9 ride_instr traffic light
+new 4 9 talk_on_phone_instr traffic light
+new 5 9 kick_obj traffic light
+new 6 9 work_on_computer_instr traffic light
+new 7 9 eat_obj traffic light
+new 8 9 sit_instr traffic light
+new 10 9 lay_instr traffic light
+new 11 9 drink_instr traffic light
+new 12 9 carry_obj traffic light
+new 13 9 throw_obj traffic light
+new 14 9 look_obj traffic light
+new 15 9 hit_instr traffic light
+new 16 9 snowboard_instr traffic light
+new 17 9 read_obj traffic light
+new 18 9 hold_obj traffic light
+new 19 9 skateboard_instr traffic light
+new 20 9 catch_obj traffic light
+new 2 10 cut_instr fire hydrant
+new 3 10 ride_instr fire hydrant
+new 4 10 talk_on_phone_instr fire hydrant
+new 5 10 kick_obj fire hydrant
+new 6 10 work_on_computer_instr fire hydrant
+new 7 10 eat_obj fire hydrant
+new 8 10 sit_instr fire hydrant
+new 10 10 lay_instr fire hydrant
+new 11 10 drink_instr fire hydrant
+new 12 10 carry_obj fire hydrant
+new 13 10 throw_obj fire hydrant
+yes 14 10 look_obj fire hydrant
+new 15 10 hit_instr fire hydrant
+new 16 10 snowboard_instr fire hydrant
+new 17 10 read_obj fire hydrant
+new 18 10 hold_obj fire hydrant
+new 19 10 skateboard_instr fire hydrant
+new 20 10 catch_obj fire hydrant
+new 2 11 cut_instr stop sign
+new 3 11 ride_instr stop sign
+new 4 11 talk_on_phone_instr stop sign
+new 5 11 kick_obj stop sign
+new 6 11 work_on_computer_instr stop sign
+new 7 11 eat_obj stop sign
+new 8 11 sit_instr stop sign
+new 10 11 lay_instr stop sign
+new 11 11 drink_instr stop sign
+new 12 11 carry_obj stop sign
+new 13 11 throw_obj stop sign
+new 14 11 look_obj stop sign
+new 15 11 hit_instr stop sign
+new 16 11 snowboard_instr stop sign
+new 17 11 read_obj stop sign
+new 18 11 hold_obj stop sign
+new 19 11 skateboard_instr stop sign
+new 20 11 catch_obj stop sign
+new 2 12 cut_instr parking meter
+new 3 12 ride_instr parking meter
+new 4 12 talk_on_phone_instr parking meter
+new 5 12 kick_obj parking meter
+new 6 12 work_on_computer_instr parking meter
+new 7 12 eat_obj parking meter
+new 8 12 sit_instr parking meter
+new 10 12 lay_instr parking meter
+new 11 12 drink_instr parking meter
+new 12 12 carry_obj parking meter
+new 13 12 throw_obj parking meter
+new 14 12 look_obj parking meter
+new 15 12 hit_instr parking meter
+new 16 12 snowboard_instr parking meter
+new 17 12 read_obj parking meter
+new 18 12 hold_obj parking meter
+new 19 12 skateboard_instr parking meter
+new 20 12 catch_obj parking meter
+new 2 13 cut_instr bench
+new 3 13 ride_instr bench
+new 4 13 talk_on_phone_instr bench
+new 5 13 kick_obj bench
+new 6 13 work_on_computer_instr bench
+new 7 13 eat_obj bench
+yes 8 13 sit_instr bench
+yes 10 13 lay_instr bench
+new 11 13 drink_instr bench
+new 12 13 carry_obj bench
+new 13 13 throw_obj bench
+yes 14 13 look_obj bench
+new 15 13 hit_instr bench
+new 16 13 snowboard_instr bench
+new 17 13 read_obj bench
+yes 18 13 hold_obj bench
+new 19 13 skateboard_instr bench
+new 20 13 catch_obj bench
+new 2 14 cut_instr bird
+new 3 14 ride_instr bird
+new 4 14 talk_on_phone_instr bird
+new 5 14 kick_obj bird
+new 6 14 work_on_computer_instr bird
+new 7 14 eat_obj bird
+new 8 14 sit_instr bird
+new 10 14 lay_instr bird
+new 11 14 drink_instr bird
+new 12 14 carry_obj bird
+new 13 14 throw_obj bird
+yes 14 14 look_obj bird
+new 15 14 hit_instr bird
+new 16 14 snowboard_instr bird
+new 17 14 read_obj bird
+yes 18 14 hold_obj bird
+new 19 14 skateboard_instr bird
+new 20 14 catch_obj bird
+new 2 15 cut_instr cat
+new 3 15 ride_instr cat
+new 4 15 talk_on_phone_instr cat
+new 5 15 kick_obj cat
+new 6 15 work_on_computer_instr cat
+new 7 15 eat_obj cat
+new 8 15 sit_instr cat
+new 10 15 lay_instr cat
+new 11 15 drink_instr cat
+new 12 15 carry_obj cat
+new 13 15 throw_obj cat
+yes 14 15 look_obj cat
+new 15 15 hit_instr cat
+new 16 15 snowboard_instr cat
+new 17 15 read_obj cat
+yes 18 15 hold_obj cat
+new 19 15 skateboard_instr cat
+new 20 15 catch_obj cat
+new 2 16 cut_instr dog
+new 3 16 ride_instr dog
+new 4 16 talk_on_phone_instr dog
+new 5 16 kick_obj dog
+new 6 16 work_on_computer_instr dog
+new 7 16 eat_obj dog
+new 8 16 sit_instr dog
+new 10 16 lay_instr dog
+new 11 16 drink_instr dog
+new 12 16 carry_obj dog
+new 13 16 throw_obj dog
+yes 14 16 look_obj dog
+new 15 16 hit_instr dog
+new 16 16 snowboard_instr dog
+new 17 16 read_obj dog
+yes 18 16 hold_obj dog
+new 19 16 skateboard_instr dog
+new 20 16 catch_obj dog
+new 2 17 cut_instr horse
+yes 3 17 ride_instr horse
+new 4 17 talk_on_phone_instr horse
+new 5 17 kick_obj horse
+new 6 17 work_on_computer_instr horse
+new 7 17 eat_obj horse
+yes 8 17 sit_instr horse
+new 10 17 lay_instr horse
+new 11 17 drink_instr horse
+new 12 17 carry_obj horse
+new 13 17 throw_obj horse
+yes 14 17 look_obj horse
+new 15 17 hit_instr horse
+new 16 17 snowboard_instr horse
+new 17 17 read_obj horse
+yes 18 17 hold_obj horse
+new 19 17 skateboard_instr horse
+new 20 17 catch_obj horse
+yes 2 18 cut_instr sheep
+new 3 18 ride_instr sheep
+new 4 18 talk_on_phone_instr sheep
+new 5 18 kick_obj sheep
+new 6 18 work_on_computer_instr sheep
+new 7 18 eat_obj sheep
+new 8 18 sit_instr sheep
+new 10 18 lay_instr sheep
+new 11 18 drink_instr sheep
+new 12 18 carry_obj sheep
+new 13 18 throw_obj sheep
+yes 14 18 look_obj sheep
+new 15 18 hit_instr sheep
+new 16 18 snowboard_instr sheep
+new 17 18 read_obj sheep
+yes 18 18 hold_obj sheep
+new 19 18 skateboard_instr sheep
+new 20 18 catch_obj sheep
+new 2 19 cut_instr cow
+new 3 19 ride_instr cow
+new 4 19 talk_on_phone_instr cow
+new 5 19 kick_obj cow
+new 6 19 work_on_computer_instr cow
+new 7 19 eat_obj cow
+new 8 19 sit_instr cow
+new 10 19 lay_instr cow
+new 11 19 drink_instr cow
+new 12 19 carry_obj cow
+new 13 19 throw_obj cow
+yes 14 19 look_obj cow
+new 15 19 hit_instr cow
+new 16 19 snowboard_instr cow
+new 17 19 read_obj cow
+new 18 19 hold_obj cow
+new 19 19 skateboard_instr cow
+new 20 19 catch_obj cow
+new 2 20 cut_instr elephant
+yes 3 20 ride_instr elephant
+new 4 20 talk_on_phone_instr elephant
+new 5 20 kick_obj elephant
+new 6 20 work_on_computer_instr elephant
+new 7 20 eat_obj elephant
+yes 8 20 sit_instr elephant
+new 10 20 lay_instr elephant
+new 11 20 drink_instr elephant
+new 12 20 carry_obj elephant
+new 13 20 throw_obj elephant
+yes 14 20 look_obj elephant
+new 15 20 hit_instr elephant
+new 16 20 snowboard_instr elephant
+new 17 20 read_obj elephant
+yes 18 20 hold_obj elephant
+new 19 20 skateboard_instr elephant
+new 20 20 catch_obj elephant
+new 2 21 cut_instr bear
+new 3 21 ride_instr bear
+new 4 21 talk_on_phone_instr bear
+new 5 21 kick_obj bear
+new 6 21 work_on_computer_instr bear
+new 7 21 eat_obj bear
+new 8 21 sit_instr bear
+new 10 21 lay_instr bear
+new 11 21 drink_instr bear
+new 12 21 carry_obj bear
+new 13 21 throw_obj bear
+new 14 21 look_obj bear
+new 15 21 hit_instr bear
+new 16 21 snowboard_instr bear
+new 17 21 read_obj bear
+new 18 21 hold_obj bear
+new 19 21 skateboard_instr bear
+new 20 21 catch_obj bear
+new 2 22 cut_instr zebra
+new 3 22 ride_instr zebra
+new 4 22 talk_on_phone_instr zebra
+new 5 22 kick_obj zebra
+new 6 22 work_on_computer_instr zebra
+new 7 22 eat_obj zebra
+new 8 22 sit_instr zebra
+new 10 22 lay_instr zebra
+new 11 22 drink_instr zebra
+new 12 22 carry_obj zebra
+new 13 22 throw_obj zebra
+new 14 22 look_obj zebra
+new 15 22 hit_instr zebra
+new 16 22 snowboard_instr zebra
+new 17 22 read_obj zebra
+new 18 22 hold_obj zebra
+new 19 22 skateboard_instr zebra
+new 20 22 catch_obj zebra
+new 2 23 cut_instr giraffe
+new 3 23 ride_instr giraffe
+new 4 23 talk_on_phone_instr giraffe
+new 5 23 kick_obj giraffe
+new 6 23 work_on_computer_instr giraffe
+new 7 23 eat_obj giraffe
+new 8 23 sit_instr giraffe
+new 10 23 lay_instr giraffe
+new 11 23 drink_instr giraffe
+new 12 23 carry_obj giraffe
+new 13 23 throw_obj giraffe
+yes 14 23 look_obj giraffe
+new 15 23 hit_instr giraffe
+new 16 23 snowboard_instr giraffe
+new 17 23 read_obj giraffe
+new 18 23 hold_obj giraffe
+new 19 23 skateboard_instr giraffe
+new 20 23 catch_obj giraffe
+new 2 24 cut_instr backpack
+new 3 24 ride_instr backpack
+new 4 24 talk_on_phone_instr backpack
+new 5 24 kick_obj backpack
+new 6 24 work_on_computer_instr backpack
+new 7 24 eat_obj backpack
+yes 8 24 sit_instr backpack
+new 10 24 lay_instr backpack
+new 11 24 drink_instr backpack
+yes 12 24 carry_obj backpack
+new 13 24 throw_obj backpack
+yes 14 24 look_obj backpack
+new 15 24 hit_instr backpack
+new 16 24 snowboard_instr backpack
+new 17 24 read_obj backpack
+yes 18 24 hold_obj backpack
+new 19 24 skateboard_instr backpack
+new 20 24 catch_obj backpack
+new 2 25 cut_instr umbrella
+new 3 25 ride_instr umbrella
+new 4 25 talk_on_phone_instr umbrella
+new 5 25 kick_obj umbrella
+new 6 25 work_on_computer_instr umbrella
+new 7 25 eat_obj umbrella
+new 8 25 sit_instr umbrella
+new 10 25 lay_instr umbrella
+new 11 25 drink_instr umbrella
+yes 12 25 carry_obj umbrella
+new 13 25 throw_obj umbrella
+yes 14 25 look_obj umbrella
+new 15 25 hit_instr umbrella
+new 16 25 snowboard_instr umbrella
+new 17 25 read_obj umbrella
+yes 18 25 hold_obj umbrella
+new 19 25 skateboard_instr umbrella
+new 20 25 catch_obj umbrella
+new 2 26 cut_instr handbag
+new 3 26 ride_instr handbag
+new 4 26 talk_on_phone_instr handbag
+new 5 26 kick_obj handbag
+new 6 26 work_on_computer_instr handbag
+new 7 26 eat_obj handbag
+yes 8 26 sit_instr handbag
+new 10 26 lay_instr handbag
+new 11 26 drink_instr handbag
+yes 12 26 carry_obj handbag
+new 13 26 throw_obj handbag
+yes 14 26 look_obj handbag
+new 15 26 hit_instr handbag
+new 16 26 snowboard_instr handbag
+new 17 26 read_obj handbag
+yes 18 26 hold_obj handbag
+new 19 26 skateboard_instr handbag
+new 20 26 catch_obj handbag
+yes 2 27 cut_instr tie
+new 3 27 ride_instr tie
+new 4 27 talk_on_phone_instr tie
+new 5 27 kick_obj tie
+new 6 27 work_on_computer_instr tie
+new 7 27 eat_obj tie
+new 8 27 sit_instr tie
+new 10 27 lay_instr tie
+new 11 27 drink_instr tie
+new 12 27 carry_obj tie
+new 13 27 throw_obj tie
+yes 14 27 look_obj tie
+new 15 27 hit_instr tie
+new 16 27 snowboard_instr tie
+new 17 27 read_obj tie
+yes 18 27 hold_obj tie
+new 19 27 skateboard_instr tie
+new 20 27 catch_obj tie
+new 2 28 cut_instr suitcase
+new 3 28 ride_instr suitcase
+new 4 28 talk_on_phone_instr suitcase
+new 5 28 kick_obj suitcase
+new 6 28 work_on_computer_instr suitcase
+new 7 28 eat_obj suitcase
+yes 8 28 sit_instr suitcase
+new 10 28 lay_instr suitcase
+new 11 28 drink_instr suitcase
+yes 12 28 carry_obj suitcase
+new 13 28 throw_obj suitcase
+yes 14 28 look_obj suitcase
+new 15 28 hit_instr suitcase
+new 16 28 snowboard_instr suitcase
+new 17 28 read_obj suitcase
+yes 18 28 hold_obj suitcase
+new 19 28 skateboard_instr suitcase
+new 20 28 catch_obj suitcase
+new 2 29 cut_instr frisbee
+new 3 29 ride_instr frisbee
+new 4 29 talk_on_phone_instr frisbee
+new 5 29 kick_obj frisbee
+new 6 29 work_on_computer_instr frisbee
+new 7 29 eat_obj frisbee
+new 8 29 sit_instr frisbee
+new 10 29 lay_instr frisbee
+new 11 29 drink_instr frisbee
+yes 12 29 carry_obj frisbee
+yes 13 29 throw_obj frisbee
+yes 14 29 look_obj frisbee
+new 15 29 hit_instr frisbee
+new 16 29 snowboard_instr frisbee
+new 17 29 read_obj frisbee
+yes 18 29 hold_obj frisbee
+new 19 29 skateboard_instr frisbee
+yes 20 29 catch_obj frisbee
+yes 1 30 ski_instr skis
+new 3 30 ride_instr skis
+new 4 30 talk_on_phone_instr skis
+new 5 30 kick_obj skis
+new 6 30 work_on_computer_instr skis
+new 7 30 eat_obj skis
+new 8 30 sit_instr skis
+yes 9 30 jump_instr skis
+new 10 30 lay_instr skis
+new 11 30 drink_instr skis
+yes 12 30 carry_obj skis
+new 13 30 throw_obj skis
+yes 14 30 look_obj skis
+new 15 30 hit_instr skis
+yes 16 30 snowboard_instr skis
+new 17 30 read_obj skis
+yes 18 30 hold_obj skis
+new 19 30 skateboard_instr skis
+new 20 30 catch_obj skis
+yes 1 31 ski_instr snowboard
+new 3 31 ride_instr snowboard
+new 4 31 talk_on_phone_instr snowboard
+new 5 31 kick_obj snowboard
+new 6 31 work_on_computer_instr snowboard
+new 7 31 eat_obj snowboard
+new 8 31 sit_instr snowboard
+yes 9 31 jump_instr snowboard
+new 10 31 lay_instr snowboard
+new 11 31 drink_instr snowboard
+yes 12 31 carry_obj snowboard
+new 13 31 throw_obj snowboard
+yes 14 31 look_obj snowboard
+new 15 31 hit_instr snowboard
+yes 16 31 snowboard_instr snowboard
+new 17 31 read_obj snowboard
+yes 18 31 hold_obj snowboard
+yes 19 31 skateboard_instr snowboard
+new 20 31 catch_obj snowboard
+new 2 32 cut_instr sports ball
+new 3 32 ride_instr sports ball
+new 4 32 talk_on_phone_instr sports ball
+yes 5 32 kick_obj sports ball
+new 6 32 work_on_computer_instr sports ball
+new 7 32 eat_obj sports ball
+new 8 32 sit_instr sports ball
+new 10 32 lay_instr sports ball
+new 11 32 drink_instr sports ball
+yes 12 32 carry_obj sports ball
+yes 13 32 throw_obj sports ball
+yes 14 32 look_obj sports ball
+yes 15 32 hit_instr sports ball
+new 16 32 snowboard_instr sports ball
+new 17 32 read_obj sports ball
+yes 18 32 hold_obj sports ball
+new 19 32 skateboard_instr sports ball
+yes 20 32 catch_obj sports ball
+new 2 33 cut_instr kite
+new 3 33 ride_instr kite
+new 4 33 talk_on_phone_instr kite
+new 5 33 kick_obj kite
+new 6 33 work_on_computer_instr kite
+new 7 33 eat_obj kite
+new 8 33 sit_instr kite
+new 10 33 lay_instr kite
+new 11 33 drink_instr kite
+yes 12 33 carry_obj kite
+new 13 33 throw_obj kite
+yes 14 33 look_obj kite
+new 15 33 hit_instr kite
+new 16 33 snowboard_instr kite
+new 17 33 read_obj kite
+yes 18 33 hold_obj kite
+new 19 33 skateboard_instr kite
+new 20 33 catch_obj kite
+new 2 34 cut_instr baseball bat
+new 3 34 ride_instr baseball bat
+new 4 34 talk_on_phone_instr baseball bat
+new 5 34 kick_obj baseball bat
+new 6 34 work_on_computer_instr baseball bat
+new 7 34 eat_obj baseball bat
+new 8 34 sit_instr baseball bat
+new 10 34 lay_instr baseball bat
+new 11 34 drink_instr baseball bat
+yes 12 34 carry_obj baseball bat
+new 13 34 throw_obj baseball bat
+yes 14 34 look_obj baseball bat
+yes 15 34 hit_instr baseball bat
+new 16 34 snowboard_instr baseball bat
+new 17 34 read_obj baseball bat
+yes 18 34 hold_obj baseball bat
+new 19 34 skateboard_instr baseball bat
+new 20 34 catch_obj baseball bat
+new 2 35 cut_instr baseball glove
+new 3 35 ride_instr baseball glove
+new 4 35 talk_on_phone_instr baseball glove
+new 5 35 kick_obj baseball glove
+new 6 35 work_on_computer_instr baseball glove
+new 7 35 eat_obj baseball glove
+new 8 35 sit_instr baseball glove
+new 10 35 lay_instr baseball glove
+new 11 35 drink_instr baseball glove
+new 12 35 carry_obj baseball glove
+new 13 35 throw_obj baseball glove
+yes 14 35 look_obj baseball glove
+new 15 35 hit_instr baseball glove
+new 16 35 snowboard_instr baseball glove
+new 17 35 read_obj baseball glove
+yes 18 35 hold_obj baseball glove
+new 19 35 skateboard_instr baseball glove
+new 20 35 catch_obj baseball glove
+new 2 36 cut_instr skateboard
+new 3 36 ride_instr skateboard
+new 4 36 talk_on_phone_instr skateboard
+new 5 36 kick_obj skateboard
+new 6 36 work_on_computer_instr skateboard
+new 7 36 eat_obj skateboard
+new 8 36 sit_instr skateboard
+yes 9 36 jump_instr skateboard
+new 10 36 lay_instr skateboard
+new 11 36 drink_instr skateboard
+yes 12 36 carry_obj skateboard
+new 13 36 throw_obj skateboard
+yes 14 36 look_obj skateboard
+new 15 36 hit_instr skateboard
+new 16 36 snowboard_instr skateboard
+new 17 36 read_obj skateboard
+yes 18 36 hold_obj skateboard
+yes 19 36 skateboard_instr skateboard
+new 20 36 catch_obj skateboard
+yes 0 37 surf_instr surfboard
+new 3 37 ride_instr surfboard
+new 4 37 talk_on_phone_instr surfboard
+new 5 37 kick_obj surfboard
+new 6 37 work_on_computer_instr surfboard
+new 7 37 eat_obj surfboard
+new 8 37 sit_instr surfboard
+yes 9 37 jump_instr surfboard
+new 10 37 lay_instr surfboard
+new 11 37 drink_instr surfboard
+yes 12 37 carry_obj surfboard
+new 13 37 throw_obj surfboard
+yes 14 37 look_obj surfboard
+new 15 37 hit_instr surfboard
+new 16 37 snowboard_instr surfboard
+new 17 37 read_obj surfboard
+yes 18 37 hold_obj surfboard
+new 19 37 skateboard_instr surfboard
+new 20 37 catch_obj surfboard
+new 2 38 cut_instr tennis racket
+new 3 38 ride_instr tennis racket
+new 4 38 talk_on_phone_instr tennis racket
+new 5 38 kick_obj tennis racket
+new 6 38 work_on_computer_instr tennis racket
+new 7 38 eat_obj tennis racket
+new 8 38 sit_instr tennis racket
+new 10 38 lay_instr tennis racket
+new 11 38 drink_instr tennis racket
+yes 12 38 carry_obj tennis racket
+new 13 38 throw_obj tennis racket
+yes 14 38 look_obj tennis racket
+yes 15 38 hit_instr tennis racket
+new 16 38 snowboard_instr tennis racket
+new 17 38 read_obj tennis racket
+yes 18 38 hold_obj tennis racket
+new 19 38 skateboard_instr tennis racket
+new 20 38 catch_obj tennis racket
+new 2 39 cut_instr bottle
+new 3 39 ride_instr bottle
+new 4 39 talk_on_phone_instr bottle
+new 5 39 kick_obj bottle
+new 6 39 work_on_computer_instr bottle
+new 7 39 eat_obj bottle
+new 8 39 sit_instr bottle
+new 10 39 lay_instr bottle
+yes 11 39 drink_instr bottle
+yes 12 39 carry_obj bottle
+new 13 39 throw_obj bottle
+yes 14 39 look_obj bottle
+new 15 39 hit_instr bottle
+new 16 39 snowboard_instr bottle
+new 17 39 read_obj bottle
+yes 18 39 hold_obj bottle
+new 19 39 skateboard_instr bottle
+new 20 39 catch_obj bottle
+new 2 40 cut_instr wine glass
+new 3 40 ride_instr wine glass
+new 4 40 talk_on_phone_instr wine glass
+new 5 40 kick_obj wine glass
+new 6 40 work_on_computer_instr wine glass
+new 7 40 eat_obj wine glass
+new 8 40 sit_instr wine glass
+new 10 40 lay_instr wine glass
+yes 11 40 drink_instr wine glass
+yes 12 40 carry_obj wine glass
+new 13 40 throw_obj wine glass
+yes 14 40 look_obj wine glass
+new 15 40 hit_instr wine glass
+new 16 40 snowboard_instr wine glass
+new 17 40 read_obj wine glass
+yes 18 40 hold_obj wine glass
+new 19 40 skateboard_instr wine glass
+new 20 40 catch_obj wine glass
+new 2 41 cut_instr cup
+new 3 41 ride_instr cup
+new 4 41 talk_on_phone_instr cup
+new 5 41 kick_obj cup
+new 6 41 work_on_computer_instr cup
+new 7 41 eat_obj cup
+new 8 41 sit_instr cup
+new 10 41 lay_instr cup
+yes 11 41 drink_instr cup
+yes 12 41 carry_obj cup
+new 13 41 throw_obj cup
+yes 14 41 look_obj cup
+new 15 41 hit_instr cup
+new 16 41 snowboard_instr cup
+new 17 41 read_obj cup
+yes 18 41 hold_obj cup
+new 19 41 skateboard_instr cup
+new 20 41 catch_obj cup
+yes 2 42 cut_instr fork
+new 3 42 ride_instr fork
+new 4 42 talk_on_phone_instr fork
+new 5 42 kick_obj fork
+new 6 42 work_on_computer_instr fork
+yes 7 42 eat_obj fork
+new 8 42 sit_instr fork
+new 10 42 lay_instr fork
+new 11 42 drink_instr fork
+new 12 42 carry_obj fork
+new 13 42 throw_obj fork
+yes 14 42 look_obj fork
+new 15 42 hit_instr fork
+new 16 42 snowboard_instr fork
+new 17 42 read_obj fork
+yes 18 42 hold_obj fork
+new 19 42 skateboard_instr fork
+new 20 42 catch_obj fork
+yes 2 43 cut_instr knife
+new 3 43 ride_instr knife
+new 4 43 talk_on_phone_instr knife
+new 5 43 kick_obj knife
+new 6 43 work_on_computer_instr knife
+yes 7 43 eat_obj knife
+new 8 43 sit_instr knife
+new 10 43 lay_instr knife
+new 11 43 drink_instr knife
+new 12 43 carry_obj knife
+new 13 43 throw_obj knife
+yes 14 43 look_obj knife
+new 15 43 hit_instr knife
+new 16 43 snowboard_instr knife
+new 17 43 read_obj knife
+yes 18 43 hold_obj knife
+new 19 43 skateboard_instr knife
+new 20 43 catch_obj knife
+new 2 44 cut_instr spoon
+new 3 44 ride_instr spoon
+new 4 44 talk_on_phone_instr spoon
+new 5 44 kick_obj spoon
+new 6 44 work_on_computer_instr spoon
+yes 7 44 eat_obj spoon
+new 8 44 sit_instr spoon
+new 10 44 lay_instr spoon
+new 11 44 drink_instr spoon
+new 12 44 carry_obj spoon
+new 13 44 throw_obj spoon
+yes 14 44 look_obj spoon
+new 15 44 hit_instr spoon
+new 16 44 snowboard_instr spoon
+new 17 44 read_obj spoon
+yes 18 44 hold_obj spoon
+new 19 44 skateboard_instr spoon
+new 20 44 catch_obj spoon
+yes 2 45 cut_instr bowl
+new 3 45 ride_instr bowl
+new 4 45 talk_on_phone_instr bowl
+new 5 45 kick_obj bowl
+new 6 45 work_on_computer_instr bowl
+new 7 45 eat_obj bowl
+new 8 45 sit_instr bowl
+new 10 45 lay_instr bowl
+yes 11 45 drink_instr bowl
+new 12 45 carry_obj bowl
+new 13 45 throw_obj bowl
+yes 14 45 look_obj bowl
+new 15 45 hit_instr bowl
+new 16 45 snowboard_instr bowl
+new 17 45 read_obj bowl
+yes 18 45 hold_obj bowl
+new 19 45 skateboard_instr bowl
+new 20 45 catch_obj bowl
+yes 2 46 cut_instr banana
+new 3 46 ride_instr banana
+new 4 46 talk_on_phone_instr banana
+new 5 46 kick_obj banana
+new 6 46 work_on_computer_instr banana
+yes 7 46 eat_obj banana
+new 8 46 sit_instr banana
+new 10 46 lay_instr banana
+new 11 46 drink_instr banana
+yes 12 46 carry_obj banana
+new 13 46 throw_obj banana
+yes 14 46 look_obj banana
+new 15 46 hit_instr banana
+new 16 46 snowboard_instr banana
+new 17 46 read_obj banana
+yes 18 46 hold_obj banana
+new 19 46 skateboard_instr banana
+new 20 46 catch_obj banana
+yes 2 47 cut_instr apple
+new 3 47 ride_instr apple
+new 4 47 talk_on_phone_instr apple
+new 5 47 kick_obj apple
+new 6 47 work_on_computer_instr apple
+yes 7 47 eat_obj apple
+new 8 47 sit_instr apple
+new 10 47 lay_instr apple
+new 11 47 drink_instr apple
+new 12 47 carry_obj apple
+new 13 47 throw_obj apple
+yes 14 47 look_obj apple
+new 15 47 hit_instr apple
+new 16 47 snowboard_instr apple
+new 17 47 read_obj apple
+yes 18 47 hold_obj apple
+new 19 47 skateboard_instr apple
+new 20 47 catch_obj apple
+yes 2 48 cut_instr sandwich
+new 3 48 ride_instr sandwich
+new 4 48 talk_on_phone_instr sandwich
+new 5 48 kick_obj sandwich
+new 6 48 work_on_computer_instr sandwich
+yes 7 48 eat_obj sandwich
+new 8 48 sit_instr sandwich
+new 10 48 lay_instr sandwich
+new 11 48 drink_instr sandwich
+new 12 48 carry_obj sandwich
+new 13 48 throw_obj sandwich
+yes 14 48 look_obj sandwich
+new 15 48 hit_instr sandwich
+new 16 48 snowboard_instr sandwich
+new 17 48 read_obj sandwich
+yes 18 48 hold_obj sandwich
+new 19 48 skateboard_instr sandwich
+new 20 48 catch_obj sandwich
+new 2 49 cut_instr orange
+new 3 49 ride_instr orange
+new 4 49 talk_on_phone_instr orange
+new 5 49 kick_obj orange
+new 6 49 work_on_computer_instr orange
+yes 7 49 eat_obj orange
+new 8 49 sit_instr orange
+new 10 49 lay_instr orange
+new 11 49 drink_instr orange
+yes 12 49 carry_obj orange
+new 13 49 throw_obj orange
+new 14 49 look_obj orange
+new 15 49 hit_instr orange
+new 16 49 snowboard_instr orange
+new 17 49 read_obj orange
+yes 18 49 hold_obj orange
+new 19 49 skateboard_instr orange
+new 20 49 catch_obj orange
+yes 2 50 cut_instr broccoli
+new 3 50 ride_instr broccoli
+new 4 50 talk_on_phone_instr broccoli
+new 5 50 kick_obj broccoli
+new 6 50 work_on_computer_instr broccoli
+yes 7 50 eat_obj broccoli
+new 8 50 sit_instr broccoli
+new 10 50 lay_instr broccoli
+new 11 50 drink_instr broccoli
+new 12 50 carry_obj broccoli
+new 13 50 throw_obj broccoli
+yes 14 50 look_obj broccoli
+new 15 50 hit_instr broccoli
+new 16 50 snowboard_instr broccoli
+new 17 50 read_obj broccoli
+yes 18 50 hold_obj broccoli
+new 19 50 skateboard_instr broccoli
+new 20 50 catch_obj broccoli
+yes 2 51 cut_instr carrot
+new 3 51 ride_instr carrot
+new 4 51 talk_on_phone_instr carrot
+new 5 51 kick_obj carrot
+new 6 51 work_on_computer_instr carrot
+yes 7 51 eat_obj carrot
+new 8 51 sit_instr carrot
+new 10 51 lay_instr carrot
+new 11 51 drink_instr carrot
+new 12 51 carry_obj carrot
+new 13 51 throw_obj carrot
+new 14 51 look_obj carrot
+new 15 51 hit_instr carrot
+new 16 51 snowboard_instr carrot
+new 17 51 read_obj carrot
+yes 18 51 hold_obj carrot
+new 19 51 skateboard_instr carrot
+new 20 51 catch_obj carrot
+new 2 52 cut_instr hot dog
+new 3 52 ride_instr hot dog
+new 4 52 talk_on_phone_instr hot dog
+new 5 52 kick_obj hot dog
+new 6 52 work_on_computer_instr hot dog
+yes 7 52 eat_obj hot dog
+new 8 52 sit_instr hot dog
+new 10 52 lay_instr hot dog
+new 11 52 drink_instr hot dog
+new 12 52 carry_obj hot dog
+new 13 52 throw_obj hot dog
+yes 14 52 look_obj hot dog
+new 15 52 hit_instr hot dog
+new 16 52 snowboard_instr hot dog
+new 17 52 read_obj hot dog
+yes 18 52 hold_obj hot dog
+new 19 52 skateboard_instr hot dog
+new 20 52 catch_obj hot dog
+yes 2 53 cut_instr pizza
+new 3 53 ride_instr pizza
+new 4 53 talk_on_phone_instr pizza
+new 5 53 kick_obj pizza
+new 6 53 work_on_computer_instr pizza
+yes 7 53 eat_obj pizza
+new 8 53 sit_instr pizza
+new 10 53 lay_instr pizza
+new 11 53 drink_instr pizza
+new 12 53 carry_obj pizza
+new 13 53 throw_obj pizza
+yes 14 53 look_obj pizza
+new 15 53 hit_instr pizza
+new 16 53 snowboard_instr pizza
+new 17 53 read_obj pizza
+yes 18 53 hold_obj pizza
+new 19 53 skateboard_instr pizza
+new 20 53 catch_obj pizza
+yes 2 54 cut_instr donut
+new 3 54 ride_instr donut
+new 4 54 talk_on_phone_instr donut
+new 5 54 kick_obj donut
+new 6 54 work_on_computer_instr donut
+yes 7 54 eat_obj donut
+new 8 54 sit_instr donut
+new 10 54 lay_instr donut
+new 11 54 drink_instr donut
+new 12 54 carry_obj donut
+new 13 54 throw_obj donut
+yes 14 54 look_obj donut
+new 15 54 hit_instr donut
+new 16 54 snowboard_instr donut
+new 17 54 read_obj donut
+yes 18 54 hold_obj donut
+new 19 54 skateboard_instr donut
+new 20 54 catch_obj donut
+yes 2 55 cut_instr cake
+new 3 55 ride_instr cake
+new 4 55 talk_on_phone_instr cake
+new 5 55 kick_obj cake
+new 6 55 work_on_computer_instr cake
+yes 7 55 eat_obj cake
+new 8 55 sit_instr cake
+new 10 55 lay_instr cake
+new 11 55 drink_instr cake
+new 12 55 carry_obj cake
+new 13 55 throw_obj cake
+yes 14 55 look_obj cake
+new 15 55 hit_instr cake
+new 16 55 snowboard_instr cake
+new 17 55 read_obj cake
+yes 18 55 hold_obj cake
+new 19 55 skateboard_instr cake
+new 20 55 catch_obj cake
+new 2 56 cut_instr chair
+new 3 56 ride_instr chair
+new 4 56 talk_on_phone_instr chair
+new 5 56 kick_obj chair
+new 6 56 work_on_computer_instr chair
+new 7 56 eat_obj chair
+yes 8 56 sit_instr chair
+yes 10 56 lay_instr chair
+new 11 56 drink_instr chair
+new 12 56 carry_obj chair
+new 13 56 throw_obj chair
+yes 14 56 look_obj chair
+new 15 56 hit_instr chair
+new 16 56 snowboard_instr chair
+new 17 56 read_obj chair
+yes 18 56 hold_obj chair
+new 19 56 skateboard_instr chair
+new 20 56 catch_obj chair
+new 2 57 cut_instr couch
+new 3 57 ride_instr couch
+new 4 57 talk_on_phone_instr couch
+new 5 57 kick_obj couch
+new 6 57 work_on_computer_instr couch
+new 7 57 eat_obj couch
+yes 8 57 sit_instr couch
+yes 10 57 lay_instr couch
+new 11 57 drink_instr couch
+new 12 57 carry_obj couch
+new 13 57 throw_obj couch
+new 14 57 look_obj couch
+new 15 57 hit_instr couch
+new 16 57 snowboard_instr couch
+new 17 57 read_obj couch
+new 18 57 hold_obj couch
+new 19 57 skateboard_instr couch
+new 20 57 catch_obj couch
+new 2 58 cut_instr potted plant
+new 3 58 ride_instr potted plant
+new 4 58 talk_on_phone_instr potted plant
+new 5 58 kick_obj potted plant
+new 6 58 work_on_computer_instr potted plant
+new 7 58 eat_obj potted plant
+new 8 58 sit_instr potted plant
+new 10 58 lay_instr potted plant
+new 11 58 drink_instr potted plant
+new 12 58 carry_obj potted plant
+new 13 58 throw_obj potted plant
+new 14 58 look_obj potted plant
+new 15 58 hit_instr potted plant
+new 16 58 snowboard_instr potted plant
+new 17 58 read_obj potted plant
+new 18 58 hold_obj potted plant
+new 19 58 skateboard_instr potted plant
+new 20 58 catch_obj potted plant
+new 2 59 cut_instr bed
+new 3 59 ride_instr bed
+new 4 59 talk_on_phone_instr bed
+new 5 59 kick_obj bed
+new 6 59 work_on_computer_instr bed
+new 7 59 eat_obj bed
+yes 8 59 sit_instr bed
+yes 10 59 lay_instr bed
+new 11 59 drink_instr bed
+new 12 59 carry_obj bed
+new 13 59 throw_obj bed
+new 14 59 look_obj bed
+new 15 59 hit_instr bed
+new 16 59 snowboard_instr bed
+new 17 59 read_obj bed
+new 18 59 hold_obj bed
+new 19 59 skateboard_instr bed
+new 20 59 catch_obj bed
+new 2 60 cut_instr dining table
+new 3 60 ride_instr dining table
+new 4 60 talk_on_phone_instr dining table
+new 5 60 kick_obj dining table
+new 6 60 work_on_computer_instr dining table
+new 7 60 eat_obj dining table
+yes 8 60 sit_instr dining table
+yes 10 60 lay_instr dining table
+new 11 60 drink_instr dining table
+new 12 60 carry_obj dining table
+new 13 60 throw_obj dining table
+yes 14 60 look_obj dining table
+new 15 60 hit_instr dining table
+new 16 60 snowboard_instr dining table
+new 17 60 read_obj dining table
+new 18 60 hold_obj dining table
+new 19 60 skateboard_instr dining table
+new 20 60 catch_obj dining table
+new 2 61 cut_instr toilet
+new 3 61 ride_instr toilet
+new 4 61 talk_on_phone_instr toilet
+new 5 61 kick_obj toilet
+new 6 61 work_on_computer_instr toilet
+new 7 61 eat_obj toilet
+yes 8 61 sit_instr toilet
+new 10 61 lay_instr toilet
+new 11 61 drink_instr toilet
+new 12 61 carry_obj toilet
+new 13 61 throw_obj toilet
+yes 14 61 look_obj toilet
+new 15 61 hit_instr toilet
+new 16 61 snowboard_instr toilet
+new 17 61 read_obj toilet
+new 18 61 hold_obj toilet
+new 19 61 skateboard_instr toilet
+new 20 61 catch_obj toilet
+new 2 62 cut_instr tv
+new 3 62 ride_instr tv
+new 4 62 talk_on_phone_instr tv
+new 5 62 kick_obj tv
+new 6 62 work_on_computer_instr tv
+new 7 62 eat_obj tv
+new 8 62 sit_instr tv
+new 10 62 lay_instr tv
+new 11 62 drink_instr tv
+new 12 62 carry_obj tv
+new 13 62 throw_obj tv
+yes 14 62 look_obj tv
+new 15 62 hit_instr tv
+new 16 62 snowboard_instr tv
+new 17 62 read_obj tv
+new 18 62 hold_obj tv
+new 19 62 skateboard_instr tv
+new 20 62 catch_obj tv
+new 2 63 cut_instr laptop
+new 3 63 ride_instr laptop
+new 4 63 talk_on_phone_instr laptop
+new 5 63 kick_obj laptop
+yes 6 63 work_on_computer_instr laptop
+new 7 63 eat_obj laptop
+yes 8 63 sit_instr laptop
+new 10 63 lay_instr laptop
+new 11 63 drink_instr laptop
+new 12 63 carry_obj laptop
+new 13 63 throw_obj laptop
+yes 14 63 look_obj laptop
+new 15 63 hit_instr laptop
+new 16 63 snowboard_instr laptop
+new 17 63 read_obj laptop
+yes 18 63 hold_obj laptop
+new 19 63 skateboard_instr laptop
+new 20 63 catch_obj laptop
+new 2 64 cut_instr mouse
+new 3 64 ride_instr mouse
+new 4 64 talk_on_phone_instr mouse
+new 5 64 kick_obj mouse
+new 6 64 work_on_computer_instr mouse
+new 7 64 eat_obj mouse
+new 8 64 sit_instr mouse
+new 10 64 lay_instr mouse
+new 11 64 drink_instr mouse
+new 12 64 carry_obj mouse
+new 13 64 throw_obj mouse
+yes 14 64 look_obj mouse
+new 15 64 hit_instr mouse
+new 16 64 snowboard_instr mouse
+new 17 64 read_obj mouse
+yes 18 64 hold_obj mouse
+new 19 64 skateboard_instr mouse
+new 20 64 catch_obj mouse
+new 2 65 cut_instr remote
+new 3 65 ride_instr remote
+new 4 65 talk_on_phone_instr remote
+new 5 65 kick_obj remote
+new 6 65 work_on_computer_instr remote
+new 7 65 eat_obj remote
+new 8 65 sit_instr remote
+new 10 65 lay_instr remote
+new 11 65 drink_instr remote
+new 12 65 carry_obj remote
+new 13 65 throw_obj remote
+yes 14 65 look_obj remote
+new 15 65 hit_instr remote
+new 16 65 snowboard_instr remote
+new 17 65 read_obj remote
+yes 18 65 hold_obj remote
+new 19 65 skateboard_instr remote
+new 20 65 catch_obj remote
+new 2 66 cut_instr keyboard
+new 3 66 ride_instr keyboard
+new 4 66 talk_on_phone_instr keyboard
+new 5 66 kick_obj keyboard
+new 6 66 work_on_computer_instr keyboard
+new 7 66 eat_obj keyboard
+new 8 66 sit_instr keyboard
+new 10 66 lay_instr keyboard
+new 11 66 drink_instr keyboard
+new 12 66 carry_obj keyboard
+new 13 66 throw_obj keyboard
+yes 14 66 look_obj keyboard
+new 15 66 hit_instr keyboard
+new 16 66 snowboard_instr keyboard
+new 17 66 read_obj keyboard
+yes 18 66 hold_obj keyboard
+new 19 66 skateboard_instr keyboard
+new 20 66 catch_obj keyboard
+new 2 67 cut_instr cell phone
+new 3 67 ride_instr cell phone
+yes 4 67 talk_on_phone_instr cell phone
+new 5 67 kick_obj cell phone
+new 6 67 work_on_computer_instr cell phone
+new 7 67 eat_obj cell phone
+new 8 67 sit_instr cell phone
+new 10 67 lay_instr cell phone
+new 11 67 drink_instr cell phone
+yes 12 67 carry_obj cell phone
+new 13 67 throw_obj cell phone
+yes 14 67 look_obj cell phone
+new 15 67 hit_instr cell phone
+new 16 67 snowboard_instr cell phone
+new 17 67 read_obj cell phone
+yes 18 67 hold_obj cell phone
+new 19 67 skateboard_instr cell phone
+new 20 67 catch_obj cell phone
+new 2 68 cut_instr microwave
+new 3 68 ride_instr microwave
+new 4 68 talk_on_phone_instr microwave
+new 5 68 kick_obj microwave
+new 6 68 work_on_computer_instr microwave
+new 7 68 eat_obj microwave
+new 8 68 sit_instr microwave
+new 10 68 lay_instr microwave
+new 11 68 drink_instr microwave
+new 12 68 carry_obj microwave
+new 13 68 throw_obj microwave
+new 14 68 look_obj microwave
+new 15 68 hit_instr microwave
+new 16 68 snowboard_instr microwave
+new 17 68 read_obj microwave
+new 18 68 hold_obj microwave
+new 19 68 skateboard_instr microwave
+new 20 68 catch_obj microwave
+new 2 69 cut_instr oven
+new 3 69 ride_instr oven
+new 4 69 talk_on_phone_instr oven
+new 5 69 kick_obj oven
+new 6 69 work_on_computer_instr oven
+new 7 69 eat_obj oven
+new 8 69 sit_instr oven
+new 10 69 lay_instr oven
+new 11 69 drink_instr oven
+new 12 69 carry_obj oven
+new 13 69 throw_obj oven
+new 14 69 look_obj oven
+new 15 69 hit_instr oven
+new 16 69 snowboard_instr oven
+new 17 69 read_obj oven
+new 18 69 hold_obj oven
+new 19 69 skateboard_instr oven
+new 20 69 catch_obj oven
+new 2 70 cut_instr toaster
+new 3 70 ride_instr toaster
+new 4 70 talk_on_phone_instr toaster
+new 5 70 kick_obj toaster
+new 6 70 work_on_computer_instr toaster
+new 7 70 eat_obj toaster
+new 8 70 sit_instr toaster
+new 10 70 lay_instr toaster
+new 11 70 drink_instr toaster
+new 12 70 carry_obj toaster
+new 13 70 throw_obj toaster
+new 14 70 look_obj toaster
+new 15 70 hit_instr toaster
+new 16 70 snowboard_instr toaster
+new 17 70 read_obj toaster
+new 18 70 hold_obj toaster
+new 19 70 skateboard_instr toaster
+new 20 70 catch_obj toaster
+new 2 71 cut_instr sink
+new 3 71 ride_instr sink
+new 4 71 talk_on_phone_instr sink
+new 5 71 kick_obj sink
+new 6 71 work_on_computer_instr sink
+new 7 71 eat_obj sink
+new 8 71 sit_instr sink
+new 10 71 lay_instr sink
+new 11 71 drink_instr sink
+new 12 71 carry_obj sink
+new 13 71 throw_obj sink
+new 14 71 look_obj sink
+new 15 71 hit_instr sink
+new 16 71 snowboard_instr sink
+new 17 71 read_obj sink
+new 18 71 hold_obj sink
+new 19 71 skateboard_instr sink
+new 20 71 catch_obj sink
+new 2 72 cut_instr refrigerator
+new 3 72 ride_instr refrigerator
+new 4 72 talk_on_phone_instr refrigerator
+new 5 72 kick_obj refrigerator
+new 6 72 work_on_computer_instr refrigerator
+new 7 72 eat_obj refrigerator
+new 8 72 sit_instr refrigerator
+new 10 72 lay_instr refrigerator
+new 11 72 drink_instr refrigerator
+new 12 72 carry_obj refrigerator
+new 13 72 throw_obj refrigerator
+yes 14 72 look_obj refrigerator
+new 15 72 hit_instr refrigerator
+new 16 72 snowboard_instr refrigerator
+new 17 72 read_obj refrigerator
+yes 18 72 hold_obj refrigerator
+new 19 72 skateboard_instr refrigerator
+new 20 72 catch_obj refrigerator
+new 2 73 cut_instr book
+new 3 73 ride_instr book
+new 4 73 talk_on_phone_instr book
+new 5 73 kick_obj book
+new 6 73 work_on_computer_instr book
+new 7 73 eat_obj book
+new 8 73 sit_instr book
+new 10 73 lay_instr book
+new 11 73 drink_instr book
+yes 12 73 carry_obj book
+new 13 73 throw_obj book
+yes 14 73 look_obj book
+new 15 73 hit_instr book
+new 16 73 snowboard_instr book
+yes 17 73 read_obj book
+yes 18 73 hold_obj book
+new 19 73 skateboard_instr book
+new 20 73 catch_obj book
+new 2 74 cut_instr clock
+new 3 74 ride_instr clock
+new 4 74 talk_on_phone_instr clock
+new 5 74 kick_obj clock
+new 6 74 work_on_computer_instr clock
+new 7 74 eat_obj clock
+new 8 74 sit_instr clock
+new 10 74 lay_instr clock
+new 11 74 drink_instr clock
+yes 12 74 carry_obj clock
+new 13 74 throw_obj clock
+yes 14 74 look_obj clock
+new 15 74 hit_instr clock
+new 16 74 snowboard_instr clock
+new 17 74 read_obj clock
+new 18 74 hold_obj clock
+new 19 74 skateboard_instr clock
+new 20 74 catch_obj clock
+new 2 75 cut_instr vase
+new 3 75 ride_instr vase
+new 4 75 talk_on_phone_instr vase
+new 5 75 kick_obj vase
+new 6 75 work_on_computer_instr vase
+new 7 75 eat_obj vase
+new 8 75 sit_instr vase
+new 10 75 lay_instr vase
+new 11 75 drink_instr vase
+new 12 75 carry_obj vase
+new 13 75 throw_obj vase
+new 14 75 look_obj vase
+new 15 75 hit_instr vase
+new 16 75 snowboard_instr vase
+new 17 75 read_obj vase
+new 18 75 hold_obj vase
+new 19 75 skateboard_instr vase
+new 20 75 catch_obj vase
+yes 2 76 cut_instr scissors
+new 3 76 ride_instr scissors
+new 4 76 talk_on_phone_instr scissors
+new 5 76 kick_obj scissors
+new 6 76 work_on_computer_instr scissors
+new 7 76 eat_obj scissors
+new 8 76 sit_instr scissors
+new 10 76 lay_instr scissors
+new 11 76 drink_instr scissors
+new 12 76 carry_obj scissors
+new 13 76 throw_obj scissors
+yes 14 76 look_obj scissors
+new 15 76 hit_instr scissors
+new 16 76 snowboard_instr scissors
+new 17 76 read_obj scissors
+yes 18 76 hold_obj scissors
+new 19 76 skateboard_instr scissors
+new 20 76 catch_obj scissors
+new 2 77 cut_instr teddy bear
+new 3 77 ride_instr teddy bear
+new 4 77 talk_on_phone_instr teddy bear
+new 5 77 kick_obj teddy bear
+new 6 77 work_on_computer_instr teddy bear
+new 7 77 eat_obj teddy bear
+new 8 77 sit_instr teddy bear
+new 10 77 lay_instr teddy bear
+new 11 77 drink_instr teddy bear
+yes 12 77 carry_obj teddy bear
+new 13 77 throw_obj teddy bear
+new 14 77 look_obj teddy bear
+new 15 77 hit_instr teddy bear
+new 16 77 snowboard_instr teddy bear
+new 17 77 read_obj teddy bear
+yes 18 77 hold_obj teddy bear
+new 19 77 skateboard_instr teddy bear
+new 20 77 catch_obj teddy bear
+new 2 78 cut_instr hair drier
+new 3 78 ride_instr hair drier
+new 4 78 talk_on_phone_instr hair drier
+new 5 78 kick_obj hair drier
+new 6 78 work_on_computer_instr hair drier
+new 7 78 eat_obj hair drier
+new 8 78 sit_instr hair drier
+new 10 78 lay_instr hair drier
+new 11 78 drink_instr hair drier
+new 12 78 carry_obj hair drier
+new 13 78 throw_obj hair drier
+new 14 78 look_obj hair drier
+new 15 78 hit_instr hair drier
+new 16 78 snowboard_instr hair drier
+new 17 78 read_obj hair drier
+yes 18 78 hold_obj hair drier
+new 19 78 skateboard_instr hair drier
+new 20 78 catch_obj hair drier
+new 2 79 cut_instr toothbrush
+new 3 79 ride_instr toothbrush
+new 4 79 talk_on_phone_instr toothbrush
+new 5 79 kick_obj toothbrush
+new 6 79 work_on_computer_instr toothbrush
+new 7 79 eat_obj toothbrush
+new 8 79 sit_instr toothbrush
+new 10 79 lay_instr toothbrush
+new 11 79 drink_instr toothbrush
+new 12 79 carry_obj toothbrush
+new 13 79 throw_obj toothbrush
+new 14 79 look_obj toothbrush
+new 15 79 hit_instr toothbrush
+new 16 79 snowboard_instr toothbrush
+new 17 79 read_obj toothbrush
+yes 18 79 hold_obj toothbrush
+new 19 79 skateboard_instr toothbrush
+new 20 79 catch_obj toothbrush

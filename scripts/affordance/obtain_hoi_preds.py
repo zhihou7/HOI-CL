@@ -39,8 +39,15 @@ def parse_args():
                         help='dataset type: gthico',
                         default='gthico', type=str)
     parser.add_argument('--no-save', action='store_true', dest='no_save')
-    parser.add_argument('--num', dest='num', default=10000,
+    parser.add_argument('--num', dest='num', default=100,
                         type=int) # HOI-COCO has less than 10000 verb features.
+    parser.add_argument('--num_verbs', dest='num_verbs', default=100,
+                        type=int)
+    parser.add_argument('--pred_type', dest='pred_type', default=0,
+                        type=int)
+    parser.add_argument('--incre_classes', dest='incre_classes',
+                        help='Human threshold',
+                        default=None, type=str)
     args = parser.parse_args()
     return args
 
@@ -143,6 +150,25 @@ if __name__ == '__main__':
 
 
     # Generate_HICO_detection(output_file, HICO_dir)
+    if args.model.__contains__('ICL'):
+        # incremental continual learning
+        os.environ['DATASET'] = 'HICO_res101_icl'
+        from networks.HOI_Concept_Discovery import HOIICLNet
+
+        incremental_class_pairs = [[]]
+        if args.incre_classes is not None and os.path.exists(args.incre_classes):
+            import json
+            incremental_class_pairs = json.load(open(args.incre_classes))
+        net = HOIICLNet(model_name=args.model, task_id=1, incremental_class_pairs=incremental_class_pairs)
+        net.obj_to_HO_matrix = net.incre_obj_to_HOI
+        verb_to_HO_matrix_preds = net.verb_to_HO_matrix_np
+        pred_num_hoi_classes = net.sum_num_classes
+    elif args.model.__contains__('VERB'):
+        os.environ['DATASET'] = 'HICO_res101'
+        from networks.HOI import DisentanglingNet
+
+        net = DisentanglingNet(model_name=args.model)
+        pred_num_hoi_classes = net.verb_num_classes
     if args.model.__contains__('res101'):
         os.environ['DATASET'] = 'HICO_res101'
         from networks.HOI import HOI
@@ -219,7 +245,7 @@ if __name__ == '__main__':
     o_feats_ph, v_feats_ph, o_box, o_cls, o_score, image_id, hoi_gt_action = iterator.get_next()
 
     fc7_vo = net.head_to_tail_ho(o_feats_ph, v_feats_ph, None, None, False, 'fc_HO')
-    net.region_classification_ho(fc7_vo, True, tf.random_normal_initializer(mean=0.0, stddev=0.01),
+    net.region_classification_ho(fc7_vo, False, tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                  'classification', nameprefix='merge_')
 
     saver = tf.train.Saver()
@@ -234,33 +260,61 @@ if __name__ == '__main__':
     _t['im_detect'].tic()
 
     obj_list_map_list = []
+    pred_name = "merge_cls_prob_verbs"
+    if 'merge_cls_prob_verbs_f' in net.predictions:
+        pred_name = 'merge_cls_prob_verbs_f'
+    if args.model.__contains__('VERB'):
+        pred_name = 'merge_cls_prob_verbs_VERB'
     while True:
 
         _t['im_detect'].tic()
         try:
             merge_probs, new_o_box, new_o_cls, new_o_score, _image_id, hoi_gt_action_list = sess.run(
-                [net.predictions["merge_cls_prob_hoi"], o_box, o_cls, o_score, image_id, hoi_gt_action])
+                [net.predictions[pred_name], o_box, o_cls, o_score, image_id, hoi_gt_action])
         except tf.errors.OutOfRangeError:
             print('END')
             break
 
         # print(merge_probs.shape)
-        new_merge_probs = np.mean(merge_probs, axis=0)
+        # new_merge_probs = np.mean(merge_probs, axis=0)
         # print(merge_probs.shape, new_merge_probs.shape)
         # print([hoi_to_verbs[h] for h in np.where(new_merge_probs > 0.5)[0].tolist()], new_o_cls)
-        hoi_preds = np.asarray(merge_probs > 0.5, np.float32)
-        verb_preds = np.matmul(hoi_preds, verb_to_HO_matrix.transpose())
-        verb_preds = np.asarray(verb_preds > 0, np.float32)
+        if args.pred_type == 0 or  args.pred_type == 1:
+            hoi_preds = np.asarray(merge_probs > 0.5, np.float32)
+            if hoi_preds.shape[-1] == pred_num_hoi_classes and not args.model.__contains__('VERB'):
+                verb_preds = np.matmul(hoi_preds, verb_to_HO_matrix_preds.transpose())
+                verb_preds = np.asarray(verb_preds > 0, np.float32)
+            else:
+                # 117
+                verb_preds = hoi_preds
+            verb_gt_labels = np.matmul(hoi_gt_action_list, verb_to_HO_matrix.transpose())
+            right_verbs = np.sum(np.multiply(verb_preds, verb_gt_labels), axis=1) > 0.
 
-        verb_gt_labels = np.matmul(hoi_gt_action_list, verb_to_HO_matrix.transpose())
-        right_verbs = np.sum(np.multiply(verb_preds, verb_gt_labels), axis=1) > 0.
+            hois_right = np.sum(hoi_preds[right_verbs], axis=0)
+            # print(right_verbs.shape, hois_right.shape, hoi_preds[np.argwhere(right_verbs)].shape)
+            # assert len(hois_right) == pred_num_hoi_classes, (hois_right.shape, pred_num_hoi_classes, hoi_gt_action_list.shape)
+            # print(hois_right)
+            obj_list_map = hois_right.astype(np.int32)
+            verb_list = np.sum(verb_preds.astype(np.int32), axis=0)
+        elif args.pred_type == 2:
+            hoi_preds = np.asarray(merge_probs > 0.5, np.float32)
+            if merge_probs.shape[-1] == pred_num_hoi_classes and not args.model.__contains__('VERB'):
+                verb_preds = np.matmul(merge_probs, verb_to_HO_matrix_preds.transpose()) / np.sum(verb_to_HO_matrix_preds, axis=1)
+                # verb_preds = np.asarray(verb_preds > 0, np.float32)
+            else:
+                # 117
+                verb_preds = merge_probs
+            verb_gt_labels = (np.matmul(hoi_gt_action_list, verb_to_HO_matrix.transpose()) > 0).astype(np.float32)
+            verb_preds = np.multiply(verb_preds, verb_gt_labels)
+            # right_verbs = np.sum(np.multiply(verb_preds, verb_gt_labels), axis=1) > 0.
 
-        hois_right = np.sum(hoi_preds[right_verbs], axis=0)
-        # print(right_verbs.shape, hois_right.shape, hoi_preds[np.argwhere(right_verbs)].shape)
-        assert len(hois_right) == num_hoi_classes, hois_right
-        # print(hois_right)
-        obj_list_map = hois_right.astype(np.int32)
-
+            # hois_right = np.sum(hoi_preds[right_verbs], axis=0)
+            # print(right_verbs.shape, hois_right.shape, hoi_preds[np.argwhere(right_verbs)].shape)
+            # assert len(hois_right) == pred_num_hoi_classes, (hois_right.shape, pred_num_hoi_classes, hoi_gt_action_list.shape)
+            # print(hois_right)
+            obj_list_map = [0]
+            verb_list = np.sum(verb_preds, axis=0)
+        # assert verb_gt_labels.
         _t['im_detect'].toc()
         count += 1
 
@@ -272,7 +326,7 @@ if __name__ == '__main__':
         # print(new_o_score)
         if args.dataset == 'gtobj365':
             assert int(new_o_cls) in [20, 53, 182, 171, 365, 220, 334, 352, 29, 216, 23, 183, 300, 225, 282, 335], new_o_cls
-        obj_list_map_list.append([int(new_o_cls), obj_list_map, new_o_score, _image_id])
+        obj_list_map_list.append([int(new_o_cls), obj_list_map, new_o_score, _image_id, verb_list])
         # if count > 1000:
         #     break
     pickle.dump(obj_list_map_list, open(obj_hoi_map_file, 'wb'))

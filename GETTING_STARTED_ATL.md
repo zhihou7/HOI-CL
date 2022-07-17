@@ -99,7 +99,7 @@ If you find this submission is useful for you, please consider citing:
 ```
 @inproceedings{hou2021fcl,
   title={Detecting Human-Object Interaction via Fabricated Compositional Learning},
-  author={Hou, Zhi and Baosheng, Yu and Qiao, Yu and Peng, Xiaojiang and Tao, Dacheng},
+  author={Hou, Zhi and Yu, Baosheng and Qiao, Yu and Peng, Xiaojiang and Tao, Dacheng},
   booktitle={CVPR},
   year={2021}
 }
@@ -117,7 +117,7 @@ If you find this submission is useful for you, please consider citing:
 ```
 @inproceedings{hou2021atl,
   title={Affordance Transfer Learning for Human-Object Interaction Detection},
-  author={Hou, Zhi and Baosheng, Yu and Qiao, Yu and Peng, Xiaojiang and Tao, Dacheng},
+  author={Hou, Zhi and Yu, Baosheng and Qiao, Yu and Peng, Xiaojiang and Tao, Dacheng},
   booktitle={CVPR},
   year={2021}
 }

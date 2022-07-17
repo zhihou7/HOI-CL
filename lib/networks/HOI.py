@@ -130,15 +130,26 @@ class HOI(parent_model):
         # if not self.model_name.startswith('VCL_') and not self.model_name.__contains__('_orig_'):
         #     return None
         with tf.variable_scope(name) as scope:
-
-            cls_score_hoi = slim.fully_connected(fc7_verbs, self.num_classes,
-                                                   weights_initializer=initializer,
-                                                   trainable=is_training,
-                                                   reuse=tf.AUTO_REUSE,
-                                                   activation_fn=None, scope='cls_score_verbs')
+            if self.model_name.__contains__('VERB'):
+                cls_score_verbs = slim.fully_connected(fc7_verbs, self.verb_num_classes,
+                                                       weights_initializer=initializer,
+                                                       trainable=is_training,
+                                                       reuse=tf.AUTO_REUSE,
+                                                       activation_fn=None, scope='cls_score_verb_hoi')
+                pass
+            else:
+                cls_score_hoi = slim.fully_connected(fc7_verbs, self.num_classes,
+                                                       weights_initializer=initializer,
+                                                       trainable=is_training,
+                                                       reuse=tf.AUTO_REUSE,
+                                                       activation_fn=None, scope='cls_score_verbs')
             cls_prob_hoi = tf.nn.sigmoid(cls_score_hoi, name='cls_prob_verbs')
             self.predictions[nameprefix+"cls_score_hoi"] = cls_score_hoi
-            self.predictions[nameprefix+"cls_prob_hoi"] = cls_prob_hoi
+            if self.model_name.__contains__('VERB'):
+                self.predictions[nameprefix + "cls_prob_verbs_VERB"] = cls_prob_hoi
+                self.predictions[nameprefix + "cls_prob_hoi"] = tf.matmul(cls_prob_hoi, self.verb_to_HO_matrix)
+            else:
+                self.predictions[nameprefix+"cls_prob_hoi"] = cls_prob_hoi
 
             if self.model_name.__contains__("VCOCO"):
                 # if self.model_name.__contains__('_CL_'):
@@ -146,8 +157,26 @@ class HOI(parent_model):
                 #     print(cls_score_hoi, '=============================================')
                 if self.model_name.__contains__("VCL_V"):
                     self.predictions[nameprefix + "cls_prob_HO"] = cls_prob_hoi if nameprefix == '' else 0
+                elif self.model_name.__contains__('VERB'):
+                    self.predictions[nameprefix + "cls_prob_HO"] = self.predictions[
+                                                                       "cls_prob_sp"] * tf.matmul(cls_prob_hoi, self.verb_to_HO_matrix) if nameprefix == '' else 0
+
                 else:
                     self.predictions[nameprefix+"cls_prob_HO"] = self.predictions["cls_prob_sp"] * cls_prob_hoi if nameprefix =='' else 0
+        return cls_prob_hoi
+
+    def sigmoid_hoi(self, fc7_hoi, is_training, initializer, name):
+        with tf.variable_scope(name) as scope:
+            cls_score_hoi = slim.fully_connected(fc7_hoi, 1,
+                                                 weights_initializer=initializer,
+                                                 trainable=is_training,
+                                                 reuse=tf.AUTO_REUSE,
+                                                 activation_fn=None, scope='inte_cls_score_hoi')
+            cls_prob_hoi = tf.nn.sigmoid(cls_score_hoi, name='inte_cls_prob_hoi')
+
+            self.predictions["inte_cls_score_hoi"] = cls_score_hoi
+            self.predictions["inte_cls_prob_hoi"] = cls_prob_hoi
+
         return cls_prob_hoi
 
     def get_compose_boxes(self, h_boxes, o_boxes):
@@ -361,6 +390,69 @@ class HOI(parent_model):
                 return self.gt_compose
             return self.gt_class_HO
 
+    def stat_running_affordance(self, cls_prob_hoi, gt_verb_obj):
+        # hoi_preds = tf.sigmoid(cls_prob_hoi)  # Nx600
+        if self.model_name.__contains__('VERB'):
+            verb_preds = cls_prob_hoi
+        else:
+            verb_preds = tf.matmul(cls_prob_hoi, self.verb_to_HO_matrix, transpose_b=True) / \
+                         tf.reduce_sum(self.verb_to_HO_matrix, axis=-1)
+
+        verb_preds = tf.expand_dims(verb_preds, axis=-1)
+        verb_preds = tf.tile(verb_preds, [1, 1, 80])
+        with tf.device("/cpu:0"): verb_preds = tf.Print(verb_preds,
+                                                        [tf.shape(gt_verb_obj),
+                                                         tf.shape(verb_preds),
+                                                         tf.reduce_sum(self.affordance_count),
+                                                         tf.reduce_min(self.affordance_stat),
+                                                         tf.reduce_max(self.affordance_stat),
+                                                         gt_verb_obj,
+                                                         # tf.reduce_min(verb_preds),
+                                                         # tf.reduce_max(verb_preds),
+                                                         ], first_n=1000, summarize=100,
+                                                        message="tmp_affordance v1")
+        stat_affordance = tf.multiply(verb_preds, gt_verb_obj)
+
+        new_count = self.affordance_count + tf.reduce_sum(gt_verb_obj, axis=0)
+        tmp_afford = tf.reduce_sum(stat_affordance, axis=0) + self.affordance_stat * self.affordance_count
+        with tf.device("/cpu:0"): tmp_afford = tf.Print(tmp_afford,
+                                                        [tf.shape(gt_verb_obj), tf.reduce_sum(tf.cast(tmp_afford == 0,tf.float32)),
+                                                         tf.reduce_sum(tf.cast(new_count == 0, tf.float32)),
+                                                         tf.shape(stat_affordance),
+                                                         tf.reduce_min(stat_affordance),
+                                                         'stat_affordance max:', tf.reduce_max(stat_affordance),
+                                                         tf.reduce_max(tf.div_no_nan(tmp_afford,  new_count)),
+                                                         tf.reduce_max(verb_preds), tf.reduce_max(gt_verb_obj),
+                                                         tf.reduce_max(cls_prob_hoi),
+                                                         '==',
+                                                         tf.reduce_min(tmp_afford),
+                                                         tf.reduce_max(tmp_afford),
+                                                         tf.reduce_max(tf.div_no_nan(tmp_afford,  new_count)),
+                                                         tf.reduce_max(new_count), tf.reduce_max(self.affordance_count),
+                                                         stat_affordance,
+                                                         # tf.reduce_min(verb_preds),
+                                                         # tf.reduce_max(verb_preds),
+                                                         ], first_n=1000, summarize=100,
+                                                        message="tmp_affordance v2")
+        new_affordance = tf.div_no_nan(tmp_afford,  new_count)
+        # self.affordance_stat = tf.assign(self.affordance_stat, new_affordance)
+        # self.affordance_count = tf.assign(self.affordance_count, new_count)
+        # tf.cast(tf.shape(cls_prob_hoi)[0], tf.bool),
+        self.affordance_stat = tf.assign(self.affordance_stat, tf.cond(
+            tf.cast(tf.shape(cls_prob_hoi)[0], tf.bool),
+            true_fn=lambda: new_affordance,
+            false_fn=lambda: self.affordance_stat,
+            name=None
+        ))
+        self.affordance_count = tf.assign(self.affordance_count, tf.cond(
+            tf.cast(tf.shape(cls_prob_hoi)[0], tf.bool),
+            true_fn=lambda: new_count,
+            false_fn=lambda: self.affordance_count,
+            name=None
+        ))
+        return self.affordance_stat, gt_verb_obj
+
+
     def add_visual_for_test(self, fc7_HO_raw, fc7_H_raw, fc7_O_raw, head, is_training, pool5_O):
         self.test_visualize['fc7_H_raw'] = tf.expand_dims(tf.reduce_mean(fc7_H_raw, axis=-1), axis=-1)
         self.test_visualize['fc7_O_raw'] = tf.expand_dims(tf.reduce_mean(fc7_O_raw, axis=-1), axis=-1)
@@ -501,8 +593,13 @@ class HOI(parent_model):
                 cls_score_hoi = self.predictions["cls_score_hoi"]
                 if self.model_name.__contains__('_rew'):
                     cls_score_hoi = tf.multiply(cls_score_hoi, self.HO_weight)
+                tmp_label_HO = label_HO
+                if self.model_name.__contains__('VERB'):
+                    # we direct predict verb rather than HOI.
+                    # convert HOI label to verb label
+                    tmp_label_HO = tf.matmul(tmp_label_HO, self.verb_to_HO_matrix, transpose_b=True)
                 hoi_cross_entropy = tf.reduce_mean(
-                    tf.nn.sigmoid_cross_entropy_with_logits(labels=label_HO[:num_stop, :], logits=cls_score_hoi[:num_stop, :]))
+                    tf.nn.sigmoid_cross_entropy_with_logits(labels=tmp_label_HO[:num_stop, :], logits=cls_score_hoi[:num_stop, :]))
                 self.losses['hoi_cross_entropy'] = hoi_cross_entropy
 
                 loss = hoi_cross_entropy
@@ -536,6 +633,11 @@ class HOI(parent_model):
                     or self.model_name.startswith('ATL_'):
 
                 tmp_label_HO = self.get_hoi_labels()[:num_stop]
+                if self.model_name.__contains__('VERB'):
+                    # we direct predict verb rather than HOI.
+                    # convert HOI label to verb label
+                    tmp_label_HO = tf.matmul(tmp_label_HO, self.verb_to_HO_matrix, transpose_b=True)
+
 
                 cls_score_hoi = self.predictions["cls_score_hoi"][:num_stop, :]
                 if self.model_name.__contains__('_rew'):
@@ -646,16 +748,16 @@ class HOI(parent_model):
             lamb = 4
         return lamb
 
-    def filter_loss(self, cls_score_sp, label_sp):
+    def filter_loss(self, cls_score, label):
         if self.model_name.__contains__('batch') and self.model_name.__contains__('semi'):
-            semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(cls_score_sp)[0], 1:], axis=-1)
+            semi_filter = tf.reduce_sum(self.H_boxes[:tf.shape(cls_score)[0], 1:], axis=-1)
             # label_sp = tf.Print(label_sp, [tf.shape(semi_filter), semi_filter, self.H_boxes, tf.shape(label_sp)], 'batch debug0:', first_n=000, summarize=1000)
 
             semi_filter = tf.cast(semi_filter, tf.bool)
 
             # label_sp = tf.Print(label_sp, [tf.shape(semi_filter), semi_filter, tf.shape(label_sp)], 'batch debug:', first_n=000, summarize=1000)
-            label = tf.boolean_mask(label_sp, semi_filter, axis=0)
-            logits = tf.boolean_mask(cls_score_sp, semi_filter, axis=0)
+            label = tf.boolean_mask(label, semi_filter, axis=0)
+            logits = tf.boolean_mask(cls_score, semi_filter, axis=0)
             # label = tf.Print(label, [tf.shape(semi_filter), tf.shape(label)], 'batch debug1:', first_n=000)
 
             sp_cross_entropy = tf.reduce_mean(
@@ -663,7 +765,7 @@ class HOI(parent_model):
 
         else:
             sp_cross_entropy = tf.reduce_mean(
-                tf.nn.sigmoid_cross_entropy_with_logits(labels=label_sp, logits=cls_score_sp))
+                tf.nn.sigmoid_cross_entropy_with_logits(labels=label, logits=cls_score))
         return sp_cross_entropy
 
     def cal_loss_by_weights(self, cls_score, label, orig_weights):
@@ -786,12 +888,31 @@ class HOI(parent_model):
                            feed_dict=feed_dict)
         return loss
 
-    def train_step_with_summary(self, sess, blobs, lr, train_op):
-        feed_dict = self.get_feed_dict(blobs)
+    # def train_step_with_summary(self, sess, blobs, lr, train_op):
+    #     feed_dict = self.get_feed_dict(blobs)
+    #
+    #     loss, summary, _ = sess.run([self.losses['total_loss'],
+    #                                  self.summary_op,
+    #                                  train_op],
+    #                                 feed_dict=feed_dict)
+    #     return loss, summary
 
-        loss, summary, _ = sess.run([self.losses['total_loss'],
-                                     self.summary_op,
-                                     train_op],
-                                    feed_dict=feed_dict)
-        return loss, summary
 
+    def obtain_all_preds(self, sess, image, blobs):
+        feed_dict = {self.image: image, self.H_boxes: blobs['H_boxes'], self.O_boxes: blobs['O_boxes'],
+                     self.spatial: blobs['sp'], self.H_num: blobs['H_num'], self.O_mask: blobs['O_mask']}
+        from tensorflow.python.framework.errors_impl import InvalidArgumentError
+        try:
+            cls_prob_HO, pH, pO, pSp, pVerbs = sess.run(
+                [self.predictions["cls_prob_HO"], self.predictions["cls_prob_H"],
+                 self.predictions["cls_prob_O"], self.predictions["cls_prob_sp"],
+                 self.predictions["cls_prob_verbs"]], feed_dict=feed_dict)
+
+        except InvalidArgumentError as e:
+            cls_prob_HO, pH, pO, pSp, pVerbs = sess.run(
+                [self.predictions["cls_prob_HO_original"], self.predictions["cls_prob_H"],
+                 self.predictions["cls_prob_O"], self.predictions["cls_prob_sp"],
+                 self.predictions["cls_prob_H"]], feed_dict=feed_dict)
+            print("InvalidArgumentError")
+
+        return cls_prob_HO, pH, pO, pSp, pVerbs

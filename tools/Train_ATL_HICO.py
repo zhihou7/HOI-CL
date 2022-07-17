@@ -66,10 +66,10 @@ if __name__ == '__main__':
     #     args.max_iters = 600000
     # if args.model.__contains__('semi'):
     #     args.max_iters = 1500000
-    # if args.model.__contains__('zs7') and args.max_iters > 400000:
-    #     args.max_iters = 400000
-    # if args.model.__contains__('zs4'):
-    #     args.max_iters = 300000
+    if args.model.__contains__('zs7') and args.max_iters > 400000:
+        args.max_iters = 400000
+    if args.model.__contains__('zs4') and not args.Restore_flag == -1:
+        args.max_iters = 300000
     # if args.model.__contains__('epic') and args.model.__contains__('cosine5'):
     #     args.max_iters = get_epoch_iters(args.model) * 10 + 5
     Trainval_GT = None
@@ -107,7 +107,19 @@ if __name__ == '__main__':
         start_epoch = init_step // get_epoch_iters(args.model)
     augment_type = get_augment_type(args.model)
 
-    if args.model.__contains__('res101'):
+    if args.model.__contains__('ICL'):
+        # incremental continual learning
+        if args.model.__contains__('res101'):
+            os.environ['DATASET'] = 'HICO_res101_icl'
+        else:
+            os.environ['DATASET'] = 'HICO_icl'
+        from networks.HOI_Concept_Discovery import HOIICLNet
+        import json
+        incremental_class_pairs = [[]]
+        if args.incre_classes is not None and os.path.exists(args.incre_classes):
+            incremental_class_pairs = json.load(open(args.incre_classes))
+        net = HOIICLNet(model_name=args.model, task_id=1, incremental_class_pairs=incremental_class_pairs)
+    elif args.model.__contains__('res101'):
         os.environ['DATASET'] = 'HICO_res101'
         from networks.HOI import HOI
         net = HOI(model_name=args.model)

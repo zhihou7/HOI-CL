@@ -8,6 +8,7 @@ This repository includes the code of
 
  **[Affordance Transfer Learning for Human-Object Interaction Detection](https://arxiv.org/abs/2104.02867) (CVPR2021)**
 
+ **[Discovering Human-Object Interaction Concepts via Self-Compositional Learning](https://arxiv.org/abs/2203.14272) (ECCV2022)**
 
 ![avatar](misc/cl_image.png)
 
@@ -55,6 +56,11 @@ See [GETTING_STARTED_FCL.md](GETTING_STARTED_FCL.md)
 
 See [GETTING_STARTED_ATL.md](GETTING_STARTED_ATL.md). We try to use a HOI model to recognize object affordance, i.e. what actions can be applied to an object.
 
+## SCL
+
+See [GETTING_STARTED_SCL.md](GETTING_STARTED_SCL.md). We propose a novel task, HOI Concept Discovery, to discover reasonable concepts/categories for HOI detection.
+
+
 ## Experiment Results
 
 
@@ -80,11 +86,15 @@ Compositional Zero-Shot
 |Model |Unseen|Seen|Full|
 |:-|:-:|:-:|:-:|
 |VCL(rare first)|10.06 |24.28| 21.43|
-|FCL(rare first)|**13.16** |24.23| **22.01**|
-|ATL (rare first) | 9.18 | **24.67** | 21.57|
+|FCL(rare first)|13.16 |24.23| 22.01|
+|ATL (rare first) | 9.18 | 24.67 | 21.57|
+|Qpic | 15.24 |  30.44  |  27.40 | 
+|SCL+Qpic (rare first) | **19.07** | **30.39** | **28.08** | 
 |VCL(non-rare first)|16.22|18.52|18.06|
 |FCL(non-rare first)|**18.66**|**19.55**|**19.37**|
 |ATL (non-rare first) | 18.25 | 18.78 | 18.67|
+|Qpic | 21.03 |  23.73  |  23.19 |
+|SCL+Qpic (rare first) | 21.73 | 25.00 | 24.34 |
 
 Novel Object Zero-Shot
 
@@ -118,8 +128,9 @@ Here, we provides the result reported by AP.
 |Baseline |HICO|- |    19.71 |    17.86 |    23.18 |   6.80 |
 |FCL | HICO | - |       25.11    |     25.21 |         37.32 |    6.80 |
 |VCL |HICO | HICO |     36.74 |  35.73   |       43.15 |  12.05 |
-|ATL  |HICO | HICO|            52.01 |        **50.94**  |    **59.44** |     **15.64**|
-|ATL |HICO | COCO|       **56.05** |       40.83 |       57.41 | 8.52 |
+|ATL  |HICO | HICO|            52.01 |        50.94 |    59.44 |     15.64|
+|ATL |HICO | COCO|       56.05 |       40.83 |       57.41 | 8.52 |
+|SCL | HICO | HICO | **72.08**| **57.53** | **82.47** | **18.55**
 ||||||||
 |ATL<sup>ZS</sup>   |HICO | HICO|      24.21 |       20.88 |     28.56 |       12.26 |
 |ATL<sup>ZS</sup> |HICO | COCO |    **35.55** |   **31.77** |   **39.45** |    **13.25** |
@@ -162,6 +173,15 @@ Currently, some approaches predict verbs for HOI detection, while here we direct
 
 ## Citations
 If you find this series of work are useful for you, please consider citing:
+
+```
+@inproceedings{hou2022scl,
+  title={Discovering Human-Object Interaction Concepts via Self-Compositional Learning},
+  author={Hou, Zhi and Yu, Baosheng and Tao, Dacheng},
+  booktitle={ECCV},
+  year={2022}
+}
+```
 
 ```
 @inproceedings{hou2021fcl,

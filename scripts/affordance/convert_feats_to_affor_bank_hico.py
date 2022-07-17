@@ -74,8 +74,9 @@ if __name__ == '__main__':
         if has_no_inter:
             continue
         verb_ids = np.argwhere(verb_labels).reshape(-1)
-
-        if min(select_nums[verb_ids]) > 100:
+        if 57 in verb_ids:
+            continue
+        if min(select_nums[verb_ids]) > args.num:
             continue
         select_nums[verb_ids] += 1
         verb_label_list.append(np.argwhere(verb_labels).reshape(-1).tolist())
