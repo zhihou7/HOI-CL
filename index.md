@@ -10,8 +10,7 @@ This repository includes the code of
 
  **[Discovering Human-Object Interaction Concepts via Self-Compositional Learning](https://arxiv.org/abs/2203.14272) (ECCV2022)**
 
-![avatar](misc/cl_image.png)
-
+![avatar](https://github.com/zhihou7/HOI-CL/blob/master/misc/cl_image.png)
 
 
 **If you have any questions, feel free to create issues or contact zhou9878 [at] uni dot sydney dot edu dot au.**
