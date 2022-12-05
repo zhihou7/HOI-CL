@@ -20,7 +20,7 @@ python tools/Train_ATL_HICO.py --model VCL_union_batch_large2_ml5_def1_vloss2_VE
 
 Here, AF713 is just a simple symbol to represent concept discovery with self-training,
 'VERB' means we optimize verb category rather than HOI category,
-'affordance' means online concept discovery. We will revise this to self-training in the final version. Baseline of HICO-DET is
+'affordance' means online concept discovery. Baseline of HICO-DET is
 
 ```shell
 python tools/Train_ATL_HICO.py --model VCL_union_batch_large2_ml5_def1_vloss2_VERB_l2_aug5_3_x5new_res101_affordance_9 --num_iteration 3000000

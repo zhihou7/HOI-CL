@@ -106,6 +106,7 @@ class VCOCOSolverWrapperCL(SolverWrapper):
                                                                                            :num_stop_list[j]] for j in
                                                                                            range(2)],
                                                                                           'atl')
+                                    new_loss = new_loss['vcl_loss']
                                     # atl1 means we jointly composing HOI images and object images
                                 else:
                                     new_loss = self.compose_feature_helper.merge_generate(O_features, V_features,
@@ -113,6 +114,7 @@ class VCOCOSolverWrapperCL(SolverWrapper):
                                                                                        :num_stop_list[j]] for j in
                                                                                        range(2)],
                                                                                       compose_type)
+                                    new_loss = new_loss['vcl_loss']
                                 ll = self.compose_feature_helper.get_ll()
                                 tower_losses.append(new_loss * ll)
                             variables = tf.trainable_variables()

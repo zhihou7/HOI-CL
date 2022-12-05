@@ -33,6 +33,14 @@ if 'DATASET' not in os.environ or os.environ['DATASET'] == 'HICO':
 elif os.environ['DATASET'] == 'HICO_res101':
     from networks.ResNet101_HICO import ResNet101, resnet_arg_scope
     parent_model = ResNet101
+elif os.environ['DATASET'] == 'HICO_res101_icl':
+    from networks.ResNet101_HICO_zs import ResNet101, resnet_arg_scope
+
+    parent_model = ResNet101
+elif os.environ['DATASET'] == 'HICO_icl':
+    from networks.ResNet50_HICO_zs import ResNet50, resnet_arg_scope
+
+    parent_model = ResNet50
 elif os.environ['DATASET'] == 'VCOCO1':
     from networks.ResNet50_VCOCO_HOI import ResNet50, resnet_arg_scope
     parent_model = ResNet50
@@ -52,6 +60,39 @@ class HOI(parent_model):
         self.losses['fake_D_total_loss'] = 0
         self.losses['fake_G_total_loss'] = 0
         self.losses['fake_total_loss'] = 0
+        if self.model_name.__contains__('affordance'):
+            self.affordance_count = tf.get_variable("affordance_count", shape=[self.verb_num_classes, self.obj_num_classes],
+                                                    initializer=tf.zeros_initializer)
+            if self.model_name.__contains__('OFFLINE'): # For ablation study, you can ignore this
+                if self.model_name.__contains__('VCOCO'):
+                    init_v = np.load('/project/ZHIHOU//afford/iCAN_R_union_multi_ml5_l05_t5_VERB_def2_aug5_3_new_VCOCO_test_CL_21_affordance_9_HOI_iter_160000.ckpt.npy')
+                else:
+                    if self.model_name.__contains__('inito'):
+                        init_v = np.load('/project/ZHIHOU//afford/iCAN_R_union_batch_large2_ml5_def1_vloss2_VERB_l2_aug5_3_x5new_res101_affordance_inito_OFFLINE1_AF713_r_1_9ATL_2.npy')
+                    elif self.model_name.__contains__('OFFLINE1'):
+                        init_v = np.load('/project/ZHIHOU/afford/iCAN_R_union_batch_large2_ml5_def1_vloss2_VERB_l2_aug5_3_x5new_res101_affordance_9ATL_2.npy')
+                    else:
+                        init_v = np.load("/project/ZHIHOU//afford/iCAN_R_union_batch_large2_ml5_def1_vloss2_VERB_l2_aug5_3_x5new_res101_affordance_AF713_OFFLINE_9ATL_2.npy")
+                init_v = init_v.reshape([self.verb_num_classes, self.obj_num_classes])
+                self.affordance_stat = tf.get_variable("affordance_stat", shape=[self.verb_num_classes, self.obj_num_classes], dtype=tf.float32,
+                                                       trainable=True,
+                                                       initializer=tf.constant_initializer(init_v),
+                                                       regularizer=regularizers.l2_regularizer(0.001))
+            elif self.model_name.__contains__('inito'):  # For debug, you can ignore this
+                init_v = np.load('/project/ZHIHOU/afford/iCAN_R_union_batch_large2_ml5_def1_vloss2_VERB_l2_aug5_3_x5new_res101_affordance_9ATL_2.npy')
+                init_v = init_v.reshape([self.verb_num_classes, self.obj_num_classes])
+                self.affordance_stat = tf.get_variable("affordance_stat", shape=[self.verb_num_classes, self.obj_num_classes], dtype=tf.float32,
+                                                       trainable=True,
+                                                       initializer=tf.constant_initializer(init_v),
+                                                       regularizer=regularizers.l2_regularizer(0.001))
+            elif self.model_name.__contains__('init'):
+                self.affordance_stat = tf.get_variable("affordance_stat", shape=[self.verb_num_classes, self.obj_num_classes], dtype=tf.float32,
+                                                       trainable=True,
+                                                       initializer=tf.constant_initializer(np.matmul(self.verb_to_HO_matrix_np, self.obj_to_HO_matrix_np.transpose())),
+                                                       regularizer=regularizers.l2_regularizer(0.001))
+            else:
+                self.affordance_stat = tf.get_variable("affordance_stat", shape=[self.verb_num_classes, self.obj_num_classes], dtype=tf.float32, trainable=True,
+                                                       initializer=tf.zeros_initializer, regularizer=regularizers.l2_regularizer(0.001))
 
     def set_gt_class_HO_for_G_verbs(self, gt_class_HO_for_G_verbs):
         self.gt_class_HO_for_G_verbs = gt_class_HO_for_G_verbs
@@ -82,7 +123,7 @@ class HOI(parent_model):
                                             scope=self.scope)
         return fc7_HO
 
-    def head_to_tail_ho(self, fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, name):
+    def head_to_tail_ho(self, fc7_O, fc7_verbs, fc7_O_raw, fc7_verbs_raw, is_training, name, gt_verb_class=None, gt_obj_class=None):
         if name == 'fc_HO':
             nameprefix = ''  # TODO should improve
         else:
@@ -131,7 +172,7 @@ class HOI(parent_model):
         #     return None
         with tf.variable_scope(name) as scope:
             if self.model_name.__contains__('VERB'):
-                cls_score_verbs = slim.fully_connected(fc7_verbs, self.verb_num_classes,
+                cls_score_hoi = slim.fully_connected(fc7_verbs, self.verb_num_classes,
                                                        weights_initializer=initializer,
                                                        trainable=is_training,
                                                        reuse=tf.AUTO_REUSE,

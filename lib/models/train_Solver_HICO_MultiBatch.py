@@ -93,16 +93,19 @@ class SolverWrapperMultiBatch(SolverWrapper):
                                                                            self.gt_class_HO[
                                                                            self.net.pos1_idx:self.net.get_compose_num_stop()]],
                                                                           compose_type)
+                    new_loss = new_loss['vcl_loss']
                 elif self.net.model_name.__contains__('atl'):
                     new_loss = self.compose_feature_helper.merge_generate(O_features,
                                                                           V_features,
                                                                           [self.gt_class_HO[:self.net.pos1_idx], self.gt_class_HO[self.net.pos1_idx:self.net.get_compose_num_stop()]],
                                                                           'atl')
+                    new_loss = new_loss['vcl_loss']
                 else:
                     new_loss = self.compose_feature_helper.merge_generate(O_features,
                                                                       V_features,
                                                                       [self.gt_class_HO[:self.net.pos1_idx], self.gt_class_HO[self.net.pos1_idx:self.net.get_compose_num_stop()]],
                                                                       compose_type)
+                    new_loss = new_loss['vcl_loss']
                 ll = self.compose_feature_helper.get_ll()
                 tower_losses.append(new_loss * ll)
             if self.net.model_name.__contains__('pret') and self.net.model_name.__contains__('classifier'):

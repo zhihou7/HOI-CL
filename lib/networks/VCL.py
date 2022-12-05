@@ -226,7 +226,7 @@ class VCL(object):
         gt_verb_class1 = tf.expand_dims(gt_verb_class, axis=-1)
         gt_obj_class1 = tf.expand_dims(gt_obj_class, axis=1)
         gt_verb_obj = tf.matmul(gt_verb_class1, gt_obj_class1)
-        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_class, gt_obj_class)
+        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl')
         cls_prob_hoi = self.net.region_classification_ho(fc7_vo, True,
                                                          tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                                          'classification', nameprefix='stat_affordance')
@@ -396,14 +396,14 @@ class VCL(object):
         gt_obj_class1 = tf.expand_dims(gt_obj_class, axis=1)
         gt_verb_obj = tf.matmul(gt_verb_class1, gt_obj_class1)
         gt_verb_obj_orig = gt_verb_obj
-        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_class, gt_obj_class)
+        fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl')
         cls_prob_hoi = self.net.region_classification_ho(fc7_vo, True,
                                                          tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                                          'classification', nameprefix='stat_affordance')
         cls_prob_hoi_orig = cls_prob_hoi
         tmp_result = tf.constant(0.)
         tmp_all_cls_loss = tf.constant(0.)
-        if self.net.model_name.__contains__('AF7'):
+        if self.net.model_name.__contains__('AF7'):  # This is for averaged affordance, i.e. concept confidence in our paper
             afford_stat = tf.stop_gradient(self.net.affordance_stat)
             if self.net.model_name.__contains__('AF71'):
                 label_conds = tf.cast(afford_stat > 0., tf.float32)
@@ -468,10 +468,13 @@ class VCL(object):
             gt_verb_label = tf.cast(
                 tf.matmul(new_gt_class_HO, self.verb_to_HO_matrix, transpose_b=True) > 0,
                 tf.float32)
-            fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl', gt_verb_label, gt_obj_label)
+            fc7_vo = self.net.head_to_tail_ho(fc7_O, fc7_V, None, None, True, 'vcl')
             self.net.region_classification_ho(fc7_vo, True, tf.random_normal_initializer(mean=0.0, stddev=0.01),
                                               'classification', nameprefix='merge_')
-        cls_score_verbs = self.net.predictions["merge_cls_score_hoi"]
+        if "merge_cls_score_hoi" not in self.net.predictions:
+            cls_score_verbs = self.net.predictions["merge_cls_score_verbs"]
+        else:
+            cls_score_verbs = self.net.predictions["merge_cls_score_hoi"]
         if self.net.model_name.__contains__('VCOCO') and self.net.model_name.__contains__('t3'):
             reweights = tf.matmul(self.net.HO_weight, self.net.verb_to_HO_matrix)
         else:
@@ -512,7 +515,7 @@ class VCL(object):
         return new_loss
 
 
-    def compose_ho_all(self, O_features, V_features, cur_gt_class_HO):
+    def compose_ho_all(self, O_features, V_features, cur_gt_class_HO, gt_obj_list=None):
 
         _fc7_O = tf.concat([O_features[0], O_features[1]], axis=0)
         _fc7_V = tf.concat([V_features[0], V_features[1]], axis=0)

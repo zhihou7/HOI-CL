@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
     if args.model.__contains__('ICL'):
         # incremental continual learning
+        # This is not used in the paper. We use this code for unknown zero-shot evaluation
         if args.model.__contains__('res101'):
             os.environ['DATASET'] = 'HICO_res101_icl'
         else:

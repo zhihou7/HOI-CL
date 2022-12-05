@@ -52,7 +52,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    Test_RCNN = pickle.load(open(cfg.DATA_DIR + '/' + 'Test_Faster_RCNN_R-50-PFN_2x_VCOCO_with_pose.pkl', "rb"),
+    Test_RCNN = pickle.load(open(cfg.DATA_DIR + '/' + 'Test_Faster_RCNN_R-50-PFN_2x_VCOCO.pkl', "rb"),
                             encoding='latin1')
     prior_mask = pickle.load(open(cfg.DATA_DIR + '/' + 'prior_mask.pkl', "rb"), encoding='latin1')
     Action_dic = json.load(open(cfg.DATA_DIR + '/' + 'action_index.json'))

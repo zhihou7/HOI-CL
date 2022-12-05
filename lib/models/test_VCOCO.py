@@ -10,7 +10,7 @@ from __future__ import print_function
 
 from ult.config import cfg
 from ult.timer import Timer
-from ult.ult import Get_next_sp, Get_next_sp_with_pose
+from ult.ult import Get_next_sp
 from ult.apply_prior import apply_prior
 
 import cv2
@@ -471,7 +471,7 @@ def obtain_data(Test_RCNN, prior_mask, Action_dic_inv, output_dir, object_thres,
                             blobs['O_score'].append(Object[5])
                             blobs['H_boxes'].append(np.array(
                                     [0, Human_out[2][0], Human_out[2][1], Human_out[2][2], Human_out[2][3]]))
-                            blobs['sp'].append(Get_next_sp_with_pose(Human_out[2], Object[2], Human_out[6]))
+                            blobs['sp'].append(Get_next_sp(Human_out[2], Object[2]))
                             mask = np.zeros(shape=(im_shape[0] // 16, im_shape[1] // 16, 1), dtype=np.float32)
                             obj_box = blobs['O_boxes'][-1][1:].astype(np.int32)
                             # print(obj_box)

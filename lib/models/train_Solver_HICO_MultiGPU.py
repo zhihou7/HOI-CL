@@ -111,6 +111,7 @@ class SolverWrapperMultiGPU(SolverWrapper):
                                                                                :num_stop_list[j]] for j in
                                                                                range(2)],
                                                                               compose_type)
+                            new_loss = new_loss['vcl_loss']
                             ll = self.compose_feature_helper.get_ll()
                             tower_losses.append(new_loss * ll)
 

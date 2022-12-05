@@ -7,8 +7,8 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 
 
-from networks.HOI import DisentanglingNet
-from networks.tools1 import get_convert_matrix
+from networks.HOI import HOI
+from networks.tools import get_convert_matrix
 
 
 import numpy as np
@@ -19,7 +19,7 @@ import os
 from ult.ult import get_zero_shot_type, get_unseen_index
 
 
-class HOIICLNet(DisentanglingNet):
+class HOIICLNet(HOI):
     def __init__(self, model_name='iCAN_ResNet50_HICO', task_id = 0, incremental_class_pairs = [[(), (), (), ]]):
         super(HOIICLNet, self).__init__(model_name)
         self.task_id = task_id
@@ -54,6 +54,7 @@ class HOIICLNet(DisentanglingNet):
                 continue
             zs_convert_matrix[i][zs_j] = 1
             zs_j += 1
+        print(self.verb_num_classes)
         verb_to_HO_matrix, obj_to_HO_matrix = get_convert_matrix(self.verb_num_classes, self.obj_num_classes)
         new_v_hoi = np.matmul(verb_to_HO_matrix, zs_convert_matrix)
         new_o_hoi = np.matmul(obj_to_HO_matrix, zs_convert_matrix)
@@ -222,9 +223,6 @@ class HOIICLNet(DisentanglingNet):
             # verb loss
             temp = self.add_verb_loss(num_stop)
             loss += temp
-            # sim loss
-            temp = self.cal_sim_loss(num_stop)
-            loss += temp
 
             # interactiveness
             interactiveness_loss = 0
@@ -233,3 +231,4 @@ class HOIICLNet(DisentanglingNet):
         print(self.losses)
         print(self.predictions)
         return loss
+
