@@ -1985,7 +1985,7 @@ def get_zero_shot_type(model_name):
         zero_shot_type = 4
     elif model_name.__contains__('_zsrare_'):
         zero_shot_type = 3
-    elif model_name.__contains__('_zsuo_'):
+    elif model_name.__contains__('_zs11_'):
         # for unseen object
         zero_shot_type = 11
     elif model_name.__contains__('_zs3_'):
